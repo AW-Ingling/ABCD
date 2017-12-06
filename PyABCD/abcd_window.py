@@ -8,6 +8,9 @@
 # TODO: Check if the naming scheme in the Windows display gui match Pyglet naming
 # TODO: Enumerate all errors
 
+# Major To Dos:
+# Refactor this into a class
+
 
 # Imports
 import sys
