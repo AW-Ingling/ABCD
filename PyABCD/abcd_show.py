@@ -5,8 +5,18 @@
 from psychopy import visual, core, monitors, iohub
 
 
-#TODO: Detect the ePrime cancel sequence
+#TODO: Detect the ePrime cancel sequence wich is probably metakeys in IOHub
 #TODO: Document that modifier keys are ignored
+#TODO: Instrument timing loop to find out what is taking time there
+#TODO: Look for timing loop misses
+#TODO: Raise priorit
+#TODO: Check for other applications running and shut them down
+#TODO: Make sure synchronized flips are turned on
+#TODO: Write a test suite to accompany ABCD
+
+POLLING_LOOP_FREQUENCY_HZ = 100.0
+
+polling_loop_period_secs = 1/POLLING_LOOP_FREQUENCY_HZ
 
 # "C:\Program Files (x86)\PsychoPy2\python.exe"
 #
@@ -17,10 +27,13 @@ from psychopy import visual, core, monitors, iohub
 # ks=event.waitKeys()
 # print(ks)
 
+
+
 def get_key(keyboard, filter_in_keys):
     for event in keyboard.getEvents():
         if event.key in filter_in_keys:
-
+            return event.key, event.time
+    return None
 
 
 class StimRecord:
@@ -30,14 +43,14 @@ class StimRecord:
     presented, its sequence and the subject response.
 
     Attributes:
-            stim_index (int): Zero-indexed value incremented for each presentation
-            image_name (str): Name of the image file presented
-            timeout (float): The time limit after stimulus onset that trial ends if a filtered key was not pressed.
-            filter_in_keys (list of strs): Keys which were not ignored
-            gotten_key (str): The first keypress in filter_in_keys recorded
-            start_secs (float): Image onset time in secs
-            stop_secs (float): Image offset time in secs
-            key_secs (float): Keypress time in secs
+        stim_index (int): Zero-indexed value incremented for each presentation
+        image_name (str): Name of the image file presented
+        timeout (float): The time limit after stimulus onset that trial ends if a filtered key was not pressed.
+        filter_in_keys (list of strs): Keys which were not ignored
+        gotten_key (str): The first keypress in filter_in_keys recorded
+        start_secs (float): Image onset time in secs
+        stop_secs (float): Image offset time in secs
+        key_secs (float): Keypress time in secs
 
     """
 
@@ -63,6 +76,7 @@ class StimRecord:
         self.start_secs = start_secs
         self.stop_secs = stop_secs
         self.key_secs = key_secs
+        self.blank_rgb = [127, 127, 127]
 
         @property
         def stimulus_duration():
@@ -70,8 +84,11 @@ class StimRecord:
 
         @property
         def response_secs():
-            """float: delay in seconds between stimulus presentation and keypress"""
-            return self.key_secs - self.start_secs
+            """float: delay in seconds between stimulus presentation and keypress or None iff timeout."""
+            if self.key_secs:
+                return self.key_secs - self.start_secs
+            else:
+                return None
 
 
 class Presenter:
@@ -106,11 +123,11 @@ class Presenter:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, image_name, timeout, filter_in_keys):
+    def __init__(self, window, stim_bundle, image_name, timeout_secs, filter_in_keys):
         self.window = window
         self.stim_bundle = stim_bundle
         self.image_name = image_name
-        self.timeout = timeout
+        self.timeout_secs = timeout_secs
         self.filter_in_keys = filter_in_keys
         self.records = None
         self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
@@ -118,10 +135,20 @@ class Presenter:
 
     def show_image(self):
         keypress = False
+        timeout = False
         self.io.clearEvents()
-        while not keypress:
-            self.image_stim.draw()
-            self.window.flip()
+        self.image_stim.draw()
+        self.window.flip()
+        start_time_secs = core.getTime()
+        while not keypress or timeout:
+            keypress = get_key(self.keyboard, self.filter_in_keys)
+            end_time_secs = core.getTime()
+            elapsed_time_secs = end_time_secs - start_time_secs
+            timeout = elapsed_time_secs > self.timeout_secs
+            if not timeout:
+                core.wait(polling_loop_period_secs)
+        stim_index = self.new_stimuls_index()
+        stim_record = StimRecord(stim_index, )
 
 
 
