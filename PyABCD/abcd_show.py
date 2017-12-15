@@ -54,7 +54,7 @@ class StimRecord:
 
     """
 
-    def __init__(self, stim_index, image_name, timeout, filter_in_keys, gotten_key, start_secs, stop_secs, key_secs):
+    def __init__(self, stim_index, image_name, timeout_secs, filter_in_keys, gotten_key, start_secs, stop_secs, key_secs):
         """Init an instance of StimRecord with arguments for all properties except those derived by accessors.
 
         Args:
@@ -70,7 +70,7 @@ class StimRecord:
         """
         self.stim_index = stim_index
         self.image_name = image_name
-        self.timeout = timeout
+        self.timeout_secs = timeout_secs
         self.filter_in_keys = filter_in_keys
         self.gotten_key = gotten_key
         self.start_secs = start_secs
@@ -103,7 +103,7 @@ class Presenter:
 
     @classmethod
     def new_stimuls_index(cls):
-        if cls.stimuls_counter is None:
+        if cls.stimulus_counter is None:
             cls.stimulus_counter = 0
         else:
             cls.stimulus_counter += 1
@@ -131,24 +131,30 @@ class Presenter:
         self.filter_in_keys = filter_in_keys
         self.records = None
         self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
-        self.image_stim = visual.ImageStim(self.window, image=self.path_to_image)
+        self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
 
     def show_image(self):
         keypress = False
-        timeout = False
+        timeout_flag = False
         self.io.clearEvents()
         self.image_stim.draw()
         self.window.flip()
-        start_time_secs = core.getTime()
-        while not keypress or timeout:
+        start_secs = core.getTime()
+        while not keypress or timeout_flag:
             keypress = get_key(self.keyboard, self.filter_in_keys)
             end_time_secs = core.getTime()
-            elapsed_time_secs = end_time_secs - start_time_secs
-            timeout = elapsed_time_secs > self.timeout_secs
-            if not timeout:
+            elapsed_time_secs = end_time_secs - start_secs
+            timeout_flag = self.timeout_secs and elapsed_time_secs > self.timeout_secs
+            if not timeout_flag or keypress:
                 core.wait(polling_loop_period_secs)
+        #TODO: Draw a blank screen or the next frame here?
+        stop_secs= core.getTime()
         stim_index = self.new_stimuls_index()
-        stim_record = StimRecord(stim_index, )
+        stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, keypress[0],
+                                 start_secs, stop_secs, keypress[1])
+        return stim_record
+
+
 
 
 
