@@ -78,18 +78,32 @@ class StimRecord:
         self.key_secs = key_secs
         self.blank_rgb = [127, 127, 127]
 
-        @property
-        def stimulus_duration():
-            return self.stop_secs - self.start_secs
+    @property
+    def stimulus_duration_secs(self):
+        return self.stop_secs - self.start_secs
 
-        @property
-        def response_secs():
-            """float: delay in seconds between stimulus presentation and keypress or None iff timeout."""
-            if self.key_secs:
-                return self.key_secs - self.start_secs
-            else:
-                return None
+    @property
+    def response_secs(self):
+        """float: delay in seconds between stimulus presentation and keypress or None iff timeout."""
+        if self.key_secs:
+            return self.key_secs - self.start_secs
+        else:
+            return None
 
+    def __str__(self):
+        txt = ""
+        txt += "stim_index: %d\n" % self.stim_index
+        txt += "image_name: %s\n" % self.image_name
+        txt += "timeout_secs: %s\n" % str(self.timeout_secs)
+        txt += "filter_in_keys: %s\n" % str(self.filter_in_keys)
+        txt += "gotten_key: %s\n" % self.gotten_key
+        txt += "start_secs: %d\n" % self.start_secs
+        txt += "stop_secs: %d\n" % self.stop_secs
+        txt += "key_secs: %d\n" % self.key_secs
+        txt += "blank_rgb: %s\n" % str(self.blank_rgb)
+        txt += "stimulus_duration_secs: %d\n" % self.stimulus_duration_secs
+        txt += "response_secs: %d\n" % self.response_secs
+        return txt
 
 class Presenter:
 
@@ -98,11 +112,11 @@ class Presenter:
     keyboard = None
 
     @classmethod
-    def reset_stimuls_counter(cls):
+    def reset_stimulus_counter(cls):
         cls.stimulus_counter = None
 
     @classmethod
-    def new_stimuls_index(cls):
+    def new_stimulus_index(cls):
         if cls.stimulus_counter is None:
             cls.stimulus_counter = 0
         else:
@@ -149,7 +163,7 @@ class Presenter:
                 core.wait(polling_loop_period_secs)
         #TODO: Draw a blank screen or the next frame here?
         stop_secs= core.getTime()
-        stim_index = self.new_stimuls_index()
+        stim_index = self.__class__.new_stimulus_index()
         stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, keypress[0],
                                  start_secs, stop_secs, keypress[1])
         return stim_record
