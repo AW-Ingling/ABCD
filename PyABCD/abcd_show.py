@@ -3,6 +3,8 @@
 # Contains stuff used to present images and collecte button responses from subject
 
 from psychopy import visual, core, monitors, iohub
+from abcd_window import *
+from stim_bundle import *
 
 
 #TODO: Detect the ePrime cancel sequence wich is probably metakeys in IOHub
@@ -26,7 +28,6 @@ polling_loop_period_secs = 1/POLLING_LOOP_FREQUENCY_HZ
 # w = visual.Window(screen=0)
 # ks=event.waitKeys()
 # print(ks)
-
 
 
 def get_key(keyboard, filter_in_keys):
@@ -105,7 +106,7 @@ class StimRecord:
         txt += "response_secs: %d\n" % self.response_secs
         return txt
 
-class Presenter:
+class Show:
 
     stimulus_counter = None
     io = None
@@ -147,7 +148,7 @@ class Presenter:
         self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
         self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
 
-    def show_image(self):
+    def show(self):
         keypress = False
         timeout_flag = False
         self.io.clearEvents()
@@ -167,6 +168,51 @@ class Presenter:
         stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, keypress[0],
                                  start_secs, stop_secs, keypress[1])
         return stim_record
+
+
+class ShowMaker:
+    """A convenience wrapper for the Show class which retains some arguments allowing abbreviated functions calls."""
+
+    def __init__(self, stim_bundle_name):
+        self.window = None
+        self.stim_bundle = StimBundle(stim_bundle_name)
+        self.stim_records = []
+
+    def show(self, image_name, timeout_secs, filter_in_keys):
+        shower =  Show(self.window, self.stim_bundle, image_name, timeout_secs, filter_in_keys)
+        result_record = shower.show()
+        self.stim_records.append(result_record)
+
+    def setup(self):
+        if self.window is None:
+            self.window = open_stimulus_window()
+            Show.setup()
+            self.stim_records = []
+        else:
+            print("Error: Attempt to setup the ShowMaker when it is already setup.")
+            sys.exit()
+
+    def shutdown(self):
+        if self.window is None:
+            print("Error: Attempt to shutdown the ShowMaker when it is not setup.")
+            sys.exit()
+        else:
+            close_stimulus_window()
+            Show.shutdown()
+
+    def print_records(self):
+        for record in self.stim_records:
+            print("")
+            print(record)
+
+
+
+
+
+
+
+
+
 
 
 
