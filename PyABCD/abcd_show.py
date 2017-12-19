@@ -30,6 +30,37 @@ polling_loop_period_secs = 1/POLLING_LOOP_FREQUENCY_HZ
 # print(ks)
 
 
+
+# Name input characters.
+#SPACE_KEY = ' '
+
+# list of key names
+key_names_table = {}
+
+
+def add_key_name(name, character):
+    key_names_table[name] = character
+    #globals()[name] = character
+
+
+def key_name_for_char(character):
+    name_matches = [key_name for key_name in key_names_table if key_names_table[key_name] == character]
+    if name_matches:
+        return name_matches[0]
+    else:
+        return character
+
+
+def key_char_for_name(name):
+    if name in key_names_table:
+        return key_names_table[name]
+    else:
+        return name
+
+
+add_key_name("SPACE_KEY", " ")
+
+
 def get_key(keyboard, filter_in_keys):
     for event in keyboard.getEvents():
         if event.key in filter_in_keys:
@@ -95,15 +126,15 @@ class StimRecord:
         txt = ""
         txt += "stim_index: %d\n" % self.stim_index
         txt += "image_name: %s\n" % self.image_name
-        txt += "timeout_secs: %s\n" % str(self.timeout_secs)
-        txt += "filter_in_keys: %s\n" % str(self.filter_in_keys)
-        txt += "gotten_key: %s\n" % self.gotten_key
-        txt += "start_secs: %d\n" % self.start_secs
-        txt += "stop_secs: %d\n" % self.stop_secs
-        txt += "key_secs: %d\n" % self.key_secs
+        txt += "timeout_secs: %s\n" % str(self.timeout_secs)  # convert to string for case None
+        txt += "filter_in_keys: %s\n" % str([key_name_for_char(key_char) for key_char in self.filter_in_keys])
+        txt += "gotten_key: %s\n" % key_name_for_char(self.gotten_key)
+        txt += "start_secs: %f\n" % self.start_secs
+        txt += "stop_secs: %f\n" % self.stop_secs
+        txt += "key_secs: %f\n" % self.key_secs
         txt += "blank_rgb: %s\n" % str(self.blank_rgb)
-        txt += "stimulus_duration_secs: %d\n" % self.stimulus_duration_secs
-        txt += "response_secs: %d\n" % self.response_secs
+        txt += "stimulus_duration_secs: %f\n" % self.stimulus_duration_secs
+        txt += "response_secs: %f\n" % self.response_secs
         return txt
 
 class Show:
@@ -138,12 +169,14 @@ class Show:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, image_name, timeout_secs, filter_in_keys):
+    def __init__(self, window, stim_bundle, image_name, timeout_secs, filter_in_key_names):
         self.window = window
         self.stim_bundle = stim_bundle
         self.image_name = image_name
         self.timeout_secs = timeout_secs
-        self.filter_in_keys = filter_in_keys
+        if isinstance(filter_in_key_names, str):
+            filter_in_key_names = [filter_in_key_names]
+        self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
         self.records = None
         self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
         self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
@@ -178,8 +211,8 @@ class ShowMaker:
         self.stim_bundle = StimBundle(stim_bundle_name)
         self.stim_records = []
 
-    def show(self, image_name, timeout_secs, filter_in_keys):
-        shower =  Show(self.window, self.stim_bundle, image_name, timeout_secs, filter_in_keys)
+    def show(self, image_name, timeout_secs, filter_in_key_names):
+        shower =  Show(self.window, self.stim_bundle, image_name, timeout_secs, filter_in_key_names)
         result_record = shower.show()
         self.stim_records.append(result_record)
 

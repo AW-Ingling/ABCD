@@ -1,14 +1,12 @@
 
-from psychopy import visual, core, monitors
-from abcd_window import *
 from abcd_show import *
-from stim_bundle import *
 
-# Name input characters.
-SPACE_KEY = ' '
 
 # Init IOHUB indirectly
 #Show.setup()
+
+# KEY name variables resolved at runtime:
+# SPACE_KEY
 
 
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
@@ -18,7 +16,7 @@ shower = ShowMaker("mid_practice")
 shower.setup()
 
 # Display the first stimulus, wait for keypress, record timing and response into a record
-shower.show("MID_Practice_TitlePage", None, SPACE_KEY)
+shower.show("MID_Practice_TitlePage", None, "SPACE_KEY")
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()
