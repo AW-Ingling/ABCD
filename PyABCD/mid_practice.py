@@ -30,7 +30,42 @@ shower.show("WinSmall", None, "SPACE_KEY")
 # E-Prime name: WinLrg
 shower.show("WinBig", None, "SPACE_KEY")
 
-# E-Prime name:
+# E-Prime name: LoseSml
+shower.show("LoseSmall", None, "SPACE_KEY")
+
+# E-Prime name: LoseLrg
+shower.show("LoseBig", None, "SPACE_KEY")
+
+# E-Prime name: Neut
+shower.show("Neutral", None, "SPACE_KEY")
+
+# E-Prime name: ShapeFixInstruct
+shower.show("ShapeFixInstruct", None, "SPACE_KEY")
+
+# E-Prime name: IntroProbes
+shower.show("IntroProbes", None, "SPACE_KEY")
+
+# E-Prime name: Winprb
+shower.show("WinProbe", None, "SPACE_KEY")
+
+# E-Prime name: Loseprb
+shower.show("LoseProbe", None, "SPACE_KEY")
+
+# E-Prime name: NeutPrb
+shower.show("NeutralProbe", None, "SPACE_KEY")
+
+# E-Prime name: Probes2
+shower.show("Probes2", None, "SPACE_KEY")
+
+# TODO: This is the begining of the IFIS blocklist.
+
+
+
+
+
+
+
+
 
 
 
