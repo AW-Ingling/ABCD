@@ -31,6 +31,7 @@ from psychopy import iohub
 #import psychopy
 
 
+# TODO: These functions are replicated in abcd_show so move them into a common module
 def is_keypress(event):
     # String comparison is a workaround for Python claiming that psychopy.iohub.devices.KeyboardPressEventNT does not
     # exist.  We would otherwise use isinstance or issubclass here.

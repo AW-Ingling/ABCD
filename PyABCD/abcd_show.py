@@ -7,6 +7,7 @@ from abcd_window import *
 from stim_bundle import *
 
 
+
 #TODO: Detect the ePrime cancel sequence wich is probably metakeys in IOHub
 #TODO: Document that modifier keys are ignored
 #TODO: Instrument timing loop to find out what is taking time there
@@ -30,9 +31,17 @@ polling_loop_period_secs = 1/POLLING_LOOP_FREQUENCY_HZ
 # print(ks)
 
 
+# functions for discriminating between keyups and keydowns.
+def is_keypress(event):
+    # String comparison is a workaround for Python claiming that psychopy.iohub.devices.KeyboardPressEventNT does not
+    # exist.  We would otherwise use isinstance or issubclass here.
+    return str(type(event)) == "<class 'psychopy.iohub.devices.KeyboardPressEventNT'>"
 
-# Name input characters.
-#SPACE_KEY = ' '
+def is_keyrelease(event):
+    # String comparison is a workaround for Python claiming that psychopy.iohub.devices.KeyboardPressEventNT does not
+    # exist.  We would otherwise use isinstance or issubclass here.
+    return str(type(event)) == "<class 'psychopy.iohub.devices.KeyboardReleaseEventNT'>"
+
 
 # list of key names
 key_names_table = {}
@@ -61,10 +70,11 @@ def key_char_for_name(name):
 add_key_name("SPACE_KEY", " ")
 
 
-def get_key(keyboard, filter_in_keys):
+def get_keydown(keyboard, filter_in_keys):
     for event in keyboard.getEvents():
         if event.key in filter_in_keys:
-            return event.key, event.time
+            if is_keypress(event):
+                return event.key, event.time
     return None
 
 
@@ -182,24 +192,24 @@ class Show:
         self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
 
     def show(self):
-        keypress = False
+        key_down = False
         timeout_flag = False
         self.io.clearEvents()
         self.image_stim.draw()
         self.window.flip()
         start_secs = core.getTime()
-        while not keypress or timeout_flag:
-            keypress = get_key(self.keyboard, self.filter_in_keys)
+        while not key_down or timeout_flag:
+            key_down = get_keydown(self.keyboard, self.filter_in_keys)
             end_time_secs = core.getTime()
             elapsed_time_secs = end_time_secs - start_secs
             timeout_flag = self.timeout_secs and elapsed_time_secs > self.timeout_secs
-            if not timeout_flag or keypress:
+            if not timeout_flag or key_down:
                 core.wait(polling_loop_period_secs)
         #TODO: Draw a blank screen or the next frame here?
         stop_secs= core.getTime()
         stim_index = self.__class__.new_stimulus_index()
-        stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, keypress[0],
-                                 start_secs, stop_secs, keypress[1])
+        stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, key_down[0],
+                                 start_secs, stop_secs, key_down[1])
         return stim_record
 
 

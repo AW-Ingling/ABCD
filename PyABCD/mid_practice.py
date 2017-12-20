@@ -15,8 +15,25 @@ shower = ShowMaker("mid_practice")
 # Open the stimulus window, fire up the IOHub engine to read key presses
 shower.setup()
 
-# Display the first stimulus, wait for keypress, record timing and response into a record
-shower.show("MID_Practice_TitlePage", None, "SPACE_KEY")
+# Display image/text stimuli, wait for keypresses, record timing and response into records
+
+
+# E-Prime name: TitlePage
+shower.show("TitlePage", None, "SPACE_KEY")
+
+# E-Prime name: IntroShapes
+shower.show("IntroShapes", None, "SPACE_KEY")
+
+# E-Prime name: WinSml
+shower.show("WinSmall", None, "SPACE_KEY")
+
+# E-Prime name: WinLrg
+shower.show("WinBig", None, "SPACE_KEY")
+
+# E-Prime name:
+
+
+
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()
