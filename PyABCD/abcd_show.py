@@ -216,9 +216,9 @@ class Show:
 class ShowMaker:
     """A convenience wrapper for the Show class which retains some arguments allowing abbreviated functions calls."""
 
-    def __init__(self, stim_bundle_name):
+    def __init__(self, stim_bundle):
         self.window = None
-        self.stim_bundle = StimBundle(stim_bundle_name)
+        self.stim_bundle = stim_bundle
         self.stim_records = []
 
     def show(self, image_name, timeout_secs, filter_in_key_names):

@@ -1,5 +1,6 @@
 
 from abcd_show import *
+from abcd_table import *
 
 
 # Init IOHUB indirectly
@@ -8,9 +9,14 @@ from abcd_show import *
 # KEY name variables resolved at runtime:
 # SPACE_KEY
 
+# Get the stimulus bundle object which manages stimulus images, tables and text files for the project
+stim_bundle = StimBundle("mid_practice")
+
+# Load the table for a loop
+timing_block_table = AbcdTable(stim_bundle, "TimingBlockList")
 
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
-shower = ShowMaker("mid_practice")
+shower = ShowMaker(stim_bundle)
 
 # Open the stimulus window, fire up the IOHub engine to read key presses
 shower.setup()

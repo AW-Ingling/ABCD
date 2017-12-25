@@ -29,9 +29,11 @@ class StimBundle:
 
     __metaclass__ = MetaStimBundle
 
-    image_sets_dir_name = u'ImageSets'
+    image_sets_dir_name = u'StimulusSets'
     original_image_dir_name = u'OriginalImages'
     captured_image_dir_name = u'CapturedImages'
+    tables_dir_name  =u'Tables'
+
 
     @classmethod
     def original_dir_path_from_bundle_path(cls, bundle_path):
@@ -42,10 +44,15 @@ class StimBundle:
         return os.path.join(bundle_path, cls.captured_image_dir_name)
 
     @classmethod
+    def tables_dir_path_from_bundle_path(cls, bundle_path):
+        return os.path.join(bundle_path, cls.tables_dir_name)
+
+    @classmethod
     def is_bundle(cls, path_to_bundle):
         return (os.path.isdir(path_to_bundle)
                 and os.path.isdir(cls.original_dir_path_from_bundle_path(path_to_bundle))
-                and os.path.isdir(cls.captured_dir_path_from_bundle_path(path_to_bundle)))
+                and os.path.isdir(cls.captured_dir_path_from_bundle_path(path_to_bundle))
+                and os.path.isdir(cls.tables_dir_path_from_bundle_path(path_to_bundle)))
 
     @classmethod
     def init_class(cls):
@@ -78,7 +85,7 @@ class StimBundle:
         if duplicate_image_cap_names:
             name_cap_table = {pair[0]:pair[1] for pair in zip(image_names_caps, image_names)}
             duplicate_names = [name_cap_table[cap_name] for cap_name in duplicate_image_cap_names]
-            print("Error: Directory containts duplicate image file names, Exiting.")
+            print("Error: Directory contains duplicate image file names, Exiting.")
             print("\tdirectory: %s." % image_dir_path)
             print("\tduplicates: %s." % str(duplicate_names))
             sys.exit()
@@ -87,6 +94,36 @@ class StimBundle:
         image_file_paths = [os.path.join(image_dir_path, file_name) for file_name in image_file_names]
         image_path_table = {pair[0]: pair[1] for pair in zip(image_names, image_file_paths)}
         return image_path_table
+
+    #TODO: image_table_from_path() and tables_table_from_path() could be abstracted and consolidated.
+    @staticmethod
+    def excel_paths_table_from_path(tables_dir_path):
+        all_file_names = os.listdir(tables_dir_path)
+        table_file_names = [filename for filename in all_file_names if is_table_file(filename)]
+        table_names = [os.path.splitext(filename)[0] for filename in table_file_names]
+        table_names_caps = [name.upper() for name in table_names]
+        duplicate_table_cap_names = find_duplicates(table_names_caps)
+        if duplicate_table_cap_names:
+            name_cap_table = {pair[0]:pair[1] for pair in zip(table_names_caps, table_names)}
+            duplicate_names = [name_cap_table[cap_name] for cap_name in duplicate_table_cap_names]
+            print("Error: Directory contains duplicate table file names, Exiting.")
+            print("\tdirectory: %s." % tables_dir_path)
+            print("\tduplicates: %s." % str(duplicate_names))
+            sys.exit()
+            #TODO: Issue and error dialog here
+            # TODO: Test that this duplicate detector stuff works
+        table_file_paths = [os.path.join(tables_dir_path, file_name) for file_name in table_file_names]
+        table_path_table = {pair[0]: pair[1] for pair in zip(table_names, table_file_paths)}
+        return table_path_table
+
+    # @staticmethod
+    # def excel_file_name_from_table_name(table_name):
+    #     #TODO: handle filenames with upper-case .xls extension
+    #     base, ext = os.path.splitext(table_name)
+    #     if ext == ".xls":
+    #         return table_name
+    #     else:
+    #         return table_name + ".xls"
 
     def __init__(self, bundle_name):
         # retain and derive some path names into the bundle
@@ -99,7 +136,10 @@ class StimBundle:
         self.bundle_path = bundle_path_table[bundle_name]
         self.original_images_path = self.original_dir_path_from_bundle_path(self.bundle_path)
         self.captured_images_path = self.captured_dir_path_from_bundle_path(self.bundle_path)
-        # generate a table mapping from the image name to image file path.
+        self.tables_path = self.tables_dir_path_from_bundle_path(self.bundle_path)
+        # generate a table mapping from the image name to image file path.  We merge the
+        # tables for contents of both the original and captured image directories and test
+        # for duplicates
         self.original_images_table = self.image_table_from_path(self.original_images_path)
         self.captured_images_table = self.image_table_from_path(self.captured_images_path)
         original_upper = [image_name.upper() for image_name in self.original_images_table.keys()]
@@ -116,19 +156,37 @@ class StimBundle:
             print("Exiting")
             sys.exit()
             #TODO: Issue and error dialog here
+        # merge the two tables
         self.image_name_to_path_table = {}
         self.image_name_to_path_table.update(self.original_images_table)
         self.image_name_to_path_table.update(self.captured_images_table)
         #TODO: Test that this duplicate detector stuff works
+        # generate a table mapping from the table name to the table file path
+        self.table_name_to_excel_file_path_table = self.excel_paths_table_from_path(self.tables_path)
+
+    def image_names(self):
+        return self.image_name_to_path_table.keys()
+
+    def table_names(self):
+        return self.table_name_to_excel_file_path_table.keys()
 
     def image_path_for_name(self, image_name):
         if image_name not in self.image_name_to_path_table:
+            #TODO: Display an error dialog here
             print("Error: Unknown image name %s, exiting." % image_name)
             sys.exit()
         return self.image_name_to_path_table[image_name]
 
-    def image_names(self):
-        return self.image_name_to_path_table.keys()
+    def excel_file_path_for_table_name(self, table_name):
+        if table_name not in self.table_name_to_excel_file_path_table:
+            #TODO: Display an error dialog here
+            print("Error: Unknown table name %s, exiting." % table_name)
+            sys.exit()
+        return self.table_name_to_excel_file_path_table[table_name]
+
+
+
+
 
 
 
