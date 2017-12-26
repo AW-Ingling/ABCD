@@ -3,8 +3,6 @@ from abcd_show import *
 from abcd_table import *
 
 
-# Init IOHUB indirectly
-#Show.setup()
 
 # KEY name variables resolved at runtime:
 # SPACE_KEY

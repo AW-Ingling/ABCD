@@ -23,6 +23,7 @@ class AbcdTable:
         self.label_row_index = None
         self.first_data_row_index = None
         self.last_data_row_index = None
+        self.num_rows = 0
         self.field_map = {}
         self.table = {}
         # load contents of sheet into our native data table
@@ -43,7 +44,9 @@ class AbcdTable:
             self.table[column_name] = []
         # iterate down each row adding elements to each name index's list
         for column_name in self.field_map:
-            for row in range(self.first_data_row_index, self.last_data_row_index):
+            steps = range(self.first_data_row_index, self.last_data_row_index)
+            self.num_rows = len(steps)
+            for row in steps:
                 self.table[column_name].append(self.sheet.cell(row, self.field_map[column_name]).value)
 
     def is_empty_cell(self, row_index , column_index):
@@ -75,7 +78,21 @@ class AbcdTable:
                 field_map[self.sheet.cell(self.label_row_index, column).value] = column
         return field_map
 
+    @property
+    def column_names(self):
+        return self.table.keys()
 
+    def print_column(self, column_name):
+        for value in self.table[column_name]:
+            print("%s" % str(value))
+
+    def __str__(self):
+        txt = ""
+        for key in self.table:
+            txt += "\n%s\n" % str(key)
+            for value in self.table[key]:
+                txt += "\t%s\n" % value
+        return txt
 
 
 
