@@ -32,7 +32,8 @@ class StimBundle:
     image_sets_dir_name = u'StimulusSets'
     original_image_dir_name = u'OriginalImages'
     captured_image_dir_name = u'CapturedImages'
-    tables_dir_name  =u'Tables'
+    tables_dir_name = u'Tables'
+    text_displays_dir_name = u'TextDisplays'
 
 
     @classmethod
@@ -48,11 +49,16 @@ class StimBundle:
         return os.path.join(bundle_path, cls.tables_dir_name)
 
     @classmethod
+    def text_displays_dir_path_from_bundle_path(cls, bundle_path):
+        return os.path.join(bundle_path, cls.text_displays_dir_name)
+
+    @classmethod
     def is_bundle(cls, path_to_bundle):
         return (os.path.isdir(path_to_bundle)
                 and os.path.isdir(cls.original_dir_path_from_bundle_path(path_to_bundle))
                 and os.path.isdir(cls.captured_dir_path_from_bundle_path(path_to_bundle))
-                and os.path.isdir(cls.tables_dir_path_from_bundle_path(path_to_bundle)))
+                and os.path.isdir(cls.tables_dir_path_from_bundle_path(path_to_bundle))
+                and os.path.isdir(cls.text_displays_dir_path_from_bundle_path(path_to_bundle)))
 
     @classmethod
     def init_class(cls):
@@ -95,7 +101,6 @@ class StimBundle:
         image_path_table = {pair[0]: pair[1] for pair in zip(image_names, image_file_paths)}
         return image_path_table
 
-    #TODO: image_table_from_path() and tables_table_from_path() could be abstracted and consolidated.
     @staticmethod
     def excel_paths_table_from_path(tables_dir_path):
         all_file_names = os.listdir(tables_dir_path)
@@ -115,6 +120,49 @@ class StimBundle:
         table_file_paths = [os.path.join(tables_dir_path, file_name) for file_name in table_file_names]
         table_path_table = {pair[0]: pair[1] for pair in zip(table_names, table_file_paths)}
         return table_path_table
+
+    #TODO: image_table_from_path(), tables_table_from_path() text_displays_paths_table_from_path should...
+    #TODO: ...be abstracted and consolidated.
+    @staticmethod
+    def text_displays_paths_table_from_path(text_displays_dir_path):
+        all_file_names = os.listdir(text_displays_dir_path)
+        text_display_file_names = [filename for filename in all_file_names if is_text_display_file_name(filename)]
+        text_display_names = [os.path.splitext(filename)[0] for filename in text_display_file_names]
+        table_names_caps = [name.upper() for name in text_display_names]
+        duplicate_table_cap_names = find_duplicates(table_names_caps)
+        if duplicate_table_cap_names:
+            name_cap_table = {pair[0]:pair[1] for pair in zip(table_names_caps, text_display_names)}
+            duplicate_names = [name_cap_table[cap_name] for cap_name in duplicate_table_cap_names]
+            print("Error: Directory contains duplicate .txt table file names, Exiting.")
+            print("\tdirectory: %s." % text_displays_dir_path)
+            print("\tduplicates: %s." % str(duplicate_names))
+            sys.exit()
+            #TODO: Issue and error dialog here
+            # TODO: Test that this duplicate detector stuff works
+        text_display_file_paths = [os.path.join(text_displays_dir_path, file_name) for file_name in text_display_file_names]
+        table_path_table = {pair[0]: pair[1] for pair in zip(text_display_names, text_display_file_paths)}
+        return table_path_table
+
+    @staticmethod
+    def text_json_paths_table_from_path(text_displays_dir_path):
+        all_file_names = os.listdir(text_displays_dir_path)
+        text_json_file_names = [filename for filename in all_file_names if is_text_json_file_name(filename)]
+        text_json_names = [os.path.splitext(filename)[0] for filename in text_json_file_names]
+        table_names_caps = [name.upper() for name in text_json_names]
+        duplicate_table_cap_names = find_duplicates(table_names_caps)
+        if duplicate_table_cap_names:
+            name_cap_table = {pair[0]:pair[1] for pair in zip(table_names_caps, text_json_names)}
+            duplicate_names = [name_cap_table[cap_name] for cap_name in duplicate_table_cap_names]
+            print("Error: Directory contains duplicate .json table file names, Exiting.")
+            print("\tdirectory: %s." % text_displays_dir_path)
+            print("\tduplicates: %s." % str(duplicate_names))
+            sys.exit()
+            #TODO: Issue and error dialog here
+            # TODO: Test that this duplicate detector stuff works
+        text_json_file_paths = [os.path.join(text_displays_dir_path, file_name) for file_name in text_json_file_names]
+        table_path_table = {pair[0]: pair[1] for pair in zip(text_json_names, text_json_file_paths)}
+        return table_path_table
+
 
     # @staticmethod
     # def excel_file_name_from_table_name(table_name):
@@ -137,6 +185,7 @@ class StimBundle:
         self.original_images_path = self.original_dir_path_from_bundle_path(self.bundle_path)
         self.captured_images_path = self.captured_dir_path_from_bundle_path(self.bundle_path)
         self.tables_path = self.tables_dir_path_from_bundle_path(self.bundle_path)
+        self.text_displays_path = self.text_displays_dir_path_from_bundle_path(self.bundle_path)
         # generate a table mapping from the image name to image file path.  We merge the
         # tables for contents of both the original and captured image directories and test
         # for duplicates
@@ -163,12 +212,31 @@ class StimBundle:
         #TODO: Test that this duplicate detector stuff works
         # generate a table mapping from the table name to the table file path
         self.table_name_to_excel_file_path_table = self.excel_paths_table_from_path(self.tables_path)
+        # generate a table mapping from text display names to text display paths.
+        self.text_display_name_to_file_path_table = self.text_displays_paths_table_from_path(self.text_displays_path)
+        # generate a table mapping from the display name to the json layout parameter file path
+        self.text_display_name_to_json_file_path_table = self.text_json_paths_table_from_path(self.text_displays_path)
+
+
 
     def image_names(self):
         return self.image_name_to_path_table.keys()
 
     def table_names(self):
         return self.table_name_to_excel_file_path_table.keys()
+
+    def text_displays_names(self):
+        text_file_keys = self.text_display_name_to_file_path_table.keys()
+        json_file_keys = self.text_display_name_to_json_file_path_table.keys()
+        if set(text_file_keys) == set(json_file_keys):
+            return text_file_keys
+        else:
+            #TODO: Display an error dialog here
+            x = set(text_file_keys)
+            y = set(json_file_keys)
+            sets_diff = str(list((x-y).union(y-x)))
+            print("Error: unmatched .json and .txt files for names %s, exiting." % str(sets_diff))
+            sys.exit()
 
     def image_path_for_name(self, image_name):
         if image_name not in self.image_name_to_path_table:
@@ -184,6 +252,19 @@ class StimBundle:
             sys.exit()
         return self.table_name_to_excel_file_path_table[table_name]
 
+    def text_display_path_for_name(self, text_display_name):
+        if text_display_name not in self.text_display_name_to_file_path_table:
+            #TODO: Display an error dialog here
+            print("Error: Unknown text display name for text file, %s, exiting." % text_display_name)
+            sys.exit()
+        return self.text_display_name_to_file_path_table[text_display_name]
+
+    def text_json_path_for_name(self, text_display_name):
+        if text_display_name not in self.text_display_name_to_json_file_path_table:
+            #TODO: Display an error dialog here
+            print("Error: Unknown text display name for json file, %s, exiting." % text_display_name)
+            sys.exit()
+        return self.text_display_name_to_json_file_path_table[text_display_name]
 
 
 

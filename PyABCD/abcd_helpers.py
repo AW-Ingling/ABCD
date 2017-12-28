@@ -13,6 +13,10 @@ image_file_extensions = {u'.jpg', u'.png', u'.tiff', u'.tif', u'.gif', u'.bmp'}
 
 table_file_extensions = {u'.xls'}
 
+text_file_extensions = {u'.txt'}
+
+json_file_extensions = {u'.json'}
+
 
 def is_image_file(filename):
     return os.path.splitext(filename)[1].lower() in image_file_extensions
@@ -20,6 +24,14 @@ def is_image_file(filename):
 
 def is_table_file(filename):
     return os.path.splitext(filename)[1].lower() in table_file_extensions
+
+
+def is_text_display_file_name(filename):
+    return os.path.splitext(filename)[1].lower() in text_file_extensions
+
+
+def is_text_json_file_name(filename):
+    return os.path.splitext(filename)[1].lower() in json_file_extensions
 
 
 def find_duplicates(a_list):
