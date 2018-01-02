@@ -238,6 +238,12 @@ class StimBundle:
             print("Error: unmatched .json and .txt files for names %s, exiting." % str(sets_diff))
             sys.exit()
 
+    def is_image_name(self, name):
+        return bool(name in self.image_names())
+
+    def is_text_display_name(self, name):
+        return bool(name in self.text_display_names())
+
     def image_path_for_name(self, image_name):
         if image_name not in self.image_name_to_path_table:
             #TODO: Display an error dialog here

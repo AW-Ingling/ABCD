@@ -5,6 +5,7 @@
 from psychopy import visual, core, monitors, iohub
 from abcd_window import *
 from stim_bundle import *
+from abcd_stimulus import *
 
 
 
@@ -96,12 +97,12 @@ class StimRecord:
 
     """
 
-    def __init__(self, stim_index, image_name, timeout_secs, filter_in_keys, gotten_key, start_secs, stop_secs, key_secs):
+    def __init__(self, stim_index, stimulus_name, timeout_secs, filter_in_keys, gotten_key, start_secs, stop_secs, key_secs):
         """Init an instance of StimRecord with arguments for all properties except those derived by accessors.
 
         Args:
             stim_index (int): Zero-indexed value incremented for each presentation
-            image_name (str): Name of the image file presented
+            stimulus_name (str): Name of the image or text file presented
             timeout (float): The time limit after stimulus onset that trial ends if a filtered key was not pressed.
             filter_in_keys (list of strs): Keys which were not ignored
             gotten_key (str): The first keypress in filter_in_keys recorded
@@ -111,7 +112,7 @@ class StimRecord:
 
         """
         self.stim_index = stim_index
-        self.image_name = image_name
+        self.stimulus_name = stimulus_name
         self.timeout_secs = timeout_secs
         self.filter_in_keys = filter_in_keys
         self.gotten_key = gotten_key
@@ -135,7 +136,7 @@ class StimRecord:
     def __str__(self):
         txt = ""
         txt += "stim_index: %d\n" % self.stim_index
-        txt += "image_name: %s\n" % self.image_name
+        txt += "stimulus_name: %s\n" % self.stimulus_name
         txt += "timeout_secs: %s\n" % str(self.timeout_secs)  # convert to string for case None
         txt += "filter_in_keys: %s\n" % str([key_name_for_char(key_char) for key_char in self.filter_in_keys])
         txt += "gotten_key: %s\n" % key_name_for_char(self.gotten_key)
@@ -146,6 +147,7 @@ class StimRecord:
         txt += "stimulus_duration_secs: %f\n" % self.stimulus_duration_secs
         txt += "response_secs: %f\n" % self.response_secs
         return txt
+
 
 class Show:
 
@@ -179,24 +181,28 @@ class Show:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, image_name, timeout_secs, filter_in_key_names):
+    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names):
+        # TODO: It would be better to not instantiate self.image_stim here to make command-line testing easier..
+        # TODO:     ..It requires and open window.
         self.window = window
         self.stim_bundle = stim_bundle
-        self.image_name = image_name
+        self.stimulus_name = stimulus_name
         self.timeout_secs = timeout_secs
         if isinstance(filter_in_key_names, str):
             filter_in_key_names = [filter_in_key_names]
         self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
         self.records = None
-        self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
-        self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
+        #self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
+        #self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
+        self.stimulus = Stimulus(self.stim_bundle, self.window, self.stimulus_name)
 
     def show(self):
         key_down = False
         timeout_flag = False
         self.io.clearEvents()
-        self.image_stim.draw()
-        self.window.flip()
+        self.stimulus.draw_flip()
+        #self.image_stim.draw()
+        #self.window.flip()
         start_secs = core.getTime()
         while not key_down or timeout_flag:
             key_down = get_keydown(self.keyboard, self.filter_in_keys)
@@ -208,7 +214,7 @@ class Show:
         #TODO: Draw a blank screen or the next frame here?
         stop_secs= core.getTime()
         stim_index = self.__class__.new_stimulus_index()
-        stim_record = StimRecord(stim_index, self.image_name, self.timeout_secs, self.filter_in_keys, key_down[0],
+        stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys, key_down[0],
                                  start_secs, stop_secs, key_down[1])
         return stim_record
 
@@ -221,8 +227,8 @@ class ShowMaker:
         self.stim_bundle = stim_bundle
         self.stim_records = []
 
-    def show(self, image_name, timeout_secs, filter_in_key_names):
-        shower =  Show(self.window, self.stim_bundle, image_name, timeout_secs, filter_in_key_names)
+    def show(self, stimulus_name, timeout_secs, filter_in_key_names):
+        shower =  Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names)
         result_record = shower.show()
         self.stim_records.append(result_record)
 
