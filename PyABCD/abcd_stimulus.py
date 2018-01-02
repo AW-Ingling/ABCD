@@ -9,12 +9,12 @@ class Stimulus:
 
     """Abstracts up image and text stimuli into a common class"""
 
-    def __init__(self, stim_bundle, window, name):
+    def __init__(self, stim_bundle, window, name, text_subs=None):
         # retain arguments and init defaults
         self.window = window
         self.image_stim = None
         self.text_stim = None
-        self.text = None
+        self.raw_text = None
         self.layout = None
         self.path_to_image = None
         self.path_to_text_display_file = None
@@ -27,13 +27,20 @@ class Stimulus:
             self.path_to_text_display_file = stim_bundle.text_display_path_for_name(name)
             self.path_to_text_json_file = stim_bundle.text_json_path_for_name(name)
             with open(self.path_to_text_display_file, 'r') as text_file:
-                self.text = text_file.read()
+                self.raw_text = text_file.read()
             with open(self.path_to_text_json_file, 'r') as layout_file:
                 self.layout = json.load(layout_file)
-            self.text_stim = visual.TextStim(window, text='Hello \n World')
+            self.text = self.raw_text
+            if text_subs:
+                for key in text_subs:
+                    key_str = '[' + key + ']'
+                    self.text = self.text.replace(key_str, text_subs[key])
+            self.text_stim = visual.TextStim(window, text=self.text)
+            #TODO: Detect and warn if not all variables are used in either the text file or dictionary
         else:
             print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % name)
             sys.exit()
+
 
     def draw_flip(self):
         # Conditionally draw either the image or text stimulus then buffer flip
@@ -42,6 +49,8 @@ class Stimulus:
         elif self.text_stim:
             self.text_stim.draw()
         self.window.flip()
+
+
 
 
 

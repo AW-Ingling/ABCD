@@ -181,20 +181,21 @@ class Show:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names):
+    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None):
         # TODO: It would be better to not instantiate self.image_stim here to make command-line testing easier..
         # TODO:     ..It requires and open window.
         self.window = window
         self.stim_bundle = stim_bundle
         self.stimulus_name = stimulus_name
         self.timeout_secs = timeout_secs
+        self.text_subs = text_subs
         if isinstance(filter_in_key_names, str):
             filter_in_key_names = [filter_in_key_names]
         self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
         self.records = None
         #self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
         #self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
-        self.stimulus = Stimulus(self.stim_bundle, self.window, self.stimulus_name)
+        self.stimulus = Stimulus(self.stim_bundle, self.window, self.stimulus_name, self.text_subs)
 
     def show(self):
         key_down = False
@@ -227,8 +228,8 @@ class ShowMaker:
         self.stim_bundle = stim_bundle
         self.stim_records = []
 
-    def show(self, stimulus_name, timeout_secs, filter_in_key_names):
-        shower =  Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names)
+    def show(self, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None):
+        shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs)
         result_record = shower.show()
         self.stim_records.append(result_record)
 

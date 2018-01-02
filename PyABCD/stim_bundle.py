@@ -216,7 +216,7 @@ class StimBundle:
         self.text_display_name_to_file_path_table = self.text_displays_paths_table_from_path(self.text_displays_path)
         # generate a table mapping from the display name to the json layout parameter file path
         self.text_display_name_to_json_file_path_table = self.text_json_paths_table_from_path(self.text_displays_path)
-
+        #TODO: Text for names duplicated between text displays and images.
 
 
     def image_names(self):
@@ -225,7 +225,7 @@ class StimBundle:
     def table_names(self):
         return self.table_name_to_excel_file_path_table.keys()
 
-    def text_displays_names(self):
+    def text_display_names(self):
         text_file_keys = self.text_display_name_to_file_path_table.keys()
         json_file_keys = self.text_display_name_to_json_file_path_table.keys()
         if set(text_file_keys) == set(json_file_keys):

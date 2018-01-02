@@ -61,6 +61,11 @@ shower.show("NeutralProbe", None, "SPACE_KEY")
 # E-Prime name: Probes2
 shower.show("Probes2", None, "SPACE_KEY")
 
+# E-Prime name: BlockInstruction
+text_subs = {'Instruction1':'Foo', 'Instruction2': 'Bar'}
+shower.show("BlockInstruction", None, "SPACE_KEY", text_subs)
+
+
 # TODO: This is the begining of the IFIS blocklist.
 
 
