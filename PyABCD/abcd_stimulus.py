@@ -5,6 +5,15 @@ import stim_bundle
 from psychopy import visual, core, monitors, iohub
 
 
+# TODO: Verify this converstion by comparing images
+# TODO: Verify that aliasing matches original E-Prime stimulus
+def points_to_pixels(points):
+    pixels_per_inch = 96.0
+    points_per_inch = 72.0
+    size_pixels = points / points_per_inch * pixels_per_inch
+    return size_pixels
+
+
 class Stimulus:
 
     """Abstracts up image and text stimuli into a common class"""
@@ -35,7 +44,17 @@ class Stimulus:
                 for key in text_subs:
                     key_str = '[' + key + ']'
                     self.text = self.text.replace(key_str, text_subs[key])
-            self.text_stim = visual.TextStim(window, text=self.text)
+            self.text_stim = visual.TextStim(window,
+                                             font=self.layout['font']['name'],
+                                             bold=self.layout['font']['bold'],
+                                             italic=self.layout['font']['italic'],
+                                             alignHoriz=self.layout['general']['align_horizontal'],
+                                             alignVert=self.layout['general']['align_vertical'],
+                                             color=self.layout['general']['forecolor'],
+                                             units='pix',
+                                             height=points_to_pixels(self.layout['font']['point_size']),
+                                             text=self.text)
+            #self.text_stim.setSize(self.layout['font']['point_size'])
             #TODO: Detect and warn if not all variables are used in either the text file or dictionary
         else:
             print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % name)
@@ -49,6 +68,8 @@ class Stimulus:
         elif self.text_stim:
             self.text_stim.draw()
         self.window.flip()
+
+
 
 
 
