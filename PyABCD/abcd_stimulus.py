@@ -1,6 +1,7 @@
 import sys
 import json
 import stim_bundle
+from abcd_text import *
 
 from psychopy import visual, core, monitors, iohub
 
@@ -22,7 +23,7 @@ class Stimulus:
         # retain arguments and init defaults
         self.window = window
         self.image_stim = None
-        self.text_stim = None
+        self.text_block = None
         self.raw_text = None
         self.layout = None
         self.path_to_image = None
@@ -44,17 +45,20 @@ class Stimulus:
                 for key in text_subs:
                     key_str = '[' + key + ']'
                     self.text = self.text.replace(key_str, text_subs[key])
-            self.text_stim = visual.TextStim(window,
-                                             font=self.layout['font']['name'],
-                                             bold=self.layout['font']['bold'],
-                                             italic=self.layout['font']['italic'],
-                                             alignHoriz=self.layout['general']['align_horizontal'],
-                                             alignVert=self.layout['general']['align_vertical'],
-                                             color=self.layout['general']['forecolor'],
-                                             units='pix',
-                                             height=points_to_pixels(self.layout['font']['point_size']),
-                                             text=self.text)
-            #self.text_stim.setSize(self.layout['font']['point_size'])
+            # self.text_stim = visual.TextStim(window,
+            #                                  font=self.layout['font']['name'],
+            #                                  bold=self.layout['font']['bold'],
+            #                                  italic=self.layout['font']['italic'],
+            #                                  alignHoriz=self.layout['general']['align_horizontal'],
+            #                                  alignVert=self.layout['general']['align_vertical'],
+            #                                  color=self.layout['general']['forecolor'],
+            #                                  units='pix',
+            #                                  height=points_to_pixels(self.layout['font']['point_size']),
+            #                                  text=self.text)
+            font_size_pixels = points_to_pixels(self.layout['font']['point_size'])
+            self.text_block = TextBlock(window, self.text, self.layout['font']['name'], font_size_pixels)
+            #TODO: Communicated all parameters in the json text format file to the TextBlock init.
+            self.text_block.format()
             #TODO: Detect and warn if not all variables are used in either the text file or dictionary
         else:
             print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % name)
@@ -65,8 +69,8 @@ class Stimulus:
         # Conditionally draw either the image or text stimulus then buffer flip
         if self.image_stim:
             self.image_stim.draw()
-        elif self.text_stim:
-            self.text_stim.draw()
+        elif self.text_block:
+            self.text_block.draw()
         self.window.flip()
 
 
