@@ -62,10 +62,11 @@ shower.show("NeutralProbe", None, "SPACE_KEY")
 shower.show("Probes2", None, "SPACE_KEY")
 
 # E-Prime name: BlockInstruction
-
-text_subs = {'Instruction1':'Foo', 'Instruction2': 'Bar'}
-shower.show("BlockInstruction", None, "SPACE_KEY", text_subs)
-
+for i in range(1,timing_block_table.num_rows+1):
+    instruction_1 = timing_block_table.cell_value("Instruction1", i)
+    instruction_2 = timing_block_table.cell_value("Instruction2", i)
+    text_subs = {'Instruction1':instruction_1, 'Instruction2': instruction_2}
+    shower.show("BlockInstruction", None, "SPACE_KEY", text_subs)
 
 # TODO: This is the begining of the IFIS blocklist.
 

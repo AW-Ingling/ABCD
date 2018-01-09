@@ -9,14 +9,16 @@
 # https://stackoverflow.com/questions/42843830/how-to-stop-reading-a-spreadsheet-with-xlrd-at-the-first-empty-row
 
 import os
+import sys
 import xlrd
 import stim_bundle
 
 class AbcdTable:
 
-    def __init__(self, stim_bundle, abcd_table_name):
+    def __init__(self, stim_bundle, table_name):
         # drill down from the file name to get the sheet object
-        self.excel_file_path = stim_bundle.excel_file_path_for_table_name(abcd_table_name)
+        self.table_name = table_name
+        self.excel_file_path = stim_bundle.excel_file_path_for_table_name(table_name)
         book = xlrd.open_workbook(self.excel_file_path)
         self.sheet = book.sheet_by_index(0)
         # declare instance variables set elsewhere, in load_sheet()
@@ -44,7 +46,7 @@ class AbcdTable:
             self.table[column_name] = []
         # iterate down each row adding elements to each name index's list
         for column_name in self.field_map:
-            steps = range(self.first_data_row_index, self.last_data_row_index)
+            steps = range(self.first_data_row_index, self.last_data_row_index+1)
             self.num_rows = len(steps)
             for row in steps:
                 self.table[column_name].append(self.sheet.cell(row, self.field_map[column_name]).value)
@@ -93,6 +95,23 @@ class AbcdTable:
             for value in self.table[key]:
                 txt += "\t%s\n" % value
         return txt
+
+    def cell_value(self, column_name, row_id):
+        # Find the row index of the specified row_id in the table's "ID" column
+        indices_of_id = [index for index, value in enumerate(self.table["ID"]) if value == row_id]
+        if len(indices_of_id) < 1:
+            print("Error: Unrecognized table cell row id for table %s, column %s, row id %s\n") % \
+                 (self.table_name, column_name, str(row_id))
+            sys.exit()
+        if len(indices_of_id) < 1:
+            print("Error: Multiple table cell row ids for table %s, column %s, row id %s\n") % \
+                 (self.table_name, column_name, str(row_id))
+            sys.exit()
+        # Return the item at the specified row_id's row index and in the specified column
+        return self.table[column_name][indices_of_id[0]]
+
+
+
 
 
 
