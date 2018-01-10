@@ -126,12 +126,16 @@ class StimRecord:
         return self.stop_secs - self.start_secs
 
     @property
-    def response_secs(self):
+    def keypress_delay_secs(self):
         """float: delay in seconds between stimulus presentation and keypress or None iff timeout."""
         if self.key_secs:
             return self.key_secs - self.start_secs
         else:
             return None
+
+    @property
+    def was_keypress_before_timeout(self):
+        return self.key_down_key is not None and self.key_down_time is not None
 
     def __str__(self):
         txt = ""
@@ -142,10 +146,10 @@ class StimRecord:
         txt += "gotten_key: %s\n" % key_name_for_char(self.gotten_key)
         txt += "start_secs: %f\n" % self.start_secs
         txt += "stop_secs: %f\n" % self.stop_secs
-        txt += "key_secs: %f\n" % self.key_secs
+        txt += "key_secs: %s\n" % str(self.key_secs)
         txt += "blank_rgb: %s\n" % str(self.blank_rgb)
         txt += "stimulus_duration_secs: %f\n" % self.stimulus_duration_secs
-        txt += "response_secs: %f\n" % self.response_secs
+        txt += "keypress_delay_secs: %f\n" % self.keypress_delay_secs
         return txt
 
 
@@ -205,7 +209,7 @@ class Show:
         #self.image_stim.draw()
         #self.window.flip()
         start_secs = core.getTime()
-        while not key_down or timeout_flag:
+        while not key_down and not timeout_flag:
             key_down = get_keydown(self.keyboard, self.filter_in_keys)
             end_time_secs = core.getTime()
             elapsed_time_secs = end_time_secs - start_secs
@@ -215,8 +219,14 @@ class Show:
         #TODO: Draw a blank screen or the next frame here?
         stop_secs= core.getTime()
         stim_index = self.__class__.new_stimulus_index()
-        stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys, key_down[0],
-                                 start_secs, stop_secs, key_down[1])
+        if timeout_flag:
+            key_down_key = None
+            key_down_time = None
+        else:
+            key_down_key = key_down[0]
+            key_down_time = key_down[1]
+        stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys, key_down_key,
+                                 start_secs, stop_secs, key_down_time)
         return stim_record
 
 
@@ -228,10 +238,16 @@ class ShowMaker:
         self.stim_bundle = stim_bundle
         self.stim_records = []
 
-    def show(self, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None):
+    def show(self, stimulus_name, timeout_secs, filter_in_key_names=[], text_subs=None):
         shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs)
         result_record = shower.show()
         self.stim_records.append(result_record)
+        return result_record
+
+    def show_file(self, file_name, timeout_secs, filter_in_key_names=[], text_subs=None):
+        stimulus_name = os.path.splitext(file_name)[0]
+        result_record = self.show(stimulus_name, timeout_secs, filter_in_key_names, text_subs)
+        return result_record
 
     def setup(self):
         if self.window is None:
