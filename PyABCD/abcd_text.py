@@ -61,7 +61,8 @@ class PositionedLine:
                                          color='Black',
                                          units='pix',
                                          height=font_height_pixels,
-                                         text=self.text)
+                                         text=self.text,
+                                         wrapWidth = self.window_size[0])
 
     @property
     def width_pixels(self):

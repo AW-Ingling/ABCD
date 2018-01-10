@@ -126,10 +126,10 @@ class StimRecord:
         return self.stop_secs - self.start_secs
 
     @property
-    def keypress_delay_secs(self):
+    def first_keydown_delay_secs(self):
         """float: delay in seconds between stimulus presentation and keypress or None iff timeout."""
-        if self.key_secs:
-            return self.key_secs - self.start_secs
+        if self.key_downs:
+            return self.key_downs[0][1] - self.start_secs # It's full of nones', only store keydowns when there is one
         else:
             return None
 
@@ -152,7 +152,7 @@ class StimRecord:
         txt += "did_timeout %s\n" % self.did_timeout
         txt += "blank_rgb: %s\n" % str(self.blank_rgb)
         txt += "stimulus_duration_secs: %f\n" % self.stimulus_duration_secs
-        txt += "keypress_delay_secs: %f\n" % self.keypress_delay_secs
+        txt += "first_keydown_delay_secs: %s\n" % self.first_keydown_delay_secs
         return txt
 
 
@@ -216,7 +216,8 @@ class Show:
         key_downs = []
         while not key_down and not timeout_flag:
             key_down = get_keydown(self.keyboard, self.filter_in_keys)
-            key_downs.append(key_down)
+            if(key_down):
+                key_downs.append(key_down)
             elapsed_time_secs = core.getTime() - start_secs
             timeout_flag = self.is_timeout_mode() and elapsed_time_secs > self.timeout_secs
             if not key_down and not timeout_flag:
