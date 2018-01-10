@@ -64,13 +64,17 @@ class Stimulus:
             print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % name)
             sys.exit()
 
-
     def draw_flip(self):
         # Conditionally draw either the image or text stimulus then buffer flip
         if self.image_stim:
             self.image_stim.draw()
         elif self.text_block:
             self.text_block.draw()
+        self.window.flip()
+
+    def clear_flip(self):
+        # Clear the window and flip
+        self.window.clearBuffer()
         self.window.flip()
 
 

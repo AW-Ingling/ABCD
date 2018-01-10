@@ -97,7 +97,7 @@ class StimRecord:
 
     """
 
-    def __init__(self, stim_index, stimulus_name, timeout_secs, filter_in_keys, gotten_key, start_secs, stop_secs, key_secs):
+    def __init__(self, stim_index, stimulus_name, timeout_secs, filter_in_keys, start_secs, stop_secs, did_timeout, key_downs):
         """Init an instance of StimRecord with arguments for all properties except those derived by accessors.
 
         Args:
@@ -115,10 +115,10 @@ class StimRecord:
         self.stimulus_name = stimulus_name
         self.timeout_secs = timeout_secs
         self.filter_in_keys = filter_in_keys
-        self.gotten_key = gotten_key
         self.start_secs = start_secs
         self.stop_secs = stop_secs
-        self.key_secs = key_secs
+        self.did_timeout = did_timeout
+        self.key_downs = key_downs
         self.blank_rgb = [127, 127, 127]
 
     @property
@@ -134,8 +134,12 @@ class StimRecord:
             return None
 
     @property
-    def was_keypress_before_timeout(self):
-        return self.key_down_key is not None and self.key_down_time is not None
+    def is_timeout_enabled(self):
+        return self.timeout_secs is not None
+
+    @property
+    def was_key_pressed(self):
+        return bool(self.key_downs)
 
     def __str__(self):
         txt = ""
@@ -143,10 +147,9 @@ class StimRecord:
         txt += "stimulus_name: %s\n" % self.stimulus_name
         txt += "timeout_secs: %s\n" % str(self.timeout_secs)  # convert to string for case None
         txt += "filter_in_keys: %s\n" % str([key_name_for_char(key_char) for key_char in self.filter_in_keys])
-        txt += "gotten_key: %s\n" % key_name_for_char(self.gotten_key)
         txt += "start_secs: %f\n" % self.start_secs
         txt += "stop_secs: %f\n" % self.stop_secs
-        txt += "key_secs: %s\n" % str(self.key_secs)
+        txt += "did_timeout %s\n" % self.did_timeout
         txt += "blank_rgb: %s\n" % str(self.blank_rgb)
         txt += "stimulus_duration_secs: %f\n" % self.stimulus_duration_secs
         txt += "keypress_delay_secs: %f\n" % self.keypress_delay_secs
@@ -201,32 +204,29 @@ class Show:
         #self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
         self.stimulus = Stimulus(self.stim_bundle, self.window, self.stimulus_name, self.text_subs)
 
+    def is_timeout_mode(self):
+        return self.timeout_secs is not None
+
     def show(self):
         key_down = False
         timeout_flag = False
         self.io.clearEvents()
         self.stimulus.draw_flip()
-        #self.image_stim.draw()
-        #self.window.flip()
         start_secs = core.getTime()
+        key_downs = []
         while not key_down and not timeout_flag:
             key_down = get_keydown(self.keyboard, self.filter_in_keys)
-            end_time_secs = core.getTime()
-            elapsed_time_secs = end_time_secs - start_secs
-            timeout_flag = self.timeout_secs and elapsed_time_secs > self.timeout_secs
-            if not timeout_flag or key_down:
+            key_downs.append(key_down)
+            elapsed_time_secs = core.getTime() - start_secs
+            timeout_flag = self.is_timeout_mode() and elapsed_time_secs > self.timeout_secs
+            if not key_down and not timeout_flag:
                 core.wait(polling_loop_period_secs)
         #TODO: Draw a blank screen or the next frame here?
-        stop_secs= core.getTime()
+        self.stimulus.clear_flip()
+        stop_secs = core.getTime()
         stim_index = self.__class__.new_stimulus_index()
-        if timeout_flag:
-            key_down_key = None
-            key_down_time = None
-        else:
-            key_down_key = key_down[0]
-            key_down_time = key_down[1]
-        stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys, key_down_key,
-                                 start_secs, stop_secs, key_down_time)
+        stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys,
+                                 start_secs, stop_secs, timeout_flag, key_downs)
         return stim_record
 
 

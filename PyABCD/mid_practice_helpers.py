@@ -73,17 +73,21 @@ def result_inline(tbl_condition, prbacc_flag):
 #
 #End If
 
-def check_response_inline(anticipation_keypress_delay, probe_keypress_delay):
+def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
 
     response_check = None
     prbacc = None
 
-    if anticipation_keypress_delay:
+    if anticipation_keypress_flag:
         response_text = "You pressed too soon!"
         prbacc = 0
-    elif probe_keypress_delay:
+    elif probe_keypress_flag:
         response_text = "ResponseCheck", "Correct Response!"
         prbacc = 1
     else:
         response_text = "You pressed too slow!"
         prbacc = 0
+
+    return response_text, prbacc
+
+

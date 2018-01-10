@@ -1,6 +1,7 @@
 
 from abcd_show import *
 from abcd_table import *
+from mid_practice_helpers import *
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
 
@@ -86,8 +87,8 @@ for trial_type_index in range(0,timing_block_table.num_rows):
     # TODO: Fix the cell_value function so that it accepts in index instead of ID
     instruction_1 = timing_block_table.cell_value("Instruction1", trial_type_index + 1)
     instruction_2 = timing_block_table.cell_value("Instruction2", trial_type_index + 1)
-    text_subs = {'Instruction1':instruction_1, 'Instruction2': instruction_2}
-    shower.show("BlockInstruction", None, "SPACE_KEY", text_subs)
+    text_subs_block_instr = {'Instruction1':instruction_1, 'Instruction2': instruction_2}
+    shower.show("BlockInstruction", None, "SPACE_KEY", text_subs_block_instr)
 
     # Show each trial type type two times
     trial_table = tables[timing_block_table.cell_value("ListName", trial_type_index + 1)]
@@ -102,9 +103,15 @@ for trial_type_index in range(0,timing_block_table.num_rows):
         stim_record_anticipation= shower.show("Anticipation", 2.0)
         # present the probe, the solid black shape for 350 msecs = 0.350 seconds
         stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
-        # check if the user met the deadline
-        # TODO: Verify that the response window is the same as the probe duration
-        met_dealine = stim_record.was_keypress_before_timeout
+        # lookup text strings according to trial state and response, generate dyanamic message
+        response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
+                                                      stim_record_probe.was_key_pressed)
+        tbl_condition = trial_table.cell_value("Condition", trial_index + 1)
+        result_text = result_inline(tbl_condition, prbacc_flag)
+        text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
+        shower.show("Feedback", None, "SPACE_KEY", text_subs_feedback)
+        # TODO: Verify that the response window duration should be same same as the probe duration
+
 
 
 

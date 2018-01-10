@@ -1,0 +1,27 @@
+{ "version": 1.0,
+  "file_type": "abcd_text_layout",
+  "font": {
+    "name": "verdana",
+    "point_size": 18,
+    "bold": false,
+    "italic": false,
+    "underline": false,
+    "strikeout": false
+  },
+  "general": {
+    "align_horizontal": "center",
+    "align_vertical": "center",
+    "forecolor": "black",
+    "backcolor": "gray",
+    "backstyle": "opaque",
+    "wordwrap": true
+  },
+  "frame": {
+    "width_percent": 100,
+    "heigh_percent": 100,
+    "x": "center",
+    "y": "center",
+    "x_align": "center",
+    "y_align": "center"
+  }
+}
