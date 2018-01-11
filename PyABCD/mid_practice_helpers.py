@@ -82,7 +82,7 @@ def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
         response_text = "You pressed too soon!"
         prbacc = 0
     elif probe_keypress_flag:
-        response_text = "ResponseCheck", "Correct Response!"
+        response_text = "Correct Response!"
         prbacc = 1
     else:
         response_text = "You pressed too slow!"

@@ -1,5 +1,6 @@
 
 # TODO
+# - Check what is supposed to happen when the user presses late.  Now, it appears to skip the conclusion statement.
 # - Fix the text width for the message, it wraps
 # - Fix the response, it says that a key has been pressed.
 # - Fix the thing which takes down puts up a blank screen when the stimulus end.  Maybe not do that or pass a flag.

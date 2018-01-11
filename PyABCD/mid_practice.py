@@ -100,7 +100,7 @@ for trial_type_index in range(0,timing_block_table.num_rows):
         shower.show_file(cue_file_name, 2.0)
         # present the crosshairs for 2000 msecs = 2 seconds
         #TODO: Record key presses and return them even if non are filtered int
-        stim_record_anticipation= shower.show("Anticipation", 2.0)
+        stim_record_anticipation= shower.show("Anticipation", 2.0, "SPACE_KEY")
         # present the probe, the solid black shape for 350 msecs = 0.350 seconds
         stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
         # lookup text strings according to trial state and response, generate dyanamic message
@@ -116,15 +116,6 @@ for trial_type_index in range(0,timing_block_table.num_rows):
 
 
 # TODO: This is the begining of the IFIS blocklist.
-
-
-
-
-
-
-
-
-
 
 
 
