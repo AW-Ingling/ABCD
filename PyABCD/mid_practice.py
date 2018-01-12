@@ -15,9 +15,10 @@ probe_duration = INITIAL_PROBE_DURATION
 # Get the stimulus bundle object which manages stimulus images, tables and text files for the project
 stim_bundle = StimBundle("mid_practice")
 
-# Load tables
+# Load tables for first training loop
+
 # TODO: Just load these int a dictionary at once
-timing_block_table = AbcdTable(stim_bundle, "TimingBlockList")
+ifis_block_table = AbcdTable(stim_bundle, "IFISBlockList")
 lose_big_table = AbcdTable(stim_bundle, "LoseBig")
 lose_small_table = AbcdTable(stim_bundle, "LoseSmall")
 neutral_table = AbcdTable(stim_bundle, "Neutral")
@@ -30,6 +31,12 @@ tables = {"LoseBig": lose_big_table,
           "Neutral": neutral_table,
           "WinBig": win_big_table,
           "WinSmall": win_small_table}
+
+# Load tables for the second training loop
+# E-Prime name: TimingBlockList
+timing_block_table = AbcdTable(stim_bundle, "TimingBlockList")
+period_list_table = AbcdTable(stim_bundle, "PeriodListTiming")
+run_list_table = AbcdTable(stim_bundle, "RunListTiming")
 
 
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
@@ -81,17 +88,17 @@ shower.show("NeutralProbe", None, "SPACE_KEY")
 shower.show("Probes2", None, "SPACE_KEY")
 
 # E-Prime name: BlockInstruction
-for trial_type_index in range(0,timing_block_table.num_rows):
+for trial_type_index in range(0, ifis_block_table.num_rows):
 
     # Give the user the instructions for one of the five practice trial types
     # TODO: Fix the cell_value function so that it accepts in index instead of ID
-    instruction_1 = timing_block_table.cell_value("Instruction1", trial_type_index + 1)
-    instruction_2 = timing_block_table.cell_value("Instruction2", trial_type_index + 1)
+    instruction_1 = ifis_block_table.cell_value("Instruction1", trial_type_index + 1)
+    instruction_2 = ifis_block_table.cell_value("Instruction2", trial_type_index + 1)
     text_subs_block_instr = {'Instruction1':instruction_1, 'Instruction2': instruction_2}
     shower.show("BlockInstruction", None, "SPACE_KEY", text_subs_block_instr)
 
     # Show each trial type type two times
-    trial_table = tables[timing_block_table.cell_value("ListName", trial_type_index + 1)]
+    trial_table = tables[ifis_block_table.cell_value("ListName", trial_type_index + 1)]
     for trial_index in range(0,trial_table.num_rows):
         # dynamically reference file names for this trials stimuli
         cue_file_name = trial_table.cell_value("Cue", trial_index + 1)
@@ -112,10 +119,41 @@ for trial_type_index in range(0,timing_block_table.num_rows):
         shower.show("Feedback", None, "SPACE_KEY", text_subs_feedback)
         # TODO: Verify that the response window duration should be same same as the probe duration
 
+# E-Prime name: PartOneEndText
+shower.show("PartOneEndText", None, "SPACE_KEY")
 
+# Begin the TimingBlockList training loop.
+for procedure_index in range(0, timing_block_table.num_rows):
 
+    # fetch the procdure name from the table
+    procedure_name = timing_block_table.cell_value("Procedure", procedure_index + 1)
 
-# TODO: This is the begining of the IFIS blocklist.
+    # E-Prime name: BlockInstructionsTiming
+    shower.show("BlockInstructionsTiming", None, "SPACE_KEY")
+
+    for period_index in range(0, period_list_table.num_rows):
+
+        # E-prime name: PrepTime
+        shower.show("PrepTime", 5)
+
+        for run_list_index in range(0, run_list_table.num_rows):
+
+            # E-Prime name: Cue
+            cue_file_name = run_list_table.cell_value("Cue", run_list_index + 1)
+            shower.show_file(cue_file_name, 2.0)
+
+            # E-Prime name: Anticipation
+            stim_record_anticipation = shower.show("Anticipation", 2.0, "SPACE_KEY")
+
+            # E-Prime name: Probe
+            #TODO: Find the "Allowed" variable in E-Prime which specifies which keys are allowed
+            probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
+            stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+
+            # lookup text strings according to trial state and response, generate dyanamic message
+            response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
+                                                               stim_record_probe.was_key_pressed)
+
 
 
 

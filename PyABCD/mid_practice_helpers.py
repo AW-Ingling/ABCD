@@ -57,21 +57,22 @@ def result_inline(tbl_condition, prbacc_flag):
 
 
 # Code from E-prime "CheckResponse" inline in ABCD_MID_Practice:
-#
-#If Len(Anticipation.RESP) > 0 Then
+
+#  If Len(Anticipation.RESP) > 0 Then
 # 	c.SetAttrib "ResponseCheck", "You pressed too soon!"
-#	c.SetAttrib "prbacc", 0
+# 	c.SetAttrib "prbacc", 0
 #
-#ElseIf Len(Probe.RESP) > 0 Then
+# ElseIf Len(Probe.RESP) > 0 Then
 #
-#	c.SetAttrib "ResponseCheck", "Correct Response!"
-#	c.SetAttrib "prbacc", 1
+# 	c.SetAttrib "ResponseCheck", "Correct Response!"
+# 	c.SetAttrib "prbacc", 1
 #
-#Else
-#	c.SetAttrib "ResponseCheck", "You pressed too slow!"
-#	c.SetAttrib "prbacc", 0
+# Else
+# 	c.SetAttrib "ResponseCheck", "You pressed too slow!"
+# 	c.SetAttrib "prbacc", 0
 #
-#End If
+# End If
+
 
 def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
 
