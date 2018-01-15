@@ -150,19 +150,27 @@ for procedure_index in range(0, timing_block_table.num_rows):
             probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
             stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
 
+            # E-Prime name: CheckResponse
             # lookup text strings according to trial state and response, generate dyanamic message
             response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
                                                                stim_record_probe.was_key_pressed)
 
+            # E-Prime name: AddRT
 
+            # E-Prime name: Result
+            # Lookup the "Condition" key value then use that value to get the result text
+            tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
+            result_text = result_inline(tbl_condition, prbacc_flag)
 
+            # E-Prime name: Feedback
+            text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
+            shower.show("Feedback", None, "SPACE_KEY", text_subs_feedback)
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()
 
 # Print the raw fields from the records
 shower.print_records()
-
 
 # Open the window for the stimuli
 #w = open_stimulus_window()
