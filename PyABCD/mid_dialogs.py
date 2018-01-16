@@ -16,7 +16,7 @@ class AskSubjectID:
     def run(self):
         input_data = self.dlg.show()
         if self.dlg.OK:
-            return {"subject_id": input_data[0]}
+            return {"subject_id": str(input_data[0])}
         else:
             return None
 
@@ -114,7 +114,7 @@ class CancelOrContinue:
         return self.dlg.OK
 
 
-def get_inputs():
+def get_inputs(file_exists_checker):
     while True:
         table = {}
         # get the subject ID
@@ -140,7 +140,29 @@ def get_inputs():
             if not do_continue:
                 return None
         else:
+            break
+    # check if the file already exists and warn accordingly
+    exists, file_name = file_exists_checker(table['subject_id'], table['session_number'])
+    table.update({'file_name' : file_name})
+    if exists:
+        do_overwrite = WarnExistingFile(file_name).run()
+        if do_overwrite:
             return table
+        else:
+            return None
+    return table
+
+
+def yes_file_exists_dummy(subject_id, session_number):
+    return True, subject_id + "_" + str(session_number)
+
+
+def no_file_exists_dummy(subject_id, session_number):
+    return False, subject_id + "_" + str(session_number)
+
+
+
+
 
 
 
