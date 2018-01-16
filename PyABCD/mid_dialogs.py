@@ -79,6 +79,74 @@ class AskHandedness:
             return None
 
 
+class WarnExistingFile:
+
+    def __init__(self, file_name):
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ')
+        self.dlg.addText("The data file and/or recovery file already exists: %s" % file_name)
+        self.dlg.addText("Do you want to overwrite?")
+
+    def run(self):
+        self.dlg.show()
+        return self.dlg.OK
+
+
+class SummaryStartup:
+
+    def __init__(self, inputs_table):
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ')
+        self.dlg.addText("NARGUID: %s" % inputs_table['subject_id'])
+        self.dlg.addText("Session: %s" % inputs_table['session_number'])
+        self.dlg.addText("Handedness: %s" % inputs_table['handedness'])
+        self.dlg.addText("Continue with above setup info?")
+
+    def run(self):
+        self.dlg.show()
+        return self.dlg.OK
+
+
+class CancelOrContinue:
+    def __init__(self):
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Continue ', labelButtonCancel=u' Cancel ')
+
+    def run(self):
+        self.dlg.show()
+        return self.dlg.OK
+
+
+def get_inputs():
+    while True:
+        table = {}
+        # get the subject ID
+        subject_id = AskSubjectID().run()
+        if subject_id is None:
+            return None
+        table.update(subject_id)
+        # get the session number
+        session_number = AskSessionNumber().run()
+        if session_number is None:
+            return None
+        table.update(session_number)
+        # get the handedness
+        handedness = AskHandedness().run()
+        if handedness is None:
+            return None
+        table.update(handedness)
+        # show the summary and query to accept it
+        accept = SummaryStartup(table).run()
+        # ask to quit if not accepted
+        if not accept:
+            do_continue = CancelOrContinue().run()
+            if not do_continue:
+                return None
+        else:
+            return table
+
+
+
+
+
+
 
 
 
