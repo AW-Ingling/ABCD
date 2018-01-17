@@ -170,6 +170,9 @@ for procedure_index in range(0, timing_block_table.num_rows):
             text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
             shower.show("Feedback", 1.650, [], text_subs_feedback)
 
+
+# E-Prime name
+
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()
 

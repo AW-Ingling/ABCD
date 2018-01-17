@@ -1,5 +1,7 @@
 
 # TODO
+
+# - Add the closing screens after the second training loop terminats
 # - Terminate practice loop early if the mean rt is greater than zero
 # - Check for the bug which bj sent
 # - Add ctrl-shift-alt "Would you like to abort the experiment" message.

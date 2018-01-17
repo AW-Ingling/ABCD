@@ -1,0 +1,29 @@
+
+
+- To use pip with selected python interpreter:
+"C:\Program Files (x86)\PsychoPy2\python.exe" -m pip install package
+This seems not to have the right permissions from the command line for the PyInstaller package so just use the PyCharm
+packager management tool instead.
+
+- PyInstaller instructions:
+https://pythonhosted.org/PyInstaller/installation.html#installing-in-windows
+It puts an exe under the Python/Scripts dir which needs to be added to the Windows path.
+
+- How to work PyInstaller:
+    pyinstaller.exe --onefile --windowed app.py
+
+- How to setup a windows icon which calls a python script
+    http://www.buechse.de/HOWTO/python_windows_with_arguments/
+
+- See cx_Freeze also:
+    https://anthony-tuininga.github.io/cx_Freeze/
+
+- Making stand-alones for PsychPy:
+    https://discourse.psychopy.org/t/how-to-build-exe-executible-on-windows/1103
+
+- How to import a file off of the python path
+    https://stackoverflow.com/questions/67631/how-to-import-a-module-given-the-full-path
+
+
+- TODO: Test that the problem is not that the python scripts are looking for a non-existant path
+
