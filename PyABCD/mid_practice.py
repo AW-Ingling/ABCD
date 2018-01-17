@@ -2,6 +2,7 @@
 from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
+from mid_dialogs import *
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
 
@@ -15,7 +16,7 @@ probe_duration = INITIAL_PROBE_DURATION
 # Get the stimulus bundle object which manages stimulus images, tables and text files for the project
 stim_bundle = StimBundle("mid_practice")
 
-# Load tables for first training loop
+# Load tables for the training loops
 
 # TODO: Just load these int a dictionary at once
 ifis_block_table = AbcdTable(stim_bundle, "IFISBlockList")
@@ -42,11 +43,14 @@ run_list_table = AbcdTable(stim_bundle, "RunListTiming")
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
 shower = ShowMaker(stim_bundle)
 
+# Get the operator input
+screen_index = get_target_screen_index()
+operator_table = get_inputs(no_file_exists_dummy, screen_index)
+if operator_table is None:
+    sys.exit()
+
 # Open the stimulus window, fire up the IOHub engine to read key presses
-shower.setup()
-
-# Display image/text stimuli, wait for keypresses, record timing and response into records
-
+screen_num = shower.setup()
 
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")
@@ -116,7 +120,7 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         tbl_condition = trial_table.cell_value("Condition", trial_index + 1)
         result_text = result_inline(tbl_condition, prbacc_flag)
         text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
-        shower.show("Feedback", None, "SPACE_KEY", text_subs_feedback)
+        shower.show("Feedback", 1.650, [], text_subs_feedback)
         # TODO: Verify that the response window duration should be same same as the probe duration
 
 # E-Prime name: PartOneEndText
@@ -164,7 +168,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
 
             # E-Prime name: Feedback
             text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
-            shower.show("Feedback", None, "SPACE_KEY", text_subs_feedback)
+            shower.show("Feedback", 1.650, [], text_subs_feedback)
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()

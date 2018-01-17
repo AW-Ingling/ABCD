@@ -255,6 +255,7 @@ class ShowMaker:
             self.window = open_stimulus_window()
             Show.setup()
             self.stim_records = []
+            return self.window.screen
         else:
             print("Error: Attempt to setup the ShowMaker when it is already setup.")
             sys.exit()

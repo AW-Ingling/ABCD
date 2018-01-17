@@ -7,7 +7,7 @@
 
 from psychopy import gui
 
-
+dialogs_screen_num = 0
 
 
 class AskSubjectID:
@@ -19,7 +19,7 @@ class AskSubjectID:
 
     def show_input_dialog(self):
         subject_id = "AANNNAAA"
-        dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ')
+        dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ', screen=dialogs_screen_num)
         dlg.addField("Please Enter the SubjectID", subject_id)
         raw_input = dlg.show()
         if dlg.OK:
@@ -29,7 +29,7 @@ class AskSubjectID:
 
     def check_input(self, input_id):
         if len(input_id) > 8:
-            dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ')
+            dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', screen=dialogs_screen_num)
             dlg.addText("Subject ID must be not be longer than 8 characters")
             dlg.show()
             return False
@@ -52,7 +52,10 @@ class AskSessionNumber:
         pass
 
     def show_input_dialog(self):
-        input_dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ')
+        input_dlg = gui.Dlg(title=u'E-Run',
+                            labelButtonOK=u' OK ',
+                            labelButtonCancel=u' Cancel ',
+                            screen=dialogs_screen_num)
         input_dlg.addField("Please enter the Session Number (0-32767)", 1)
         raw_input_data = input_dlg.show()
         if input_dlg.OK:
@@ -61,7 +64,7 @@ class AskSessionNumber:
             return None
 
     def check_input(self, input_value):
-        be_dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ')
+        be_dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', screen=dialogs_screen_num)
         is_error = False
         if type(input_value) is not int and type(input_value) is not long:
             be_dlg.addText("Please enter an integer value")
@@ -93,7 +96,10 @@ class AskSessionNumber:
 class AskHandedness:
 
     def __init__(self):
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ')
+        self.dlg = gui.Dlg(title=u'E-Run',
+                           labelButtonOK=u' OK ',
+                           labelButtonCancel=u' Cancel ',
+                           screen=dialogs_screen_num)
         self.dlg.addField("Enter Subject's Handedness", choices=["Right", "Left"])
 
     def run(self):
@@ -107,7 +113,7 @@ class AskHandedness:
 class WarnExistingFile:
 
     def __init__(self, file_name):
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ')
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
         self.dlg.addText("The data file and/or recovery file already exists: %s" % file_name)
         self.dlg.addText("Do you want to overwrite?")
 
@@ -119,7 +125,7 @@ class WarnExistingFile:
 class SummaryStartup:
 
     def __init__(self, inputs_table):
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ')
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
         self.dlg.addText("NARGUID: %s" % inputs_table['subject_id'])
         self.dlg.addText("Session: %s" % inputs_table['session_number'])
         self.dlg.addText("Handedness: %s" % inputs_table['handedness'])
@@ -132,7 +138,10 @@ class SummaryStartup:
 
 class CancelOrContinue:
     def __init__(self):
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Continue ', labelButtonCancel=u' Cancel ')
+        self.dlg = gui.Dlg(title=u'E-Run',
+                           labelButtonOK=u' Continue ',
+                           labelButtonCancel=u' Cancel ',
+                           screen=dialogs_screen_num)
 
     def run(self):
         self.dlg.show()
@@ -145,7 +154,9 @@ def make_output_filename(subject_id, session_number):
     return file_name
 
 
-def get_inputs(file_exists_checker):
+def get_inputs(file_exists_checker, screen_number):
+    global dialogs_screen_num
+    dialogs_screen_num = screen_number
     while True:
         table = {}
         # get the subject ID

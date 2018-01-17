@@ -108,6 +108,9 @@ print("Selected: %s." % target_screen.get_mode())
 
 #TODO Refactor all of this into a class
 
+def get_target_screen_index():
+    return target_screen_index
+
 def open_stimulus_window():
     global stimulus_window
     stimulus_window = visual.Window(screen=target_screen_index, fullscr=True, units='pix')

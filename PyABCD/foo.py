@@ -1,5 +1,7 @@
 
 # TODO
+# - Terminate practice loop early if the mean rt is greater than zero
+# - Check for the bug which bj sent
 # - Add ctrl-shift-alt "Would you like to abort the experiment" message.
 # - Check what is supposed to happen when the user presses late.  Now, it appears to skip the conclusion statement.
 # - Fix the text width for the message, it wraps
