@@ -1,24 +1,49 @@
 # mid_dialogs.py
 #
 # Displays dialogs for operator at beginning and end of the MID experiments
+#
+#
+#
 
 from psychopy import gui
+
+
+
 
 class AskSubjectID:
 
     #TODO: find out and implement what limits the E-Prime version places on inputs values.
 
     def __init__(self):
-        subject_id = "AANNNAAA"
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ')
-        self.dlg.addField("Please Enter the SubjectID", subject_id)
+        pass
 
-    def run(self):
-        input_data = self.dlg.show()
-        if self.dlg.OK:
-            return {"subject_id": str(input_data[0])}
+    def show_input_dialog(self):
+        subject_id = "AANNNAAA"
+        dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', labelButtonCancel=u' Cancel ')
+        dlg.addField("Please Enter the SubjectID", subject_id)
+        raw_input = dlg.show()
+        if dlg.OK:
+            return raw_input[0]
         else:
             return None
+
+    def check_input(self, input_id):
+        if len(input_id) > 8:
+            dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ')
+            dlg.addText("Subject ID must be not be longer than 8 characters")
+            dlg.show()
+            return False
+        return True
+
+    def run(self):
+        while True:
+            input_id = self.show_input_dialog()
+            if input_id is not None:
+                input_ok = self.check_input(input_id)
+                if input_ok:
+                    return {'subject_id':input_id}
+            else:
+                return None
 
 
 class AskSessionNumber:
@@ -114,6 +139,12 @@ class CancelOrContinue:
         return self.dlg.OK
 
 
+def make_output_filename(subject_id, session_number):
+
+    file_name = "ABCD_MID_Practice_20161209_" + subject_id + "-" + str(session_number) + ".txt"
+    return file_name
+
+
 def get_inputs(file_exists_checker):
     while True:
         table = {}
@@ -142,7 +173,8 @@ def get_inputs(file_exists_checker):
         else:
             break
     # check if the file already exists and warn accordingly
-    exists, file_name = file_exists_checker(table['subject_id'], table['session_number'])
+    file_name = make_output_filename(table['subject_id'], table['session_number'])
+    exists = file_exists_checker(file_name)
     table.update({'file_name' : file_name})
     if exists:
         do_overwrite = WarnExistingFile(file_name).run()
@@ -153,12 +185,14 @@ def get_inputs(file_exists_checker):
     return table
 
 
-def yes_file_exists_dummy(subject_id, session_number):
-    return True, subject_id + "_" + str(session_number)
 
 
-def no_file_exists_dummy(subject_id, session_number):
-    return False, subject_id + "_" + str(session_number)
+def yes_file_exists_dummy(file_name):
+    return True
+
+
+def no_file_exists_dummy(file_name):
+    return False
 
 
 
