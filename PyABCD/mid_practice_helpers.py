@@ -1,4 +1,5 @@
 
+import numpy
 
 # Code from E-prime "Result" inline in ABCD_MID_Practice:
 #
@@ -90,5 +91,48 @@ def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
         prbacc = 0
 
     return response_text, prbacc
+
+
+class EprimeSummation():
+
+    def __init__(self):
+        self.observations = []
+
+    def add_observation(self, obs):
+        self.observations.append(obs)
+
+    # We have to make sure that we use the variant of std() which matches the one used in E-Prime.  E-Basic provides two
+    # std functions, StdDevP and StdDevS but does not document which does what.  The convention outside fo E-Basic
+    # (see: https://support.office.com/en-us/article/stdev-stdevp-functions-90a8dbeb-3fd1-485f-9065-bb7b0cdda72e)is:
+    #
+    #  StDev  - Evaluates a population
+    #  StDevS - Evaluates a population sample
+    #
+    # Assuming E-Basic adhered to that convetion excpet for adding a "P" to "StDev", then
+    #
+    #  StDevP  - Evaluates a population
+    #  StDevS - Evaluates a population sample
+    #
+    # The the difference between the population and population sample calculations is the divisor for its mean
+    # calculation is:
+    #
+    # Population            -
+    # Population Sample     -
+    #
+    # https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.std.html
+
+
+
+    def std_dev(self):
+        obs_std = numpy.std(self.observations)
+        return obs_std
+
+    def mean(self):
+        obs_mean = numpy.mean(self.observations)
+        return obs_mean
+
+
+
+
 
 

@@ -171,7 +171,11 @@ for procedure_index in range(0, timing_block_table.num_rows):
             shower.show("Feedback", 1.650, [], text_subs_feedback)
 
 
-# E-Prime name
+# E-Prime name Goodbye
+shower.show("Goodbye", None, "SPACE_KEY")
+
+# E-Prime name DisplayPracticeRT
+#text_subs_rt = {"IntNewRT" : }
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()
