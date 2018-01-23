@@ -126,7 +126,8 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
 # E-Prime name: PartOneEndText
 shower.show("PartOneEndText", None, "SPACE_KEY")
 
-# Begin the TimingBlockList training loop.
+
+# Begin the TimingBlockList/BlocProcTiming list/procedure training loop.
 for procedure_index in range(0, timing_block_table.num_rows):
 
     # fetch the procdure name from the table
@@ -135,47 +136,59 @@ for procedure_index in range(0, timing_block_table.num_rows):
     # E-Prime name: BlockInstructionsTiming
     shower.show("BlockInstructionsTiming", None, "SPACE_KEY")
 
-    for period_index in range(0, period_list_table.num_rows):
+    # NOTE:  The PeriodListTiming table only specifies to run the two procedures under it only once each.
+    #        It is uncessary here becasue we can embed those under the same loop without referencing them in a table.
 
-        # E-prime name: PrepTime
-        shower.show("PrepTime", 5)
+    # E-prime name: PrepTime
+    shower.show("PrepTime", 5)
 
-        for run_list_index in range(0, run_list_table.num_rows):
+    # E-Prime name: InitRunVar
+    eprime_summation = EprimeSummation()
 
-            # E-Prime name: Cue
-            cue_file_name = run_list_table.cell_value("Cue", run_list_index + 1)
-            shower.show_file(cue_file_name, 2.0)
+    # E-Prime name: TrialProcTiming
+    for run_list_index in range(0, run_list_table.num_rows):
 
-            # E-Prime name: Anticipation
-            stim_record_anticipation = shower.show("Anticipation", 2.0, "SPACE_KEY")
+        # E-Prime name: Cue
+        cue_file_name = run_list_table.cell_value("Cue", run_list_index + 1)
+        shower.show_file(cue_file_name, 2.0)
 
-            # E-Prime name: Probe
-            #TODO: Find the "Allowed" variable in E-Prime which specifies which keys are allowed
-            probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
-            stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+        # E-Prime name: Anticipation
+        stim_record_anticipation = shower.show("Anticipation", 2.0, "SPACE_KEY")
 
-            # E-Prime name: CheckResponse
-            # lookup text strings according to trial state and response, generate dyanamic message
-            response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
-                                                               stim_record_probe.was_key_pressed)
+        # E-Prime name: Probe
+        probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
+        stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+        reaction_time = stim_record_probe.first_keydown_delay_secs
+        eprime_summation.add_observation(reaction_time)
 
-            # E-Prime name: AddRT
 
-            # E-Prime name: Result
-            # Lookup the "Condition" key value then use that value to get the result text
-            tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
-            result_text = result_inline(tbl_condition, prbacc_flag)
+        # E-Prime name: CheckResponse
+        # lookup text strings according to trial state and response, generate dynamic message
+        response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
+                                                           stim_record_probe.was_key_pressed)
 
-            # E-Prime name: Feedback
-            text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
-            shower.show("Feedback", 1.650, [], text_subs_feedback)
+        # E-Prime name: Result
+        # Lookup the "Condition" key value then use that value to get the result text
+        tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
+        result_text = result_inline(tbl_condition, prbacc_flag)
 
+        # E-Prime name: Feedback
+        text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
+        shower.show("Feedback", 1.650, [], text_subs_feedback)
+
+    # E-Prime name: CheckRT
+    mean_rt = eprime_summation.mean()
+    if mean_rt > 0:
+        break
 
 # E-Prime name Goodbye
 shower.show("Goodbye", None, "SPACE_KEY")
 
 # E-Prime name DisplayPracticeRT
-#text_subs_rt = {"IntNewRT" : }
+int_new_rt = eprime_summation.user_rt()
+text_subs_rt = {"IntNewRT" : str(int_new_rt)}
+shower.show("DisplayPracticeRT", None, "SPACE_KEY", text_subs_rt)
+
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
 shower.shutdown()

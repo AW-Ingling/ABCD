@@ -93,13 +93,15 @@ def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
     return response_text, prbacc
 
 
+# TODO: Verify this by comparing calculations in E-Prime and this function
 class EprimeSummation():
 
     def __init__(self):
         self.observations = []
 
     def add_observation(self, obs):
-        self.observations.append(obs)
+        if obs is not None and obs > 0.100:
+            self.observations.append(obs)
 
     # We have to make sure that we use the variant of std() which matches the one used in E-Prime.  E-Basic provides two
     # std functions, StdDevP and StdDevS but does not document which does what.  The convention outside fo E-Basic
@@ -108,7 +110,7 @@ class EprimeSummation():
     #  StDev  - Evaluates a population
     #  StDevS - Evaluates a population sample
     #
-    # Assuming E-Basic adhered to that convetion excpet for adding a "P" to "StDev", then
+    # Assuming E-Basic adhered to that convetion except for adding a "P" to "StDev", then
     #
     #  StDevP  - Evaluates a population
     #  StDevS - Evaluates a population sample
@@ -116,20 +118,35 @@ class EprimeSummation():
     # The the difference between the population and population sample calculations is the divisor for its mean
     # calculation is:
     #
-    # Population            -
-    # Population Sample     -
+    # Population            -  average is sum of differences / n
+    # Population Sample     -  average is sum of differences / n-1
     #
-    # https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.std.html
-
-
-
-    def std_dev(self):
-        obs_std = numpy.std(self.observations)
+    # (see https://statistics.laerd.com/statistical-guides/measures-of-spread-standard-deviation.php)
+    #
+    # The ABCD MID practice uses StdS, therefore we want the n-1, to get that in Python:
+    #
+    # np.std([sample_1, sample_2,...sample_n], ddof=1)
+    #
+    # (see https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.std.html)
+    #
+    def std_devs(self):
+        obs_std = numpy.std(self.observations, ddof=1)
         return obs_std
 
     def mean(self):
         obs_mean = numpy.mean(self.observations)
         return obs_mean
+
+    def user_rt(self):
+        rounded_user_rt = round(self.mean() + 2 * self.std_devs())
+        return rounded_user_rt
+
+
+
+
+
+
+
 
 
 

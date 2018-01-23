@@ -111,7 +111,7 @@ class TextBlock:
         # find the vertical offset of the text block and offset each line accordingly
         block_height_pixels = sum(line.height_pixels for line in self.positioned_lines)
         y_offset_pixels_temp = int(-block_height_pixels * 0.5)
-        for pline in self.positioned_lines:
+        for pline in self.positioned_lines[::-1]:
             y_offset_pixels_temp = pline.offset_y(y_offset_pixels_temp)
 
     def draw(self):

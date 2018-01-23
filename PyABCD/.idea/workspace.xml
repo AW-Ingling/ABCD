@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/abcd_stimulus.py" description="self.text = self.text.replace(key_str, text_subs[k..." line="46" />
-    <bookmark url="file://$PROJECT_DIR$/mid_practice.py" description="shower.show(&quot;Feedback&quot;, None, &quot;SPACE_KEY&quot;, text_su..." line="122" />
-    <bookmark url="file://$PROJECT_DIR$/mid_practice.py" description="for trial_procedure_index in range(0, .num_rows)" line="142" />
+    <bookmark url="file://$PROJECT_DIR$/mid_practice.py" description="eprime_summation.add_observation(reaction_time)" line="161" />
+    <bookmark url="file://$PROJECT_DIR$/abcd_text.py" description="for pline in self.positioned_lines[::-1]:" line="113" />
+    <bookmark url="file://$PROJECT_DIR$/mid_practice.py" description="int_new_rt = eprime_summation.user_rt()" line="187" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6aec4773-119f-486d-bb60-e06f4604d035" name="Default" comment="" />
@@ -22,11 +22,31 @@
       <file leaf-file-name="mid_practice.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mid_practice.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="751">
-              <caret line="183" column="22" lean-forward="true" selection-start-line="183" selection-start-column="22" selection-end-line="183" selection-end-column="22" />
+            <state relative-caret-position="877">
+              <caret line="191" column="0" lean-forward="true" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
               <folding>
                 <element signature="e#1#24#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="abcd_stimulus.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/abcd_stimulus.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="761">
+              <caret line="71" column="31" lean-forward="false" selection-start-line="71" selection-start-column="31" selection-end-line="71" selection-end-column="31" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="abcd_text.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/abcd_text.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="387">
+              <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -54,28 +74,8 @@
       <file leaf-file-name="mid_dialogs.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mid_dialogs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
+            <state relative-caret-position="-986">
               <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="interactiveshell.py" pinned="false" current-in-tab="false">
-        <entry file="file://C:/Program Files (x86)/PsychoPy2/Lib/site-packages/IPython/core/interactiveshell.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95744">
-              <caret line="2884" column="0" lean-forward="false" selection-start-line="2884" selection-start-column="0" selection-end-line="2884" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="abcd_table.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/abcd_table.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3638">
-              <caret line="110" column="0" lean-forward="false" selection-start-line="110" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -84,8 +84,8 @@
       <file leaf-file-name="mid_practice_helpers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mid_practice_helpers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="587">
-              <caret line="123" column="0" lean-forward="true" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+            <state relative-caret-position="414">
+              <caret line="139" column="8" lean-forward="false" selection-start-line="139" selection-start-column="8" selection-end-line="139" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -94,8 +94,8 @@
       <file leaf-file-name="todos.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/todos.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+            <state relative-caret-position="476">
+              <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -104,8 +104,8 @@
       <file leaf-file-name="abcd_show.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/abcd_show.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8534">
-              <caret line="254" column="33" lean-forward="false" selection-start-line="254" selection-start-column="33" selection-end-line="254" selection-end-column="33" />
+            <state relative-caret-position="863">
+              <caret line="204" column="28" lean-forward="true" selection-start-line="204" selection-start-column="28" selection-end-line="204" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -125,8 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>text_variables</find>
-      <find>Stimulus</find>
       <find>path_to_text_json_file</find>
       <find>units</find>
       <find>pixels</find>
@@ -155,6 +153,8 @@
       <find>filter_in_key_names</find>
       <find>target_screen_index</find>
       <find>&quot;Feedback&quot;</find>
+      <find>text_subs_rt</find>
+      <find>text_subs</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -169,24 +169,24 @@
         <option value="$PROJECT_DIR$/abcd_stimulus.py" />
         <option value="$PROJECT_DIR$/text_demo.py" />
         <option value="$PROJECT_DIR$/text_wrap_test.py" />
-        <option value="$PROJECT_DIR$/abcd_text.py" />
         <option value="$PROJECT_DIR$/mid_dialogs.py" />
         <option value="$PROJECT_DIR$/abcd_show.py" />
         <option value="$PROJECT_DIR$/abcd_window.py" />
         <option value="$PROJECT_DIR$/foo.py" />
         <option value="$PROJECT_DIR$/grating_test.py" />
         <option value="$PROJECT_DIR$/Notes.txt" />
-        <option value="$PROJECT_DIR$/todos.py" />
         <option value="$PROJECT_DIR$/mid_practice_helpers.py" />
         <option value="$PROJECT_DIR$/mid_practice.py" />
+        <option value="$PROJECT_DIR$/todos.py" />
+        <option value="$PROJECT_DIR$/abcd_text.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="692" />
-    <option name="y" value="341" />
-    <option name="width" value="2906" />
-    <option name="height" value="1632" />
+    <option name="x" value="79" />
+    <option name="y" value="78" />
+    <option name="width" value="3715" />
+    <option name="height" value="2016" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -363,18 +363,18 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="692" y="341" width="2906" height="1632" extended-state="0" />
+    <frame x="79" y="78" width="3715" height="2016" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26443663" sideWeight="0.47702205" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20580982" sideWeight="0.47402078" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34816942" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32735103" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3016169" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2960045" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.23315741" sideWeight="0.52297795" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20580982" sideWeight="0.5259792" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39626706" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -416,21 +416,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="46" />
+      <option name="time" value="47" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mid_practice.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding>
-            <element signature="e#1#24#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/text_demo.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="612">
@@ -477,9 +467,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
           <caret line="10" column="0" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#10#0" expanded="false" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -698,23 +686,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/abcd_text.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1904">
-          <caret line="56" column="30" lean-forward="false" selection-start-line="56" selection-start-column="30" selection-end-line="56" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/abcd_stimulus.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1394">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#10#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Program Files (x86)/PsychoPy2/Lib/site-packages/psychopy/iohub/client/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="9724">
@@ -738,26 +709,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/abcd_show.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8534">
-          <caret line="254" column="33" lean-forward="false" selection-start-line="254" selection-start-column="33" selection-end-line="254" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/abcd_window.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3706">
           <caret line="112" column="0" lean-forward="false" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mid_dialogs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -779,26 +734,66 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../StimulusSets/mid_practice/TextDisplays/DisplayPracticeRT.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/todos.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
+        <state relative-caret-position="476">
+          <caret line="14" column="0" lean-forward="true" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abcd_show.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="863">
+          <caret line="204" column="28" lean-forward="true" selection-start-line="204" selection-start-column="28" selection-end-line="204" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abcd_stimulus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="761">
+          <caret line="71" column="31" lean-forward="false" selection-start-line="71" selection-start-column="31" selection-end-line="71" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mid_dialogs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-986">
+          <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/abcd_text.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="387">
+          <caret line="113" column="0" lean-forward="false" selection-start-line="113" selection-start-column="0" selection-end-line="113" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mid_practice_helpers.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="587">
-          <caret line="123" column="0" lean-forward="true" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
+        <state relative-caret-position="414">
+          <caret line="139" column="8" lean-forward="false" selection-start-line="139" selection-start-column="8" selection-end-line="139" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mid_practice.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="751">
-          <caret line="183" column="22" lean-forward="true" selection-start-line="183" selection-start-column="22" selection-end-line="183" selection-end-column="22" />
+        <state relative-caret-position="877">
+          <caret line="191" column="0" lean-forward="true" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
           <folding>
             <element signature="e#1#24#0" expanded="true" />
           </folding>
