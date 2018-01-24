@@ -159,7 +159,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
         probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
         stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
         reaction_time = stim_record_probe.first_keydown_delay_secs
-        eprime_summation.add_observation(reaction_time)
+        eprime_summation.add_observation_secs(reaction_time)
 
 
         # E-Prime name: CheckResponse
@@ -177,7 +177,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
         shower.show("Feedback", 1.650, [], text_subs_feedback)
 
     # E-Prime name: CheckRT
-    mean_rt = eprime_summation.mean()
+    mean_rt = eprime_summation.mean_ms
     if mean_rt > 0:
         break
 
@@ -185,7 +185,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
 shower.show("Goodbye", None, "SPACE_KEY")
 
 # E-Prime name DisplayPracticeRT
-int_new_rt = eprime_summation.user_rt()
+int_new_rt = eprime_summation.user_rt_ms
 text_subs_rt = {"IntNewRT" : str(int_new_rt)}
 shower.show("DisplayPracticeRT", None, "SPACE_KEY", text_subs_rt)
 

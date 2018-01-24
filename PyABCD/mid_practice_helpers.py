@@ -97,20 +97,22 @@ def check_response_inline(anticipation_keypress_flag, probe_keypress_flag):
 class EprimeSummation():
 
     def __init__(self):
-        self.observations = []
+        self.observations_msecs = []
 
-    def add_observation(self, obs):
-        if obs is not None and obs > 0.100:
-            self.observations.append(obs)
+    def add_observation_secs(self, obs_secs):
+        if obs_secs is not None:
+            obs_ms = obs_secs * 1000.00
+            if obs_ms > 100.0:
+                self.observations_msecs.append(obs_ms)
 
     # We have to make sure that we use the variant of std() which matches the one used in E-Prime.  E-Basic provides two
-    # std functions, StdDevP and StdDevS but does not document which does what.  The convention outside fo E-Basic
+    # std functions, StdDevP and StdDevS but does not document which does what.  The convention outside of E-Basic
     # (see: https://support.office.com/en-us/article/stdev-stdevp-functions-90a8dbeb-3fd1-485f-9065-bb7b0cdda72e)is:
     #
     #  StDev  - Evaluates a population
     #  StDevS - Evaluates a population sample
     #
-    # Assuming E-Basic adhered to that convetion except for adding a "P" to "StDev", then
+    # Assuming E-Basic adhered to that convention except for adding a "P" to "StDev", then
     #
     #  StDevP  - Evaluates a population
     #  StDevS - Evaluates a population sample
@@ -129,16 +131,19 @@ class EprimeSummation():
     #
     # (see https://docs.scipy.org/doc/numpy-1.13.0/reference/generated/numpy.std.html)
     #
-    def std_devs(self):
-        obs_std = numpy.std(self.observations, ddof=1)
+    @property
+    def std_devs_ms(self):
+        obs_std = numpy.std(self.observations_msecs, ddof=1)
         return obs_std
 
-    def mean(self):
-        obs_mean = numpy.mean(self.observations)
+    @property
+    def mean_ms(self):
+        obs_mean = numpy.mean(self.observations_msecs)
         return obs_mean
 
-    def user_rt(self):
-        rounded_user_rt = round(self.mean() + 2 * self.std_devs())
+    @property
+    def user_rt_ms(self):
+        rounded_user_rt = round(self.std_devs_ms + 2 * self.std_devs_ms)
         return rounded_user_rt
 
 
