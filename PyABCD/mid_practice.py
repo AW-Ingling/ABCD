@@ -10,8 +10,9 @@ from mid_dialogs import *
 # SPACE_KEY
 
 # Duration for which the probe appears in seconds, defined in E-Prime GetVersionImages
-INITIAL_PROBE_DURATION = 0.350
-probe_duration = INITIAL_PROBE_DURATION
+INITIAL_PROBE_DURATION_SECS = 0.350
+INCREMENTED_PROBE_DURATION_SECS = 0.400
+probe_duration_secs = INITIAL_PROBE_DURATION_SECS
 
 # Get the stimulus bundle object which manages stimulus images, tables and text files for the project
 stim_bundle = StimBundle("mid_practice")
@@ -113,7 +114,7 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         #TODO: Record key presses and return them even if non are filtered int
         stim_record_anticipation= shower.show("Anticipation", 2.0, "SPACE_KEY")
         # present the probe, the solid black shape for 350 msecs = 0.350 seconds
-        stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
         # lookup text strings according to trial state and response, generate dyanamic message
         response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
                                                       stim_record_probe.was_key_pressed)
@@ -157,7 +158,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
 
         # E-Prime name: Probe
         probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
-        stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
         reaction_time = stim_record_probe.first_keydown_delay_secs
         eprime_summation.add_observation_secs(reaction_time)
 
@@ -180,6 +181,9 @@ for procedure_index in range(0, timing_block_table.num_rows):
     mean_rt = eprime_summation.mean_ms
     if mean_rt > 0:
         break
+    else:
+        probe_duration_secs = INCREMENTED_PROBE_DURATION_SECS
+
 
 # E-Prime name Goodbye
 shower.show("Goodbye", None, "SPACE_KEY")
