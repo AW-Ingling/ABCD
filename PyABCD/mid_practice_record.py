@@ -77,9 +77,22 @@ column_labels_text = ["ExperimentName",
                       "WinBig",
                       "WinSmall"]
 
+dummy_constant_columns = [ ("ExperimentName", "ABCD_MID_Practice_20161209"),
+                           ("Allowed", "{ANY}"),
+                           ("RuntimeCapabilities", "Professional")]
 
-record = AbcdRecord("C:\Users\Allen W. Ingling\Desktop", "test_mid_output", column_labels_text)
+
+class MidPracticeRecord(AbcdRecord):
+
+    def __init__(self, output_dir_path, file_name, column_labels_text, constant_columns_table):
+        super(MidPracticeRecord, self).__init__(output_dir_path, file_name, column_labels_text)
+        self.add_batch_constant_columns(constant_columns_table)
+
+
+
+record = MidPracticeRecord("C:\Users\Allen W. Ingling\Desktop", "test_mid_output", column_labels_text, dummy_constant_columns)
+record.add_new_row()
+record.add_new_row()
 record.save()
-
 
 

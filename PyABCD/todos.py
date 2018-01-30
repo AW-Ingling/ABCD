@@ -1,6 +1,7 @@
 
 # TODO
 
+# - make all base classes subclasses of object.
 # - Fix ms -> seconds units in output
 # - Fix text inversion
 # - Find out if we need to match CInt behaviour with round in the EprimeSummation class.
