@@ -150,7 +150,7 @@ class CancelOrContinue:
 
 def make_output_filename(subject_id, session_number):
 
-    file_name = "ABCD_MID_Practice_20161209_" + subject_id + "-" + str(session_number) + ".txt"
+    file_name = "ABCD_MID_Practice_20161209_" + subject_id + "-" + str(session_number)
     return file_name
 
 
