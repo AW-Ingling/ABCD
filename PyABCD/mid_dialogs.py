@@ -197,7 +197,6 @@ def get_inputs(file_exists_checker, screen_number):
 
 
 
-
 def yes_file_exists_dummy(file_name):
     return True
 

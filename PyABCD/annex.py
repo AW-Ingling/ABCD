@@ -5,6 +5,7 @@
 
 import itertools
 import string
+from psychopy import visual
 
 
 def letter_index_to_column_index(letter_index):

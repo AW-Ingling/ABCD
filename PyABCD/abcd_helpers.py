@@ -47,6 +47,13 @@ def find_duplicates(a_list):
     return list(seen2)
 
 
+def secs_to_msecs(time_secs):
+    if time_secs is None:
+        return 0
+    else:
+        return int(round(time_secs * 1000))
+
+
 
 
 

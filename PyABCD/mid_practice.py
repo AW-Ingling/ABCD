@@ -3,8 +3,10 @@ from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
 from mid_dialogs import *
+import mid_practice_record
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
+
 
 # KEY name variables resolved at runtime:
 # SPACE_KEY
@@ -46,9 +48,12 @@ shower = ShowMaker(stim_bundle)
 
 # Get the operator input
 screen_index = get_target_screen_index()
-operator_table = get_inputs(no_file_exists_dummy, screen_index)
+operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name)[1], screen_index)
 if operator_table is None:
     sys.exit()
+
+# Create the data output spreadsheet
+output_record = mid_practice_record.MidPracticeRecord(stim_bundle.data_dir_path, operator_table['file_name'])
 
 # Open the stimulus window, fire up the IOHub engine to read key presses
 screen_num = shower.setup()
@@ -105,16 +110,27 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
     # Show each trial type type two times
     trial_table = tables[ifis_block_table.cell_value("ListName", trial_type_index + 1)]
     for trial_index in range(0,trial_table.num_rows):
+
+        # add a new row to the output table and fill in some values
+        output_record.add_new_row()
+        output_record.add_cell_value_to_row("ProbeDuration", secs_to_msecs(probe_duration_secs))
+        output_record.add_cell_value_to_rows(mid_practice_record.first_trails_nulls, "NULL")
+
         # dynamically reference file names for this trials stimuli
         cue_file_name = trial_table.cell_value("Cue", trial_index + 1)
         probe_file_name = trial_table.cell_value("Probe", trial_index + 1)
+
         # present the cue, the colored shape stating reward value,  for 2000 msecs = 2 seconds
         shower.show_file(cue_file_name, 2.0)
+
         # present the crosshairs for 2000 msecs = 2 seconds
         #TODO: Record key presses and return them even if non are filtered int
         stim_record_anticipation= shower.show("Anticipation", 2.0, "SPACE_KEY")
+
         # present the probe, the solid black shape for 350 msecs = 0.350 seconds
         stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
+        reaction_time = stim_record_probe.first_keydown_delay_secs
+
         # lookup text strings according to trial state and response, generate dyanamic message
         response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
                                                       stim_record_probe.was_key_pressed)
@@ -123,6 +139,13 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
         # TODO: Verify that the response window duration should be same same as the probe duration
+
+        # Write the response time to the output record
+        output_record.add_cell_value_to_row("Probe.RT", secs_to_msecs(reaction_time))
+
+        # write the response check and result check messages to the output record
+        output_record.add_cell_value_to_row("ResponseCheck", response_text)
+        output_record.add_cell_value_to_row("Result", result_text)
 
 # E-Prime name: PartOneEndText
 shower.show("PartOneEndText", None, "SPACE_KEY")
@@ -149,6 +172,11 @@ for procedure_index in range(0, timing_block_table.num_rows):
     # E-Prime name: TrialProcTiming
     for run_list_index in range(0, run_list_table.num_rows):
 
+        # add a new row to the output table
+        output_record.add_new_row()
+        output_record.add_cell_value_to_row("ProbeDuration", secs_to_msecs(probe_duration_secs))
+        output_record.add_cell_value_to_rows(mid_practice_record.second_trails_nulls, "NULL")
+
         # E-Prime name: Cue
         cue_file_name = run_list_table.cell_value("Cue", run_list_index + 1)
         shower.show_file(cue_file_name, 2.0)
@@ -162,6 +190,8 @@ for procedure_index in range(0, timing_block_table.num_rows):
         reaction_time = stim_record_probe.first_keydown_delay_secs
         eprime_summation.add_observation_secs(reaction_time)
 
+        # Write the response time to the output record
+        output_record.add_cell_value_to_row("Probe.RT", secs_to_msecs(reaction_time))
 
         # E-Prime name: CheckResponse
         # lookup text strings according to trial state and response, generate dynamic message
@@ -176,6 +206,10 @@ for procedure_index in range(0, timing_block_table.num_rows):
         # E-Prime name: Feedback
         text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
+
+        # write the response check and result check messages to the output record
+        output_record.add_cell_value_to_row("ResponseCheck", response_text)
+        output_record.add_cell_value_to_row("Result", result_text)
 
     # E-Prime name: CheckRT
     mean_rt = eprime_summation.mean_ms
@@ -192,6 +226,9 @@ shower.show("Goodbye", None, "SPACE_KEY")
 int_new_rt = eprime_summation.user_rt_ms
 text_subs_rt = {"IntNewRT" : str(int_new_rt)}
 shower.show("DisplayPracticeRT", None, "SPACE_KEY", text_subs_rt)
+
+# store the data table
+output_record.save()
 
 
 # Close the stimulus window, shutdown the IOHUb engine used to read key presses.

@@ -34,6 +34,7 @@ class StimBundle:
     captured_image_dir_name = u'CapturedImages'
     tables_dir_name = u'Tables'
     text_displays_dir_name = u'TextDisplays'
+    data_master_dir_name = u'PyABCD_Data'
 
 
     @classmethod
@@ -51,6 +52,16 @@ class StimBundle:
     @classmethod
     def text_displays_dir_path_from_bundle_path(cls, bundle_path):
         return os.path.join(bundle_path, cls.text_displays_dir_name)
+
+    @classmethod
+    def data_dir_path_for_bundle_path(cls, bundle_path):
+        # return relative to bundle path ../../PyABCD_Data
+        super_dir, data_dir_name = os.path.split(bundle_path)
+        super_super_dir = os.path.split(super_dir)[0]
+        data_master_dir = os.path.join(super_super_dir, cls.data_master_dir_name)
+        data_dir_path = os.path.join(data_master_dir, data_dir_name)
+        return data_dir_path
+
 
     @classmethod
     def is_bundle(cls, path_to_bundle):
@@ -163,6 +174,12 @@ class StimBundle:
         table_path_table = {pair[0]: pair[1] for pair in zip(text_json_names, text_json_file_paths)}
         return table_path_table
 
+    def make_data_dir_path(self):
+        try:
+            os.makedirs(self.data_dir_path)
+        except OSError:
+            if not os.path.isdir(self.data_dir_path):
+                raise
 
     # @staticmethod
     # def excel_file_name_from_table_name(table_name):
@@ -186,6 +203,9 @@ class StimBundle:
         self.captured_images_path = self.captured_dir_path_from_bundle_path(self.bundle_path)
         self.tables_path = self.tables_dir_path_from_bundle_path(self.bundle_path)
         self.text_displays_path = self.text_displays_dir_path_from_bundle_path(self.bundle_path)
+        # create the data dir path for the bundle if it does not exist.
+        self.data_dir_path = self.data_dir_path_for_bundle_path(self.bundle_path)
+        self.make_data_dir_path()
         # generate a table mapping from the image name to image file path.  We merge the
         # tables for contents of both the original and captured image directories and test
         # for duplicates
@@ -218,6 +238,11 @@ class StimBundle:
         self.text_display_name_to_json_file_path_table = self.text_json_paths_table_from_path(self.text_displays_path)
         #TODO: Text for names duplicated between text displays and images.
 
+
+    def data_file_for_name(self, data_file_name):
+        file_path = os.path.join(self.data_dir_path, data_file_name)
+        exists = os.path.isfile(file_path)
+        return file_path, exists
 
     def image_names(self):
         return self.image_name_to_path_table.keys()

@@ -85,7 +85,7 @@ class AbcdRecord(object):
         self.current_row_index = 0
         self.current_row = None
         self.width_columns = len(column_labels_text)
-        self.rows= []
+        self.rows = []
         # create spreadsheet
         self.workbook = xlwt.Workbook()
         self.worksheet = self.workbook.add_sheet("Sheet 1")
@@ -115,6 +115,10 @@ class AbcdRecord(object):
     def add_cell_value_to_row(self, label, value):
         column_index = self.column_index_for_label(label)
         self.current_row.add_cell(column_index, value)
+
+    def add_cell_value_to_rows(self, labels, value):
+        for label in labels:
+            self.add_cell_value_to_row(label, value)
 
     def save(self):
         for row in self.rows:
