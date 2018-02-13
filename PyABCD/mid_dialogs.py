@@ -148,12 +148,31 @@ class CancelOrContinue:
         return self.dlg.OK
 
 
-def make_output_filename(subject_id, session_number):
+def make_output_filename_wo_extension(subject_id, session_number):
 
     file_name = "ABCD_MID_Practice_20161209_" + subject_id + "-" + str(session_number)
     return file_name
 
 
+def make_output_filename_w_extension(subject_id, session_number):
+
+    file_name = make_output_filename_wo_extension(subject_id, session_number) + ".xls"
+    return file_name
+
+
+
+
+# returns a dictionary with the following key-value pairs:
+#
+# FIELD                       TYPE    DESCRIPTION                        EXAMPLES
+#
+# subject_id                  string  identifies the subject             "AANNNAAA"
+# session_number              integer identifies the group number?       1
+# handedness                  string  handedness of the subject          "left", "right"
+# file_name                   string  full file name including extension "ABCD_MID_Practice_20161209-AANNNAAA-1.xls"
+# file_name_without_extension string  full file name without extension   "ABCD_MID_Practice_20161209-AANNNAAA-1"
+#
+#
 def get_inputs(file_exists_checker, screen_number):
     global dialogs_screen_num
     dialogs_screen_num = screen_number
@@ -184,11 +203,13 @@ def get_inputs(file_exists_checker, screen_number):
         else:
             break
     # check if the file already exists and warn accordingly
-    file_name = make_output_filename(table['subject_id'], table['session_number'])
-    exists = file_exists_checker(file_name)
-    table.update({'file_name' : file_name})
+    file_name_wo_extension = make_output_filename_wo_extension(table['subject_id'], table['session_number'])
+    file_name_w_extension =  make_output_filename_w_extension(table['subject_id'], table['session_number'])
+    exists = file_exists_checker(file_name_w_extension)
+    table.update({'file_name' : file_name_w_extension})
+    table.update({'file_name_without_extension': file_name_wo_extension})
     if exists:
-        do_overwrite = WarnExistingFile(file_name).run()
+        do_overwrite = WarnExistingFile(file_name_wo_extension).run()
         if do_overwrite:
             return table
         else:

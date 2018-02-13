@@ -1,6 +1,10 @@
 
 # TODO
 
+# - check if we need to invert the loop nesting for the first practice sequence, seems to be the wrong order.
+# - test this line in mid_practice:
+#   tbl_condition = run_list_table.cell_value("Condition", run_list_index + 1)
+# - Verify that the session number is the same as the group number.
 # - The second stimulus loop is missing one trial, it seems to be a row of nulls, or maybe that is inserted between
 #   the first and the second?
 # - make sure that the application constructs all paths if they do not yet exist.

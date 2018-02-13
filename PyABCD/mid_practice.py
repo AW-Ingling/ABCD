@@ -52,11 +52,25 @@ operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name
 if operator_table is None:
     sys.exit()
 
-# Create the data output spreadsheet
+# Create the data output spreadsheet and set some fields
 output_record = mid_practice_record.MidPracticeRecord(stim_bundle.data_dir_path, operator_table['file_name'])
+output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
+output_record.add_constant_column("Group", operator_table['session_number'])
+output_record.add_constant_column("Handedness", operator_table['handedness'])
+seesion_date, session_time = formatted_date_time()
+output_record.add_constant_column("SessionDate", seesion_date)
+output_record.add_constant_column("SessionTime", session_time)
+
+
+
 
 # Open the stimulus window, fire up the IOHub engine to read key presses
 screen_num = shower.setup()
+
+# Get the display frame rate and put it in the output table
+framerate_hz = shower.get_framerate_hz()
+output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
+
 
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")
@@ -108,13 +122,21 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
     shower.show("BlockInstruction", None, "SPACE_KEY", text_subs_block_instr)
 
     # Show each trial type type two times
-    trial_table = tables[ifis_block_table.cell_value("ListName", trial_type_index + 1)]
+    list_name = ifis_block_table.cell_value("ListName", trial_type_index + 1)
+    task = ifis_block_table.cell_value("Task", trial_type_index + 1)
+    trial_table = tables[list_name]
     for trial_index in range(0,trial_table.num_rows):
 
         # add a new row to the output table and fill in some values
         output_record.add_new_row()
         output_record.add_cell_value_to_row("ProbeDuration", secs_to_msecs(probe_duration_secs))
+        output_record.add_cell_value_to_row("Block", trial_type_index + 1)
+        output_record.add_cell_value_to_row("IFISBlockList", trial_type_index + 1)
+        output_record.add_cell_value_to_row("IFISBlockList.Sample", trial_type_index + 1)
+        output_record.add_cell_value_to_row("IFISBlockList.Cycle", 1)
+
         output_record.add_cell_value_to_rows(mid_practice_record.first_trails_nulls, "NULL")
+
 
         # dynamically reference file names for this trials stimuli
         cue_file_name = trial_table.cell_value("Cue", trial_index + 1)
@@ -138,7 +160,30 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         result_text = result_inline(tbl_condition, prbacc_flag)
         text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
+
+        output_record.add_cell_value_to_row("Instruction1", instruction_1)
+        output_record.add_cell_value_to_row("Instruction2", instruction_2)
+        output_record.add_cell_value_to_row("ListName", list_name)
+        output_record.add_cell_value_to_row("Procedure[Block]", "BlockProc")
+        output_record.add_cell_value_to_row("Running[Block]", "IFISBlockList")
+        output_record.add_cell_value_to_row("Task", task)
+        output_record.add_cell_value_to_row("Trial", 1)
+        output_record.add_cell_value_to_row("PeriodList", 1)
+        output_record.add_cell_value_to_row("PeriodList.Cycle", trial_type_index + 1)
+        output_record.add_cell_value_to_row("PeriodList.Sample", trial_type_index + 1)
+        output_record.add_cell_value_to_row("Procedure[Trial]", "TrialProc")
+        output_record.add_cell_value_to_row("Running[Trial]", "PeriodList")
+
+
+
+
+
+
+
+
+
         # TODO: Verify that the response window duration should be same same as the probe duration
+
 
         # Write the response time to the output record
         output_record.add_cell_value_to_row("Probe.RT", secs_to_msecs(reaction_time))
@@ -200,7 +245,8 @@ for procedure_index in range(0, timing_block_table.num_rows):
 
         # E-Prime name: Result
         # Lookup the "Condition" key value then use that value to get the result text
-        tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
+        #tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
+        tbl_condition = run_list_table.cell_value("Condition", run_list_index + 1)
         result_text = result_inline(tbl_condition, prbacc_flag)
 
         # E-Prime name: Feedback

@@ -79,7 +79,12 @@ column_labels_text = ["ExperimentName",
 
 dummy_constant_columns = [ ("ExperimentName", "ABCD_MID_Practice_20161209"),
                            ("Allowed", "{ANY}"),
-                           ("RuntimeCapabilities", "Professional")]
+                           ("RuntimeCapabilities", "Professional"),
+                           ("ExperimentVersion", "1.0.0.300"),
+                           ("RuntimeVersion", "2.0.10.356"),
+                           ("RuntimeVersionExpected", "2.0.10.356"),
+                           ("StudioVersion", "2.0.10.252")
+                           ]
 
 
 first_trails_nulls = ["BlockTitle",

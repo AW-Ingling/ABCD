@@ -8,6 +8,7 @@
 # https://stackoverflow.com/questions/9835762/find-and-list-duplicates-in-a-list/31439372#31439372
 
 import os
+import datetime
 
 image_file_extensions = {u'.jpg', u'.png', u'.tiff', u'.tif', u'.gif', u'.bmp'}
 
@@ -52,6 +53,16 @@ def secs_to_msecs(time_secs):
         return 0
     else:
         return int(round(time_secs * 1000))
+
+
+# example return values: "01-22-2018", "07:25:50 PM"
+def formatted_date_time():
+    now_date_time = datetime.datetime.now()
+    now_date_text= now_date_time.strftime("%m-%d-%Y")
+    now_time_text= now_date_time.strftime("%I:%M:%S %p")
+    return now_date_text, now_time_text
+
+
 
 
 

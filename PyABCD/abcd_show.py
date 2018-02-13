@@ -260,6 +260,12 @@ class ShowMaker:
             print("Error: Attempt to setup the ShowMaker when it is already setup.")
             sys.exit()
 
+    def get_framerate_hz(self):
+        if self.window:
+            rate_hz = self.window.getActualFrameRate()
+            return rate_hz
+        return None
+
     def shutdown(self):
         if self.window is None:
             print("Error: Attempt to shutdown the ShowMaker when it is not setup.")

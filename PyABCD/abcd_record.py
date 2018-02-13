@@ -75,7 +75,8 @@ class AbcdRecord(object):
 
     def __init__(self, output_dir_path, file_name, column_labels_text):
         # construct full write path
-        self.full_file_name = file_name + ".xls"
+        #self.full_file_name = file_name + ".xls"
+        self.full_file_name = file_name
         self.full_path = os.path.join(output_dir_path, self.full_file_name)
         print("path to file: %s" % self.full_path)
         # init state/retain ags
