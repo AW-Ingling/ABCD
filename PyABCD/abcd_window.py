@@ -14,26 +14,35 @@
 
 # Imports
 import sys
+import enum
 from psychopy import visual, core, monitors
 import pyglet
-import enum
+import platform
 
 
 # define enumerated type for specifying the a of selecting monitor on multi-monitor systems.
 class MonitorSearchMethod(enum.Enum):
     SEARCH_BY_SIZE = 1
-    SEARCH_BY_NAME = 2
+    SEARCH_BY_INDEX = 2
 
 class MonitorFallbackMethod(enum.Enum):
     FALLBACK_STRICT = 1
     FALLBACK_ACCEPT_ANY_SINGLE = 2
+    FALLBACK_TAKE_SECOND = 3
+    FALLBACK_MAC_PYGLET_BUG = 4
 
 
 # Define some parameters as constants
 MONITOR_SEARCH_METHOD = MonitorSearchMethod.SEARCH_BY_SIZE
-MONITOR_FALLBACK_METHOD = MonitorFallbackMethod.FALLBACK_ACCEPT_ANY_SINGLE
+MONITOR_FALLBACK_METHODS = {MonitorFallbackMethod.FALLBACK_TAKE_SECOND,
+                            MonitorFallbackMethod.FALLBACK_ACCEPT_ANY_SINGLE}
 PREFERRED_SCREEN_RESOLUTION = (1920, 1080)
-PREFERRED_SCREEN_NAME = u'DISPLAY1'
+PREFERRED_SCREEN_INDEX = 1
+
+# Detect if we are on a mac and change the fallback mode to one which only uses the first monitor
+if platform.system() == "Darwin":
+    print("Detected MacOS, resetting monitor fallback mode to FALLBACK_MAC_PYGLET_BUG.")
+    MONITOR_FALLBACK_METHODS = {MonitorFallbackMethod.FALLBACK_MAC_PYGLET_BUG}
 
 # Default Stimulus Window
 stimulus_window = None
@@ -47,54 +56,64 @@ print("Detected %d screens:" % len(all_screens))
 for index, screen in enumerate(all_screens):
     print("\t%d: %s" % (index, screen.get_mode()))
 
+
+
 # Functions for matching screen resolution
+def find_screens_by_index(index, screens):
+    matched_screens = [screen for iter_index, screen in enumerate(screens)  if iter_index == index]
+    matched_indices = [iter_index for iter_index, screen in enumerate(screens)  if iter_index == index]
+    return matched_screens, matched_indices
+
+# functions for matching screen by index
 def find_screens_by_size(size_pixels, screens):
     dims_pixels= [(screen.width, screen.height) for screen in screens]
     matched_screen_indices = [index for index, dims in enumerate(dims_pixels) if dims == size_pixels]
     matched_screens = [screen for index, screen in enumerate(screens) if index in matched_screen_indices]
     return matched_screens, matched_screen_indices
 
-def find_screens_by_name(name, screens):
-    names = [screen.get_device_name() for screen in screens]
-    matched_name_indices = [index for index, name in enumerate(names) if PREFERRED_SCREEN_NAME.upper() in name.upper()]
-    matched_screens = [screen for index, screen in enumerate(screens) if index in matched_name_indices]
-    return matched_screens, matched_name_indices
 
-# Select the display; The experiment expects a 1920x1080 display, so find displays of that size
-print("Looking for screens with dimensions %s..." % str(PREFERRED_SCREEN_RESOLUTION))
-_target_size_screens, _taget_size_screens_indices = find_screens_by_size(PREFERRED_SCREEN_RESOLUTION, all_screens)
-
-# Select the display; The experiment expects a 1920x1080 display, so find displays of that size
-print("Looking for screen named %s..." % PREFERRED_SCREEN_NAME)
-_target_name_screens, _target_name_screens_indices = find_screens_by_name(PREFERRED_SCREEN_NAME, all_screens)
+_target_by_index_screens, _target_by_index_screens_indices = find_screens_by_index(PREFERRED_SCREEN_INDEX, all_screens)
+_target_by_size_screens, _taget_by_size_screens_indices = find_screens_by_size(PREFERRED_SCREEN_RESOLUTION, all_screens)
 
 
-# If name search is specified, use the list of monitors with matching names.
-# If size search is specified, use the list of monitors with matching sizes
-if MONITOR_SEARCH_METHOD == MonitorSearchMethod.SEARCH_BY_NAME:
-    target_screens = _target_name_screens
-    target_screens_indices = _target_name_screens_indices
-    print(u'Selecting screen by preferred name: %s.' % PREFERRED_SCREEN_NAME)
+# find lists of monitors by index and by size
+if MONITOR_SEARCH_METHOD == MonitorSearchMethod.SEARCH_BY_INDEX:
+    target_screens = _target_by_index_screens
+    target_screens_indices = _target_by_index_screens_indices
 elif MONITOR_SEARCH_METHOD == MonitorSearchMethod.SEARCH_BY_SIZE:
-    target_screens = _target_size_screens
-    target_screens_indices = _taget_size_screens_indices
-    print(u'Selecting screen by preferred dimensions: %s.' % str(PREFERRED_SCREEN_RESOLUTION))
+    target_screens = _target_by_size_screens
+    target_screens_indices = _taget_by_size_screens_indices
 else:
     print("ERROR: Unknown monitor search method, exiting.")
     sys.exit()
 
+
+
 if len(target_screens) == 1:
+    # if we have exactly one exact match between specified monitor and available monitors then return it.
     target_screen = target_screens[0]
     target_screen_index = target_screens_indices[0]
     print("Found monitor matching specifications.")
-elif MONITOR_FALLBACK_METHOD == MonitorFallbackMethod.FALLBACK_ACCEPT_ANY_SINGLE and len(all_screens) == 1:
+elif MonitorFallbackMethod.FALLBACK_STRICT in MONITOR_FALLBACK_METHODS and len(target_screens) == 0:
+    # if strick match is required and there is no exact match then exit.
+    print("ERROR: Failed to find any screens with specified size: %s, exiting" % str(PREFERRED_SCREEN_RESOLUTION))
+    # TODO: Put a dialog box warning here, inventory the error.
+    sys.exit()
+elif MonitorFallbackMethod.FALLBACK_MAC_PYGLET_BUG in MONITOR_FALLBACK_METHODS  and len(all_screens) >= 1:
+    # if we are in fallback pyglet mode then alwyas use the 0th display
+    target_screen = all_screens[0]
+    target_screen_index = 0
+elif MonitorFallbackMethod.FALLBACK_ACCEPT_ANY_SINGLE in MONITOR_FALLBACK_METHODS and len(all_screens) == 1:
+    # if here is only one connected monitor and fallback says we can use that then do
     target_screen = all_screens[0]
     target_screen_index = 0
     print("Failed to find monitor matching specifications.  Falling back to the single connected display.")
-elif MONITOR_FALLBACK_METHOD == MonitorFallbackMethod.FALLBACK_STRICT and len(target_screens) == 0:
-    print("ERROR: Failed to find any screens with specified size: %s, exiting" % str(PREFERRED_SCREEN_RESOLUTION))
-    #TODO: Put a dialog box warning here, inventory the error.
-    sys.exit()
+elif MonitorFallbackMethod.FALLBACK_TAKE_SECOND in MONITOR_FALLBACK_METHODS and len(all_screens) > 1:
+    # if there are multiple monitors and no exact matches and fallback says to take the secondary display.
+    target_screen = all_screens[1]
+    target_screen_index = 1
+    print("Failed to find monitor matching specifications.  Falling back to second connected display.")
+
 
 print("Selected monitor at enumeration index %d" % target_screen_index)
 print("Selected: %s." % target_screen.get_mode())
