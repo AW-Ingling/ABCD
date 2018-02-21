@@ -1,8 +1,8 @@
 
+from mid_dialogs import *  # for some unknown reason this must be imported first or the dialogs are not seen.
 from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
-from mid_dialogs import *
 import mid_practice_record
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
@@ -62,15 +62,12 @@ output_record.add_constant_column("SessionDate", seesion_date)
 output_record.add_constant_column("SessionTime", session_time)
 
 
-
-
 # Open the stimulus window, fire up the IOHub engine to read key presses
 screen_num = shower.setup()
 
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
-
 
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")
@@ -173,13 +170,6 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         output_record.add_cell_value_to_row("PeriodList.Sample", trial_type_index + 1)
         output_record.add_cell_value_to_row("Procedure[Trial]", "TrialProc")
         output_record.add_cell_value_to_row("Running[Trial]", "PeriodList")
-
-
-
-
-
-
-
 
 
         # TODO: Verify that the response window duration should be same same as the probe duration

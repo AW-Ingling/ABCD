@@ -1,6 +1,14 @@
 
 # TODO
 
+# - Add instructions to use pythonw instead of python
+# - Figure out what is going on with openining a fullscreen window on the second screen in PsychoPy on OS X.
+# - Figure out what is going on with the the first test sequence which seems to mis-detect kepresses on OS X.
+# - Add a note to enable assistive devices on OS X
+# - Add the path to the interpreter in MacOS:
+#   import os
+#   os.environ
+#   export PYTHONHOME=/Applications/PsychoPy2.app/Contents/Resources
 # - check if we need to invert the loop nesting for the first practice sequence, seems to be the wrong order.
 # - test this line in mid_practice:
 #   tbl_condition = run_list_table.cell_value("Condition", run_list_index + 1)
@@ -25,6 +33,8 @@
 #       out=out, **kwargs)
 #       C:\Program Files (x86)\PsychoPy2\lib\site-packages\numpy\core\_methods.py:80: RuntimeWarning: invalid value encountered in double_scalars
 #       ret = ret.dtype.type(ret / rcount)
+#
+#
 
 
 
