@@ -57,11 +57,10 @@ output_record = mid_practice_record.MidPracticeRecord(stim_bundle.data_dir_path,
 output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
 output_record.add_constant_column("Group", operator_table['session_number'])
 output_record.add_constant_column("Handedness", operator_table['handedness'])
+output_record.add_constant_column("NARGUID", operator_table['subject_id'])
 seesion_date, session_time = formatted_date_time()
 output_record.add_constant_column("SessionDate", seesion_date)
 output_record.add_constant_column("SessionTime", session_time)
-
-
 
 
 # Open the stimulus window, fire up the IOHub engine to read key presses
@@ -112,35 +111,36 @@ shower.show("NeutralProbe", None, "SPACE_KEY")
 shower.show("Probes2", None, "SPACE_KEY")
 
 # E-Prime name: BlockInstruction
-for trial_type_index in range(0, ifis_block_table.num_rows):
+runlist_sample_counter = 1  # used only for an output table column
+for trial_index in range(0, ifis_block_table.num_rows):
 
     # Give the user the instructions for one of the five practice trial types
     # TODO: Fix the cell_value function so that it accepts in index instead of ID
-    instruction_1 = ifis_block_table.cell_value("Instruction1", trial_type_index + 1)
-    instruction_2 = ifis_block_table.cell_value("Instruction2", trial_type_index + 1)
+    instruction_1 = ifis_block_table.cell_value("Instruction1", trial_index + 1)
+    instruction_2 = ifis_block_table.cell_value("Instruction2", trial_index + 1)
     text_subs_block_instr = {'Instruction1':instruction_1, 'Instruction2': instruction_2}
     shower.show("BlockInstruction", None, "SPACE_KEY", text_subs_block_instr)
 
     # Show each trial type type two times
-    list_name = ifis_block_table.cell_value("ListName", trial_type_index + 1)
-    task = ifis_block_table.cell_value("Task", trial_type_index + 1)
+    list_name = ifis_block_table.cell_value("ListName", trial_index + 1)
+    task = ifis_block_table.cell_value("Task", trial_index + 1)
     trial_table = tables[list_name]
-    for trial_index in range(0,trial_table.num_rows):
+    for subtrial_index in range(0, trial_table.num_rows):
 
         # add a new row to the output table and fill in some values
         output_record.add_new_row()
         output_record.add_cell_value_to_row("ProbeDuration", secs_to_msecs(probe_duration_secs))
-        output_record.add_cell_value_to_row("Block", trial_type_index + 1)
-        output_record.add_cell_value_to_row("IFISBlockList", trial_type_index + 1)
-        output_record.add_cell_value_to_row("IFISBlockList.Sample", trial_type_index + 1)
+        output_record.add_cell_value_to_row("Block", trial_index + 1)
+        output_record.add_cell_value_to_row("IFISBlockList", trial_index + 1)
+        output_record.add_cell_value_to_row("IFISBlockList.Sample", trial_index + 1)
         output_record.add_cell_value_to_row("IFISBlockList.Cycle", 1)
 
         output_record.add_cell_value_to_rows(mid_practice_record.first_trails_nulls, "NULL")
 
 
         # dynamically reference file names for this trials stimuli
-        cue_file_name = trial_table.cell_value("Cue", trial_index + 1)
-        probe_file_name = trial_table.cell_value("Probe", trial_index + 1)
+        cue_file_name = trial_table.cell_value("Cue", subtrial_index + 1)
+        probe_file_name = trial_table.cell_value("Probe", subtrial_index + 1)
 
         # present the cue, the colored shape stating reward value,  for 2000 msecs = 2 seconds
         shower.show_file(cue_file_name, 2.0)
@@ -156,7 +156,7 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         # lookup text strings according to trial state and response, generate dyanamic message
         response_text, prbacc_flag = check_response_inline(stim_record_anticipation.was_key_pressed,
                                                       stim_record_probe.was_key_pressed)
-        tbl_condition = trial_table.cell_value("Condition", trial_index + 1)
+        tbl_condition = trial_table.cell_value("Condition", subtrial_index + 1)
         result_text = result_inline(tbl_condition, prbacc_flag)
         text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
@@ -169,19 +169,40 @@ for trial_type_index in range(0, ifis_block_table.num_rows):
         output_record.add_cell_value_to_row("Task", task)
         output_record.add_cell_value_to_row("Trial", 1)
         output_record.add_cell_value_to_row("PeriodList", 1)
-        output_record.add_cell_value_to_row("PeriodList.Cycle", trial_type_index + 1)
-        output_record.add_cell_value_to_row("PeriodList.Sample", trial_type_index + 1)
+        output_record.add_cell_value_to_row("PeriodList.Cycle", trial_index + 1)
+        output_record.add_cell_value_to_row("PeriodList.Sample", trial_index + 1)
         output_record.add_cell_value_to_row("Procedure[Trial]", "TrialProc")
         output_record.add_cell_value_to_row("Running[Trial]", "PeriodList")
 
+        output_record.add_cell_value_to_row("SubTrial", subtrial_index + 1)
+        output_record.add_cell_value_to_row("Condition", tbl_condition)
+        output_record.add_cell_value_to_row("Cue", cue_file_name)
+        output_record.add_cell_value_to_row("LoseBig", condition_column_value("LoseBig", task, subtrial_index))
+        output_record.add_cell_value_to_row("LoseSmall", condition_column_value("LoseSmall", task, subtrial_index))
+        output_record.add_cell_value_to_row("Neutral", condition_column_value("Neutral", task, subtrial_index))
+        output_record.add_cell_value_to_row("prbacc", prbacc_flag)
+        output_record.add_cell_value_to_row("Probe", probe_file_name)
 
+    #    output_record.add_cell_value_to_row("Probe.ACC", )
+    #    output_record.add_cell_value_to_row("Probe.DurationError", )
+    #    output_record.add_cell_value_to_row("Probe.OnsetDelay", )
+    #    output_record.add_cell_value_to_row("Probe.OnsetTime", )
+        output_record.add_cell_value_to_row("Probe.RESP", probe_resp_value(prbacc_flag))
 
+        output_record.add_cell_value_to_row("Procedure[SubTrial]", "RewardProc")
+        output_record.add_cell_value_to_row("ResponseCheck", response_text)
+        output_record.add_cell_value_to_row("Result", result_text)
+        output_record.add_cell_value_to_row("RunList", 1)
+        output_record.add_cell_value_to_row("RunList.Cycle", trial_index + 1)
+        output_record.add_cell_value_to_row("RunList.Sample", runlist_sample_counter)
+        output_record.add_cell_value_to_row("RunListTiming", "NULL")
+        output_record.add_cell_value_to_row("RunListTiming.Cycle", "NULL")
+        output_record.add_cell_value_to_row("RunListTiming.Sample", "NULL")
+        output_record.add_cell_value_to_row("Running[SubTrial]", "RunList")
+        output_record.add_cell_value_to_row("WinBig", condition_column_value("WinBig", task, subtrial_index))
+        output_record.add_cell_value_to_row("WinSmall", condition_column_value("WinSmall", task, subtrial_index))
 
-
-
-
-
-
+        runlist_sample_counter += 1
         # TODO: Verify that the response window duration should be same same as the probe duration
 
 
@@ -197,6 +218,8 @@ shower.show("PartOneEndText", None, "SPACE_KEY")
 
 
 # Begin the TimingBlockList/BlocProcTiming list/procedure training loop.
+block_counter = trial_index + 2     # add one to increment and one to convert from 0-indexing to 1-indexing
+prac_run_counter = 1                # used only for table output column "BlockTitle"
 for procedure_index in range(0, timing_block_table.num_rows):
 
     # fetch the procdure name from the table
@@ -253,9 +276,59 @@ for procedure_index in range(0, timing_block_table.num_rows):
         text_subs_feedback = {"ResponseCheck": response_text, "Result": result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
 
-        # write the response check and result check messages to the output record
+
+        # write output data table columns
+        output_record.add_cell_value_to_row("Block", block_counter)
+        output_record.add_cell_value_to_row("BlockTitle", counter_to_block_title(prac_run_counter))
+        output_record.add_cell_value_to_row("IFISBlockList", "NULL")
+        output_record.add_cell_value_to_row("IFISBlockList.Cycle", "NULL")
+        output_record.add_cell_value_to_row("IFISBlockList.Sample", "NULL")
+        output_record.add_cell_value_to_row("Instruction1", "NULL")
+        output_record.add_cell_value_to_row("Instruction2", "NULL")
+        output_record.add_cell_value_to_row("ListName", "NULL")
+        output_record.add_cell_value_to_row("NameOfPeriodList", "PeriodList")
+        output_record.add_cell_value_to_row("Periods", 2)
+        output_record.add_cell_value_to_row("Procedure[Block]", "BlockProcTiming")
+        output_record.add_cell_value_to_row("Running[Block]", "TimingBlockList")
+        output_record.add_cell_value_to_row("Task", "NULL")
+        output_record.add_cell_value_to_row("TimingBlockList", prac_run_counter)
+        output_record.add_cell_value_to_row("TimingBlockList.Cycle", 1)
+        output_record.add_cell_value_to_row("TimingBlockList.Sample", prac_run_counter)
+        output_record.add_cell_value_to_row("Trial", 2)
+        output_record.add_cell_value_to_row("PeriodList", "NULL")
+        output_record.add_cell_value_to_row("PeriodList.Cycle", "NULL")
+        output_record.add_cell_value_to_row("PeriodList.Sample", "NULL")
+      # output_record.add_cell_value_to_row("PeriodListTiming", ??)
+        output_record.add_cell_value_to_row("PeriodListTiming.Cycle", prac_run_counter)
+     #  output_record.add_cell_value_to_row("PeriodListTiming.Sample", ??)
+        output_record.add_cell_value_to_row("Procedure[Trial]", "PrepProcTiming")
+        output_record.add_cell_value_to_row("Running[Trial]", "PeriodListTiming")
+        output_record.add_cell_value_to_row("SubTrial", prac_run_counter)
+    #   output_record.add_cell_value_to_row("Anticipation.RESP", )
+        output_record.add_cell_value_to_row("Cue", cue_file_name)
+        output_record.add_cell_value_to_row("LoseBig", "NULL")
+        output_record.add_cell_value_to_row("LoseSmall", "NULL")
+        output_record.add_cell_value_to_row("Neutral", "NULL")
+        output_record.add_cell_value_to_row("prbacc", prbacc_flag)
+        output_record.add_cell_value_to_row("Probe", probe_file_name)
+        #    output_record.add_cell_value_to_row("Probe.ACC", )
+        #    output_record.add_cell_value_to_row("Probe.DurationError", )
+        #    output_record.add_cell_value_to_row("Probe.OnsetDelay", )
+        #    output_record.add_cell_value_to_row("Probe.OnsetTime", )
+        output_record.add_cell_value_to_row("Probe.RESP", probe_resp_value(prbacc_flag))
+        output_record.add_cell_value_to_row("Procedure[SubTrial]", "RewardProcTiming")
         output_record.add_cell_value_to_row("ResponseCheck", response_text)
         output_record.add_cell_value_to_row("Result", result_text)
+        output_record.add_cell_value_to_row("RunList", "NULL")
+        output_record.add_cell_value_to_row("RunList.Cycle", "NULL")
+        output_record.add_cell_value_to_row("RunList.Sample", "NULL")
+        output_record.add_cell_value_to_row("RunListTiming", prac_run_counter)
+        output_record.add_cell_value_to_row("RunListTiming.Cycle", run_list_index + 1)
+        output_record.add_cell_value_to_row("RunListTiming.Sample", prac_run_counter)
+        output_record.add_cell_value_to_row("WinBig", "NULL")
+        output_record.add_cell_value_to_row("WinSmall", "NULL")
+
+        prac_run_counter += 1
 
     # E-Prime name: CheckRT
     mean_rt = eprime_summation.mean_ms
@@ -263,6 +336,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
         break
     else:
         probe_duration_secs = INCREMENTED_PROBE_DURATION_SECS
+        block_counter += 1
 
 
 # E-Prime name Goodbye
