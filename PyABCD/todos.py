@@ -9,6 +9,8 @@
 #   import os
 #   os.environ
 #   export PYTHONHOME=/Applications/PsychoPy2.app/Contents/Resources
+# - the "ProbeDuration" column is missing in the output spreadsheet sample and Python data output table
+# - check for other missing columns
 # - check if we need to invert the loop nesting for the first practice sequence, seems to be the wrong order.
 # - test this line in mid_practice:
 #   tbl_condition = run_list_table.cell_value("Condition", run_list_index + 1)

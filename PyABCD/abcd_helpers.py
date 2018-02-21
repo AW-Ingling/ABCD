@@ -63,6 +63,28 @@ def formatted_date_time():
     return now_date_text, now_time_text
 
 
+# generates contents of columns "LoseBig", "LoseSmall", "Neutral"
+def condition_column_value(column_name, task_name, subtrial_index):
+    if column_name == task_name:
+        return subtrial_index + 1
+    else:
+        return "NULL"
+
+# accepts the prbcc flag and returns a value for the "Probe.RESP" column in the output data table
+def probe_resp_value(prbacc_flag):
+    if prbacc_flag:
+        return "{SPACE}"
+    else:
+        return ""
+
+# accepts a loop counter value 1-n and returns a string for the data output table "BlockTitle" column
+def counter_to_block_title(counter):
+    return "PracRun_" + str(counter)
+
+
+
+
+
 
 
 
