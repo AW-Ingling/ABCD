@@ -120,6 +120,28 @@ second_trails_nulls = ["IFISBlockList",
                        "WinBig",
                        "WinSmall"]
 
+inter_test_loop_nulls = ["Running[SubTrial]",
+                         "RunListTiming.Sample",
+                         "RunListTiming.Cycle",
+                         "RunListTiming",
+                         "Result",
+                         "ResponseCheck",
+                         "Procedure[SubTrial]",
+                         "Probe.RT",
+                         "Probe.RESP",
+                         "Probe.OnsetToOnsetTime",
+                         "Probe.OnsetTime",
+                         "Probe.OnsetDelay",
+                         "Probe.DurationError",
+                         "Probe.ACC",
+                         "Probe",
+                         "prbacc",
+                         "Cue",
+                         "Condition",
+                         "Anticipation.RESP",
+                         "SubTrial",
+                         "Task"]
+
 
 class MidPracticeRecord(AbcdRecord):
 

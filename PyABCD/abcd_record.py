@@ -117,7 +117,7 @@ class AbcdRecord(object):
         column_index = self.column_index_for_label(label)
         self.current_row.add_cell(column_index, value)
 
-    def add_cell_value_to_rows(self, labels, value):
+    def add_cell_value_to_columns(self, labels, value):
         for label in labels:
             self.add_cell_value_to_row(label, value)
 

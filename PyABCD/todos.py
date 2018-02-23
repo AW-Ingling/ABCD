@@ -1,6 +1,11 @@
 
 # TODO
 
+#
+# - Create a git release branch and re-direct BJ to that
+# - Create a github issue tracker for the project
+# - Create Run two passes through the second test loop to see what happens the null line, then move the null line generator accordingly.
+# - Find out if we
 # - the "ProbeDuration" column is missing in the output spreadsheet sample and Python data output table
 # - check for other missing columns
 # - check if we need to invert the loop nesting for the first practice sequence, seems to be the wrong order.
