@@ -1,8 +1,8 @@
 
+from mid_dialogs import *  # for some unknown reason this must be imported first or the dialogs are not seen.
 from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
-from mid_dialogs import *
 import mid_practice_record
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
@@ -69,7 +69,6 @@ screen_num = shower.setup()
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
-
 
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")

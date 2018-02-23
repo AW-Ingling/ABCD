@@ -6,6 +6,14 @@
 # - Create a github issue tracker for the project
 # - Create Run two passes through the second test loop to see what happens the null line, then move the null line generator accordingly.
 # - Find out if we
+# - Add instructions to use pythonw instead of python
+# - Figure out what is going on with openining a fullscreen window on the second screen in PsychoPy on OS X.
+# - Figure out what is going on with the the first test sequence which seems to mis-detect kepresses on OS X.
+# - Add a note to enable assistive devices on OS X
+# - Add the path to the interpreter in MacOS:
+#   import os
+#   os.environ
+#   export PYTHONHOME=/Applications/PsychoPy2.app/Contents/Resources
 # - the "ProbeDuration" column is missing in the output spreadsheet sample and Python data output table
 # - check for other missing columns
 # - check if we need to invert the loop nesting for the first practice sequence, seems to be the wrong order.
@@ -32,6 +40,8 @@
 #       out=out, **kwargs)
 #       C:\Program Files (x86)\PsychoPy2\lib\site-packages\numpy\core\_methods.py:80: RuntimeWarning: invalid value encountered in double_scalars
 #       ret = ret.dtype.type(ret / rcount)
+#
+#
 
 
 

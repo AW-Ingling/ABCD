@@ -1,3 +1,5 @@
 *.pyc
 PyABCD_Data
 PyABCD/.idea/workspace.xml
+.iohpid
+.DS_Store
