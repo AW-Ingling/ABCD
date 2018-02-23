@@ -1,5 +1,5 @@
 *.pyc
 PyABCD_Data
-PyABCD/.idea/workspace.xml
+PyABCD/.idea/*
 .iohpid
 .DS_Store
