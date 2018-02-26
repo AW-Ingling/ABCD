@@ -236,10 +236,14 @@ output_record.add_cell_value_to_columns(mid_practice_record.inter_test_loop_null
 # ExperimentVersion: a dummy constant column
 # Group: constant column
 # Handedness: constant column
-output_record.add_cell_value_to_row("IntNewRT", )
+
+#output_record.add_cell_value_to_row("IntNewRT", )
+
 # NARGUID: constant column
-output_record.add_cell_value_to_row("NewRT", )
-output_record.add_cell_value_to_row("ProbeDuration", )
+
+#output_record.add_cell_value_to_row("NewRT", )
+#output_record.add_cell_value_to_row("ProbeDuration", )
+
 # RandomSeed: to be completed by a constant column
 # RuntimeCapabilities: a dummy constant column
 # RuntimeVersion: a dummy constant column
@@ -248,31 +252,42 @@ output_record.add_cell_value_to_row("ProbeDuration", )
 # SessionStartDateTimeUtc: always empty
 # SessionTime: constant column
 # StudioVersion: a dummy constant column
-output_record.add_cell_value_to_row("Block", )
-output_record.add_cell_value_to_row("BlockTitle", )
+
+#output_record.add_cell_value_to_row("Block", )
+#output_record.add_cell_value_to_row("BlockTitle", )
+
 # IFISBlockList: second trial NULL
 # IFISBlockList.Cycle: second trial NULL
 # IFISBlockList.Sample: second trial NULL
 # Instruction1: second trial NULL
 # Instruction2: second trial NULL
 # ListName: second trial NULL
-output_record.add_cell_value_to_row("NameOfPeriodList", )
-output_record.add_cell_value_to_row("Periods", )
-output_record.add_cell_value_to_row("Procedure[Block]", )
-output_record.add_cell_value_to_row("Running[Block]", )
+
+#output_record.add_cell_value_to_row("NameOfPeriodList", )
+#output_record.add_cell_value_to_row("Periods", )
+#output_record.add_cell_value_to_row("Procedure[Block]", )
+#output_record.add_cell_value_to_row("Running[Block]", )
+
+
 # Task: inter_test_loop_nulls
-output_record.add_cell_value_to_row("TimingBlockList", )
-output_record.add_cell_value_to_row("TimingBlockList.Cycle", )
-output_record.add_cell_value_to_row("TimingBlockList.Sample", )
-output_record.add_cell_value_to_row("Trial", )
+
+#output_record.add_cell_value_to_row("TimingBlockList", )
+#output_record.add_cell_value_to_row("TimingBlockList.Cycle", )
+#output_record.add_cell_value_to_row("TimingBlockList.Sample", )
+#output_record.add_cell_value_to_row("Trial", )
+
+
 # PeriodList: second trail NULL
 # PeriodList.Cycle: second trial NULL
 # PeriodList.Sample: second trail NULL
-output_record.add_cell_value_to_row("PeriodListTiming", )
-output_record.add_cell_value_to_row("PeriodListTiming.Cycle", )
-output_record.add_cell_value_to_row("PeriodListTiming.Sample", )
-output_record.add_cell_value_to_row("Procedure[Trial]", )
-output_record.add_cell_value_to_row("Running[Trial]", )
+
+#output_record.add_cell_value_to_row("PeriodListTiming", )
+#output_record.add_cell_value_to_row("PeriodListTiming.Cycle", )
+#output_record.add_cell_value_to_row("PeriodListTiming.Sample", )
+#output_record.add_cell_value_to_row("Procedure[Trial]", )
+#output_record.add_cell_value_to_row("Running[Trial]", )
+
+
 # SubTrial: inter_test_loop_nulls
 # Anticipation.RESP: inter_test_loop_nulls
 # Condition: inter_test_loop_nulls
