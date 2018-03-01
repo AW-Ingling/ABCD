@@ -68,3 +68,101 @@ def test_litcoi(num_alpha_digits):
     def add_runtime_version_expected(self, runtime_version):
         self.add_constant_column("R", runtime_version)
 
+
+
+########################################################################################################################
+
+
+# ExperimentName: a dummy constant column
+# Subject: to be completed by a constant column
+# Session: to be completed by a constant column
+# Allowed: a dummy constant column
+# Clock.Information: to be completed by a constant column
+# DataFile.Basename: constant column
+# Display.RefreshRate: to be completed by a constant column
+# ExperimentVersion: a dummy constant column
+# Group: constant column
+# Handedness: constant column
+
+#output_record.add_cell_value_to_row("IntNewRT", )
+
+# NARGUID: constant column
+
+#output_record.add_cell_value_to_row("NewRT", )
+#output_record.add_cell_value_to_row("ProbeDuration", )
+
+# RandomSeed: to be completed by a constant column
+# RuntimeCapabilities: a dummy constant column
+# RuntimeVersion: a dummy constant column
+# RuntimeVersionExpected: a dummy constant column
+# SessionDate: constant column
+# SessionStartDateTimeUtc: always empty
+# SessionTime: constant column
+# StudioVersion: a dummy constant column
+
+#output_record.add_cell_value_to_row("Block", )
+#output_record.add_cell_value_to_row("BlockTitle", )
+
+# IFISBlockList: second trial NULL
+# IFISBlockList.Cycle: second trial NULL
+# IFISBlockList.Sample: second trial NULL
+# Instruction1: second trial NULL
+# Instruction2: second trial NULL
+# ListName: second trial NULL
+
+#output_record.add_cell_value_to_row("NameOfPeriodList", )
+#output_record.add_cell_value_to_row("Periods", )
+#output_record.add_cell_value_to_row("Procedure[Block]", )
+#output_record.add_cell_value_to_row("Running[Block]", )
+
+
+# Task: inter_test_loop_nulls
+
+#output_record.add_cell_value_to_row("TimingBlockList", )
+#output_record.add_cell_value_to_row("TimingBlockList.Cycle", )
+#output_record.add_cell_value_to_row("TimingBlockList.Sample", )
+#output_record.add_cell_value_to_row("Trial", )
+
+
+# PeriodList: second trail NULL
+# PeriodList.Cycle: second trial NULL
+# PeriodList.Sample: second trail NULL
+
+#output_record.add_cell_value_to_row("PeriodListTiming", )
+#output_record.add_cell_value_to_row("PeriodListTiming.Cycle", )
+#output_record.add_cell_value_to_row("PeriodListTiming.Sample", )
+#output_record.add_cell_value_to_row("Procedure[Trial]", )
+#output_record.add_cell_value_to_row("Running[Trial]", )
+
+
+# SubTrial: inter_test_loop_nulls
+# Anticipation.RESP: inter_test_loop_nulls
+# Condition: inter_test_loop_nulls
+# Cue: inter_test_loop_nulls
+# LoseBig: second trail NULL
+# LoseSmall: second trail NULL
+# Neutral: second trial NULL
+# prbacc: inter_test_loop_nulls
+# Probe: inter_test_loop_nulls
+# Probe.ACC: inter_test_loop_nulls
+# Probe.DurationError: inter_test_loop_nulls
+# Probe.OnsetDelay: inter_test_loop_nulls
+# Probe.OnsetTime: inter_test_loop_nulls
+# Probe.OnsetToOnsetTime: inter_test_loop_nulls
+# Probe.RESP: inter_test_loop_nulls
+# Probe.RT": inter_test_loop_nulls
+# Procedure[SubTrial]: inter_test_loop_nulls
+# ResponseCheck: inter_test_loop_nulls
+# Result: inter_test_loop_nulls
+# RunList: second trail NULL
+# RunList.Cycle: second trial NULL
+# RunList.Sample: second trial NULL
+# RunListTiming: inter_test_loop_nulls
+# RunListTiming.Cycle: inter_test_loop_nulls
+# RunListTiming.Sample: inter_test_loop_nulls
+# Running[SubTrial]: inter_test_loop_nulls
+# WinBig: second trail NULL
+# WinSmall: second trail NULL
+
+
+########################################################################################################################

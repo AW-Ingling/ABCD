@@ -121,6 +121,11 @@ class AbcdRecord(object):
         for label in labels:
             self.add_cell_value_to_row(label, value)
 
+    def fill_column_data(self, label, value):
+        column_index = self.column_index_for_label(label)
+        for row in self.rows:
+            row.add_cell(column_index, value)
+
     def save(self):
         for row in self.rows:
             row.add_constant_columns(self.constant_columns)

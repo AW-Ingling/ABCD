@@ -4,9 +4,12 @@ from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
 import mid_practice_record
+import abcd_random
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
 
+# init our random number generator so so that we can get the seed for the table
+rand_gen = abcd_random.ABCDRandom()
 
 # KEY name variables resolved at runtime:
 # SPACE_KEY
@@ -69,6 +72,7 @@ screen_num = shower.setup()
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
+output_record.add_constant_column("RandomSeed", rand_gen.seed)
 
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")
@@ -111,6 +115,7 @@ shower.show("Probes2", None, "SPACE_KEY")
 
 # E-Prime name: BlockInstruction
 runlist_sample_counter = 1  # used only for an output table column
+periodListTiming_sample = 1
 for trial_index in range(0, ifis_block_table.num_rows):
 
     # Give the user the instructions for one of the five practice trial types
@@ -160,6 +165,8 @@ for trial_index in range(0, ifis_block_table.num_rows):
         text_subs_feedback = {"ResponseCheck" : response_text, "Result" : result_text}
         shower.show("Feedback", 1.650, [], text_subs_feedback)
 
+
+
         output_record.add_cell_value_to_row("Instruction1", instruction_1)
         output_record.add_cell_value_to_row("Instruction2", instruction_2)
         output_record.add_cell_value_to_row("ListName", list_name)
@@ -182,10 +189,19 @@ for trial_index in range(0, ifis_block_table.num_rows):
         output_record.add_cell_value_to_row("prbacc", prbacc_flag)
         output_record.add_cell_value_to_row("Probe", probe_file_name)
 
-    #    output_record.add_cell_value_to_row("Probe.ACC", )
+    # DurationError: difference between the expected duration and actual duration
     #    output_record.add_cell_value_to_row("Probe.DurationError", )
+
+    # OnsetDelay: difference between the target onset time and the actual onset time
     #    output_record.add_cell_value_to_row("Probe.OnsetDelay", )
+
+    # OnsetTime: timestamp of stimulus onset (ms)
     #    output_record.add_cell_value_to_row("Probe.OnsetTime", )
+
+    # OnsetToOnsetTime: difference between the next and this onset time
+    #    output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", )
+
+
         output_record.add_cell_value_to_row("Probe.RESP", probe_resp_value(prbacc_flag))
 
         output_record.add_cell_value_to_row("Procedure[SubTrial]", "RewardProc")
@@ -216,110 +232,11 @@ for trial_index in range(0, ifis_block_table.num_rows):
 shower.show("PartOneEndText", None, "SPACE_KEY")
 
 
-# Create a null line between the first and scecond training loops to match the output from E-Prime
-# Columsn for the dummy row are filled in by four methods:
-# - dummy constant columns defined in module abcd_table
-# - constant columns defined above in this script, mid_practice
-# - second trail nulls set below with keys defined in module abcd_table
-# - inter-training nulls defined in module abcd_table
-output_record.add_new_row()
-output_record.add_cell_value_to_columns(mid_practice_record.second_trails_nulls, "NULL")
-output_record.add_cell_value_to_columns(mid_practice_record.inter_test_loop_nulls, "NULL")
-
-# ExperimentName: a dummy constant column
-# Subject: to be completed by a constant column
-# Session: to be completed by a constant column
-# Allowed: a dummy constant column
-# Clock.Information: to be completed by a constant column
-# DataFile.Basename: constant column
-# Display.RefreshRate: to be completed by a constant column
-# ExperimentVersion: a dummy constant column
-# Group: constant column
-# Handedness: constant column
-
-#output_record.add_cell_value_to_row("IntNewRT", )
-
-# NARGUID: constant column
-
-#output_record.add_cell_value_to_row("NewRT", )
-#output_record.add_cell_value_to_row("ProbeDuration", )
-
-# RandomSeed: to be completed by a constant column
-# RuntimeCapabilities: a dummy constant column
-# RuntimeVersion: a dummy constant column
-# RuntimeVersionExpected: a dummy constant column
-# SessionDate: constant column
-# SessionStartDateTimeUtc: always empty
-# SessionTime: constant column
-# StudioVersion: a dummy constant column
-
-#output_record.add_cell_value_to_row("Block", )
-#output_record.add_cell_value_to_row("BlockTitle", )
-
-# IFISBlockList: second trial NULL
-# IFISBlockList.Cycle: second trial NULL
-# IFISBlockList.Sample: second trial NULL
-# Instruction1: second trial NULL
-# Instruction2: second trial NULL
-# ListName: second trial NULL
-
-#output_record.add_cell_value_to_row("NameOfPeriodList", )
-#output_record.add_cell_value_to_row("Periods", )
-#output_record.add_cell_value_to_row("Procedure[Block]", )
-#output_record.add_cell_value_to_row("Running[Block]", )
-
-
-# Task: inter_test_loop_nulls
-
-#output_record.add_cell_value_to_row("TimingBlockList", )
-#output_record.add_cell_value_to_row("TimingBlockList.Cycle", )
-#output_record.add_cell_value_to_row("TimingBlockList.Sample", )
-#output_record.add_cell_value_to_row("Trial", )
-
-
-# PeriodList: second trail NULL
-# PeriodList.Cycle: second trial NULL
-# PeriodList.Sample: second trail NULL
-
-#output_record.add_cell_value_to_row("PeriodListTiming", )
-#output_record.add_cell_value_to_row("PeriodListTiming.Cycle", )
-#output_record.add_cell_value_to_row("PeriodListTiming.Sample", )
-#output_record.add_cell_value_to_row("Procedure[Trial]", )
-#output_record.add_cell_value_to_row("Running[Trial]", )
-
-
-# SubTrial: inter_test_loop_nulls
-# Anticipation.RESP: inter_test_loop_nulls
-# Condition: inter_test_loop_nulls
-# Cue: inter_test_loop_nulls
-# LoseBig: second trail NULL
-# LoseSmall: second trail NULL
-# Neutral: second trial NULL
-# prbacc: inter_test_loop_nulls
-# Probe: inter_test_loop_nulls
-# Probe.ACC: inter_test_loop_nulls
-# Probe.DurationError: inter_test_loop_nulls
-# Probe.OnsetDelay: inter_test_loop_nulls
-# Probe.OnsetTime: inter_test_loop_nulls
-# Probe.OnsetToOnsetTime: inter_test_loop_nulls
-# Probe.RESP: inter_test_loop_nulls
-# Probe.RT": inter_test_loop_nulls
-# Procedure[SubTrial]: inter_test_loop_nulls
-# ResponseCheck: inter_test_loop_nulls
-# Result: inter_test_loop_nulls
-# RunList: second trail NULL
-# RunList.Cycle: second trial NULL
-# RunList.Sample: second trial NULL
-# RunListTiming: inter_test_loop_nulls
-# RunListTiming.Cycle: inter_test_loop_nulls
-# RunListTiming.Sample: inter_test_loop_nulls
-# Running[SubTrial]: inter_test_loop_nulls
-# WinBig: second trail NULL
-# WinSmall: second trail NULL
 
 # Begin the TimingBlockList/BlocProcTiming list/procedure training loop.
 block_counter = trial_index + 2     # add one to increment and one to convert from 0-indexing to 1-indexing
 prac_run_counter = 1                # used only for table output column "BlockTitle"
+periodListTiming_sample = 0         # only used for the eponymous output data column
 for procedure_index in range(0, timing_block_table.num_rows):
 
     # fetch the procdure name from the table
@@ -329,13 +246,45 @@ for procedure_index in range(0, timing_block_table.num_rows):
     shower.show("BlockInstructionsTiming", None, "SPACE_KEY")
 
     # NOTE:  The PeriodListTiming table only specifies to run the two procedures under it only once each.
-    #        It is uncessary here becasue we can embed those under the same loop without referencing them in a table.
+    #        It is unnecessary here because we can embed those under the same loop without referencing them in a table.
 
     # E-prime name: PrepTime
     shower.show("PrepTime", 5)
 
     # E-Prime name: InitRunVar
     eprime_summation = EprimeSummation()
+
+    # The rule for incrementing is set to match the E-Prime output for this varaible's column
+    periodListTiming_sample += 1
+
+    # Create a null line between the first and scecond training loops to match the output from E-Prime
+    # Columns for the dummy row are filled in by four methods:
+    # - dummy constant columns defined in module abcd_table
+    # - constant columns defined above in this script, mid_practice
+    # - second trail nulls set below with keys defined in module abcd_table
+    # - inter-training nulls defined in module abcd_table
+    output_record.add_new_row()
+    output_record.add_cell_value_to_columns(mid_practice_record.second_trails_nulls, "NULL")
+    output_record.add_cell_value_to_columns(mid_practice_record.inter_test_loop_nulls, "NULL")
+    output_record.add_cell_value_to_row("ProbeDuration", secs_to_msecs(probe_duration_secs))
+    output_record.add_cell_value_to_row("Block", block_counter)
+    output_record.add_cell_value_to_row("BlockTitle", counter_to_block_title(prac_run_counter))
+    output_record.add_cell_value_to_row("NameOfPeriodList", "PeriodList")
+    output_record.add_cell_value_to_row("Periods", 2)           # TODO: check that this does not turn to 3 on 2nd pass
+    output_record.add_cell_value_to_row("Procedure[Block]", "BlockProc")
+    output_record.add_cell_value_to_row("Running[Block]", "TimingBlockList")
+    output_record.add_cell_value_to_row("TimingBlockList", prac_run_counter)
+    output_record.add_cell_value_to_row("TimingBlockList.Cycle", 1)
+    output_record.add_cell_value_to_row("TimingBlockList.Sample", prac_run_counter)
+    output_record.add_cell_value_to_row("Trial", 1)
+    output_record.add_cell_value_to_row("PeriodListTiming", 1)
+    output_record.add_cell_value_to_row("PeriodListTiming.Cycle", prac_run_counter)
+    output_record.add_cell_value_to_row("PeriodListTiming.Sample", periodListTiming_sample)
+    output_record.add_cell_value_to_row("Procedure[Trial]", "PrepProcTiming")
+    output_record.add_cell_value_to_row("Running[Trial]", "PeriodListTiming")
+
+    # The rule for incrementing is set to match the E-Prime output for this varaible's column
+    periodListTiming_sample += 1
 
     # E-Prime name: TrialProcTiming
     for run_list_index in range(0, run_list_table.num_rows):
@@ -398,13 +347,13 @@ for procedure_index in range(0, timing_block_table.num_rows):
         output_record.add_cell_value_to_row("PeriodList", "NULL")
         output_record.add_cell_value_to_row("PeriodList.Cycle", "NULL")
         output_record.add_cell_value_to_row("PeriodList.Sample", "NULL")
-      # output_record.add_cell_value_to_row("PeriodListTiming", ??)
+        output_record.add_cell_value_to_row("PeriodListTiming", 2)
         output_record.add_cell_value_to_row("PeriodListTiming.Cycle", prac_run_counter)
-     #  output_record.add_cell_value_to_row("PeriodListTiming.Sample", ??)
+        output_record.add_cell_value_to_row("PeriodListTiming.Sample", periodListTiming_sample)
         output_record.add_cell_value_to_row("Procedure[Trial]", "PrepProcTiming")
         output_record.add_cell_value_to_row("Running[Trial]", "PeriodListTiming")
         output_record.add_cell_value_to_row("SubTrial", prac_run_counter)
-    #   output_record.add_cell_value_to_row("Anticipation.RESP", )
+        output_record.add_cell_value_to_row("Anticipation.RESP", "")
         output_record.add_cell_value_to_row("Cue", cue_file_name)
         output_record.add_cell_value_to_row("LoseBig", "NULL")
         output_record.add_cell_value_to_row("LoseSmall", "NULL")
@@ -443,9 +392,18 @@ for procedure_index in range(0, timing_block_table.num_rows):
 shower.show("Goodbye", None, "SPACE_KEY")
 
 # E-Prime name DisplayPracticeRT
-int_new_rt = eprime_summation.user_rt_ms
+int_new_rt = eprime_summation.int_user_rt_ms
 text_subs_rt = {"IntNewRT" : str(int_new_rt)}
 shower.show("DisplayPracticeRT", None, "SPACE_KEY", text_subs_rt)
+
+# TODO: verify that the NewRT and IntNewRT values here are the ones which include stdev; In E-Prime the final message
+# TODO: ...should match the table column
+# The final calculated values for NewRT and IntNewRT fill every row in the E-Prime output
+new_rt = eprime_summation.user_rt_ms
+output_record.fill_column_data("NewRT", new_rt)
+output_record.fill_column_data("IntNewRT", int_new_rt)
+
+
 
 # store the data table
 output_record.save()

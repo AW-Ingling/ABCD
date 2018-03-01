@@ -143,8 +143,12 @@ class EprimeSummation():
 
     @property
     def user_rt_ms(self):
-        rounded_user_rt = round(self.std_devs_ms + 2 * self.std_devs_ms)
-        return rounded_user_rt
+        return self.std_devs_ms + 2 * self.std_devs_ms
+
+    @property
+    def int_user_rt_ms(self):
+        return round(self.user_rt_ms)
+
 
 
 
