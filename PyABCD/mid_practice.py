@@ -179,6 +179,7 @@ for trial_index in range(0, ifis_block_table.num_rows):
         output_record.add_cell_value_to_row("Probe.OnsetDelay", stim_record_probe.onset_delay_msecs(stim_record_anticipation))
         output_record.add_cell_value_to_row("Probe.OnsetTime", stim_record_probe.onset_time_msecs)
         output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", stim_record_probe.onset_to_onset_time_msecs)
+        output_record.add_cell_value_to_row("Probe.DurationError", stim_record_probe.duration_error_msecs(probe_duration_secs))
 
         output_record.add_cell_value_to_row("Instruction1", instruction_1)
         output_record.add_cell_value_to_row("Instruction2", instruction_2)
@@ -381,6 +382,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
         output_record.add_cell_value_to_row("Probe.OnsetDelay", stim_record_probe.onset_delay_msecs(stim_record_anticipation))
         output_record.add_cell_value_to_row("Probe.OnsetTime", stim_record_probe.onset_time_msecs)
         output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", stim_record_probe.onset_to_onset_time_msecs)
+        output_record.add_cell_value_to_row("Probe.DurationError", stim_record_probe.duration_error_msecs(probe_duration_secs))
 
         output_record.add_cell_value_to_row("Probe.RESP", probe_resp_value(prbacc_flag))
         output_record.add_cell_value_to_row("Procedure[SubTrial]", "RewardProcTiming")
@@ -431,7 +433,7 @@ output_record.save()
 shower.shutdown()
 
 # Print the raw fields from the records
-shower.print_records()
+#shower.print_records()
 
 # Open the window for the stimuli
 #w = open_stimulus_window()
