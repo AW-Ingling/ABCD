@@ -109,10 +109,27 @@ def key_char_for_name(name):
 add_key_name("SPACE_KEY", " ")
 
 
-def get_keydown(keyboard, filter_in_keys):
+class UserExitRequest(Exception):
+    pass
+
+
+class ExitDetector:
+
+    def __init__(self, key_char, modifiers):
+        self.key_chars = [key_char]
+        self.modifiers = set(modifiers)
+
+    def raise_if_exit_event(self, io_hub_key_event):
+        if io_hub_key_event.key in self.key_chars and set(io_hub_key_event.modifiers).issubset(self.modifiers):
+            raise UserExitRequest()
+
+
+def get_keydown(keyboard, filter_in_keys, exit_detector):
     for event in keyboard.getEvents():
-        if event.key in filter_in_keys:
-            if is_keypress(event):
+        if is_keypress(event):
+            if exit_detector:
+                exit_detector.raise_if_exit_event(event)
+            if event.key in filter_in_keys:
                 return event.key, event.time
     return None
 
@@ -242,7 +259,7 @@ class Show:
         cls.keyboard = None
 
     def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None,
-                 exit_on_key=True):
+                 exit_on_key=True, exit_detector = None):
         # TODO: It would be better to not instantiate self.image_stim here to make command-line testing easier..
         # TODO:     ..It requires and open window.
         self.window = window
@@ -251,6 +268,7 @@ class Show:
         self.timeout_secs = timeout_secs
         self.text_subs = text_subs
         self.exit_on_key = exit_on_key
+        self.exit_detector = exit_detector
         if isinstance(filter_in_key_names, str):
             filter_in_key_names = [filter_in_key_names]
         self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
@@ -270,7 +288,7 @@ class Show:
         stim_afterflip_secs = core.getTime()
         key_downs = []
         while not key_down_exit and not timeout_flag:
-            key_down = get_keydown(self.keyboard, self.filter_in_keys)
+            key_down = get_keydown(self.keyboard, self.filter_in_keys, self.exit_detector)
             if(key_down):
                 key_downs.append(key_down)
             key_down_exit = key_down and self.exit_on_key
@@ -290,14 +308,15 @@ class Show:
 class ShowMaker:
     """A convenience wrapper for the Show class which retains some arguments allowing abbreviated functions calls."""
 
-    def __init__(self, stim_bundle):
+    def __init__(self, stim_bundle, exit_detector):
         self.window = None
         self.stim_bundle = stim_bundle
+        self.exit_detector = exit_detector
         self.stim_records = []
 
     def show(self, stimulus_name, timeout_secs, filter_in_key_names=[], text_subs=None, exit_on_key=True):
         shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs,
-                      exit_on_key)
+                      exit_on_key, self.exit_detector)
         result_record = shower.show()
         self.stim_records.append(result_record)
         return result_record
