@@ -258,24 +258,70 @@ class Show:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None,
-                 exit_on_key=True, exit_detector = None):
-        # TODO: It would be better to not instantiate self.image_stim here to make command-line testing easier..
-        # TODO:     ..It requires and open window.
+    @classmethod
+    def make_show_common(cls, window, timeout_secs, filter_in_key_names, exit_on_key=True, exit_detector = None):
+        show= Show(window)
+        show.timeout_secs = timeout_secs
+        show.filter_in_key_names = filter_in_key_names
+        show.exit_on_key = exit_on_key
+        show.exit_detector = exit_detector
+        return show
+
+    @classmethod
+    def make_bundle_show(cls, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None,
+                         exit_on_key=True, exit_detector = None):
+        show = Show.make_show_common(window, timeout_secs, filter_in_key_names, exit_on_key, exit_detector)
+        show.stim_bundle = stim_bundle
+        show.stimulus_name = stimulus_name
+        show.text_subs = text_subs
+        show.setup_bundle_show()
+        return show
+
+    @classmethod
+    def make_string_show(cls, window, message, font_name, point_size, timeout_secs, filter_in_key_names,
+                         exit_on_key=True, exit_detector = None):
+
+        show = Show.make_show_common(cls, window, timeout_secs, filter_in_key_names, exit_on_key, exit_detector)
+        show.message = message
+        show.font_name = font_name
+        show.point_size = point_size
+        show.setup_string_show()
+        return show
+
+
+#    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None,
+#                 exit_on_key=True, exit_detector = None):
+    def __init__(self, window):
         self.window = window
-        self.stim_bundle = stim_bundle
-        self.stimulus_name = stimulus_name
-        self.timeout_secs = timeout_secs
-        self.text_subs = text_subs
-        self.exit_on_key = exit_on_key
-        self.exit_detector = exit_detector
-        if isinstance(filter_in_key_names, str):
-            filter_in_key_names = [filter_in_key_names]
-        self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
+        # for bundles
+        self.stim_bundle = None
+        self.stimulus_name = None
+        self.timeout_secs = None
+        self.filter_in_key_names = None
+        self.text_subs = None
+        self.exit_on_key = None
+        self.exit_detector = None
+        # for strings
+        self.message = None
+        self.font_name = None
+        self.point_size = None
+        # init variables
         self.records = None
         #self.path_to_image = self.stim_bundle.image_path_for_name(self.image_name)
         #self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
-        self.stimulus = Stimulus(self.stim_bundle, self.window, self.stimulus_name, self.text_subs)
+
+    def setup_common(self):
+        if isinstance(self.filter_in_key_names, str):
+            self.filter_in_key_names = [self.filter_in_key_names]
+        self.filter_in_keys = [key_char_for_name(name) for name in self.filter_in_key_names]
+
+    def setup_bundle_show(self):
+        self.setup_common()
+        self.stimulus = Stimulus.make_bundle_stimulus(self.window, self.stim_bundle, self.stimulus_name, self.text_subs)
+
+    def setup_string_show(self):
+        self.setup_common()
+        self.stimulus = Stimulus.make_string_stimulus(self.window, self.message, self.font_name, self.point_size)
 
     def is_timeout_mode(self):
         return self.timeout_secs is not None
@@ -315,8 +361,8 @@ class ShowMaker:
         self.stim_records = []
 
     def show(self, stimulus_name, timeout_secs, filter_in_key_names=[], text_subs=None, exit_on_key=True):
-        shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs,
-                      exit_on_key, self.exit_detector)
+        shower = Show.make_bundle_show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names,
+                                       text_subs, exit_on_key, self.exit_detector)
         result_record = shower.show()
         self.stim_records.append(result_record)
         return result_record
@@ -324,6 +370,14 @@ class ShowMaker:
     def show_file(self, file_name, timeout_secs, filter_in_key_names=[], text_subs=None, exit_on_key=True):
         stimulus_name = os.path.splitext(file_name)[0]
         result_record = self.show(stimulus_name, timeout_secs, filter_in_key_names, text_subs, exit_on_key)
+        return result_record
+
+    def show_text(self, message, timeout_secs, filter_in_key_names=[], font_name="verdana", point_size=18,
+                  exit_on_key=True):
+        shower = Show.make_string_show(self.window, message, font_name, point_size, timeout_secs, filter_in_key_names,
+                                       exit_on_key, self.exit_detector)
+        result_record = shower.show()
+        self.stim_records.append(result_record)
         return result_record
 
     def setup(self):

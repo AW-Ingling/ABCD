@@ -19,9 +19,38 @@ class Stimulus:
 
     """Abstracts up image and text stimuli into a common class"""
 
-    def __init__(self, stim_bundle, window, name, text_subs=None):
-        # retain arguments and init defaults
+    @classmethod
+    def make_bundle_stimulus(cls, window, stim_bundle, name, text_subs=None):
+        stimulus = Stimulus(window)
+        stimulus.stim_bundle = stim_bundle
+        stimulus.name = name
+        stimulus.text_subs = text_subs
+        stimulus.is_bundle_stimulus = True
+        stimulus.setup_bundle_stimulus()
+        return stimulus
+
+    @classmethod
+    def make_string_stimulus(cls, window, message, font_name="verdana", point_size=18):
+        stimulus = Stimulus(window)
+        stimulus.message = message
+        stimulus.font_name = font_name
+        stimulus.point_size = point_size
+        stimulus.is_bundle_stimulus = False
+        stimulus.setup_string_stimulus()
+        return stimulus
+
+#    def __init__(self, stim_bundle, window, name, text_subs=None):
+    def __init__(self, window):
+        # variables assigned by class method constructors
         self.window = window
+        self.stim_bundle = None
+        self.name = None
+        self.text_subs = None
+        self.is_bundle_stimulus = None
+        self.message = None
+        self.font_name = None
+        self.point_size = None
+        # init defaults
         self.image_stim = None
         self.text_block = None
         self.raw_text = None
@@ -29,22 +58,25 @@ class Stimulus:
         self.path_to_image = None
         self.path_to_text_display_file = None
         self.path_to_text_json_file = None
+
+    def setup_bundle_stimulus(self):
+
         # conditionally instantiate image or text resources
-        if stim_bundle.is_image_name(name):
-            self.path_to_image = stim_bundle.image_path_for_name(name)
-            self.image_stim = visual.ImageStim(window, image=self.path_to_image, units='pix')
-        elif stim_bundle.is_text_display_name(name):
-            self.path_to_text_display_file = stim_bundle.text_display_path_for_name(name)
-            self.path_to_text_json_file = stim_bundle.text_json_path_for_name(name)
+        if self.stim_bundle.is_image_name(self.name):
+            self.path_to_image = self.stim_bundle.image_path_for_name(self.name)
+            self.image_stim = visual.ImageStim(self.window, image=self.path_to_image, units='pix')
+        elif self.stim_bundle.is_text_display_name(self.name):
+            self.path_to_text_display_file = self.stim_bundle.text_display_path_for_name(self.name)
+            self.path_to_text_json_file = self.stim_bundle.text_json_path_for_name(self.name)
             with open(self.path_to_text_display_file, 'r') as text_file:
                 self.raw_text = text_file.read()
             with open(self.path_to_text_json_file, 'r') as layout_file:
                 self.layout = json.load(layout_file)
             self.text = self.raw_text
-            if text_subs:
-                for key in text_subs:
+            if self.text_subs:
+                for key in self.text_subs:
                     key_str = '[' + key + ']'
-                    self.text = self.text.replace(key_str, text_subs[key])
+                    self.text = self.text.replace(key_str, self.text_subs[key])
             # self.text_stim = visual.TextStim(window,
             #                                  font=self.layout['font']['name'],
             #                                  bold=self.layout['font']['bold'],
@@ -56,13 +88,18 @@ class Stimulus:
             #                                  height=points_to_pixels(self.layout['font']['point_size']),
             #                                  text=self.text)
             font_size_pixels = points_to_pixels(self.layout['font']['point_size'])
-            self.text_block = TextBlock(window, self.text, self.layout['font']['name'], font_size_pixels)
+            self.text_block = TextBlock(self.window, self.text, self.layout['font']['name'], font_size_pixels)
             #TODO: Communicated all parameters in the json text format file to the TextBlock init.
             self.text_block.format()
             #TODO: Detect and warn if not all variables are used in either the text file or dictionary
         else:
-            print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % name)
+            print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % self.name)
             sys.exit()
+
+    def setup_string_stimulus(self):
+        font_size_pixels = points_to_pixels(self.point_size_pixels)
+        self.text_block = TextBlock(self.window, self.message, self.font_name, font_size_pixels)
+        self.text_block.format()
 
     def draw_flip(self):
         # Conditionally draw either the image or text stimulus then buffer flip
