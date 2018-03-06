@@ -161,10 +161,10 @@ for trial_index in range(0, ifis_block_table.num_rows):
 
         # present the crosshairs for 2000 msecs = 2 seconds
         #TODO: Record key presses and return them even if non are filtered int
-        stim_record_anticipation= shower.show("Anticipation", 2.0, "SPACE_KEY")
+        stim_record_anticipation= shower.show("Anticipation", 2.0, "SPACE_KEY", None, False)
 
         # present the probe, the solid black shape for 350 msecs = 0.350 seconds
-        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
+        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY", None, False)
         reaction_time = stim_record_probe.first_keydown_delay_secs
 
         # lookup text strings according to trial state and response, generate dyanamic message
@@ -316,11 +316,11 @@ for procedure_index in range(0, timing_block_table.num_rows):
         shower.show_file(cue_file_name, 2.0)
 
         # E-Prime name: Anticipation
-        stim_record_anticipation = shower.show("Anticipation", 2.0, "SPACE_KEY")
+        stim_record_anticipation = shower.show("Anticipation", 2.0, "SPACE_KEY", None, False)
 
         # E-Prime name: Probe
         probe_file_name= run_list_table.cell_value("Probe", run_list_index + 1)
-        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
+        stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY", None, False)
         reaction_time = stim_record_probe.first_keydown_delay_secs
         eprime_summation.add_observation_secs(reaction_time)
 
@@ -371,6 +371,7 @@ for procedure_index in range(0, timing_block_table.num_rows):
         output_record.add_cell_value_to_row("Running[Trial]", "PeriodListTiming")
         output_record.add_cell_value_to_row("SubTrial", prac_run_counter)
         output_record.add_cell_value_to_row("Anticipation.RESP", "")
+        output_record.add_cell_value_to_row("Condition", tbl_condition)
         output_record.add_cell_value_to_row("Cue", cue_file_name)
         output_record.add_cell_value_to_row("LoseBig", "NULL")
         output_record.add_cell_value_to_row("LoseSmall", "NULL")

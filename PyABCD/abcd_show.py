@@ -49,7 +49,8 @@ from abcd_stimulus import *
 #TODO: Make sure synchronized flips are turned on
 #TODO: Write a test suite to accompany ABCD
 
-POLLING_LOOP_FREQUENCY_HZ = 100.0
+# TODO: Set this dynamically at 2x the frame rate + foo.
+POLLING_LOOP_FREQUENCY_HZ = 200.0
 
 polling_loop_period_secs = 1/POLLING_LOOP_FREQUENCY_HZ
 
@@ -240,7 +241,8 @@ class Show:
         cls.io = None
         cls.keyboard = None
 
-    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None):
+    def __init__(self, window, stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs=None,
+                 exit_on_key=True):
         # TODO: It would be better to not instantiate self.image_stim here to make command-line testing easier..
         # TODO:     ..It requires and open window.
         self.window = window
@@ -248,6 +250,7 @@ class Show:
         self.stimulus_name = stimulus_name
         self.timeout_secs = timeout_secs
         self.text_subs = text_subs
+        self.exit_on_key = exit_on_key
         if isinstance(filter_in_key_names, str):
             filter_in_key_names = [filter_in_key_names]
         self.filter_in_keys = [key_char_for_name(name) for name in filter_in_key_names]
@@ -260,19 +263,20 @@ class Show:
         return self.timeout_secs is not None
 
     def show(self):
-        key_down = False
+        key_down_exit = False
         timeout_flag = False
         self.io.clearEvents()
         self.stimulus.draw_flip()
         stim_afterflip_secs = core.getTime()
         key_downs = []
-        while not key_down and not timeout_flag:
+        while not key_down_exit and not timeout_flag:
             key_down = get_keydown(self.keyboard, self.filter_in_keys)
             if(key_down):
                 key_downs.append(key_down)
+            key_down_exit = key_down and self.exit_on_key
             elapsed_time_secs = core.getTime() - stim_afterflip_secs
             timeout_flag = self.is_timeout_mode() and elapsed_time_secs > self.timeout_secs
-            if not key_down and not timeout_flag:
+            if not key_down_exit and not timeout_flag:
                 core.wait(polling_loop_period_secs)
         #TODO: Draw a blank screen or the next frame here?
         self.stimulus.clear_flip()
@@ -291,15 +295,16 @@ class ShowMaker:
         self.stim_bundle = stim_bundle
         self.stim_records = []
 
-    def show(self, stimulus_name, timeout_secs, filter_in_key_names=[], text_subs=None):
-        shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs)
+    def show(self, stimulus_name, timeout_secs, filter_in_key_names=[], text_subs=None, exit_on_key=True):
+        shower = Show(self.window, self.stim_bundle, stimulus_name, timeout_secs, filter_in_key_names, text_subs,
+                      exit_on_key)
         result_record = shower.show()
         self.stim_records.append(result_record)
         return result_record
 
-    def show_file(self, file_name, timeout_secs, filter_in_key_names=[], text_subs=None):
+    def show_file(self, file_name, timeout_secs, filter_in_key_names=[], text_subs=None, exit_on_key=True):
         stimulus_name = os.path.splitext(file_name)[0]
-        result_record = self.show(stimulus_name, timeout_secs, filter_in_key_names, text_subs)
+        result_record = self.show(stimulus_name, timeout_secs, filter_in_key_names, text_subs, exit_on_key)
         return result_record
 
     def setup(self):
