@@ -6,6 +6,7 @@ from mid_practice_helpers import *
 import mid_practice_record
 import abcd_random
 
+
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
 
 # init our random number generator so so that we can get the seed for the table
@@ -74,6 +75,13 @@ framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
 output_record.add_constant_column("RandomSeed", rand_gen.seed)
 
+# mark start time for timers which generates values for output columns:
+#  - Probe.OnsetDelay
+#  - Probe.OnsetTime
+#  - Probe.OnsetToOnsetTime
+# TODO: Figure out where this should really go.
+mark_start_time()
+
 # E-Prime name: TitlePage
 shower.show("TitlePage", None, "SPACE_KEY")
 
@@ -114,8 +122,10 @@ shower.show("NeutralProbe", None, "SPACE_KEY")
 shower.show("Probes2", None, "SPACE_KEY")
 
 # E-Prime name: BlockInstruction
+# Init variables used only for output to spreadsheet.
 runlist_sample_counter = 1  # used only for an output table column
 periodListTiming_sample = 1
+
 for trial_index in range(0, ifis_block_table.num_rows):
 
     # Give the user the instructions for one of the five practice trial types
@@ -166,6 +176,9 @@ for trial_index in range(0, ifis_block_table.num_rows):
         shower.show("Feedback", 1.650, [], text_subs_feedback)
 
 
+        output_record.add_cell_value_to_row("Probe.OnsetDelay", stim_record_probe.onset_delay_msecs(stim_record_anticipation))
+        output_record.add_cell_value_to_row("Probe.OnsetTime", stim_record_probe.onset_time_msecs)
+        output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", stim_record_probe.onset_to_onset_time_msecs)
 
         output_record.add_cell_value_to_row("Instruction1", instruction_1)
         output_record.add_cell_value_to_row("Instruction2", instruction_2)
@@ -189,16 +202,19 @@ for trial_index in range(0, ifis_block_table.num_rows):
         output_record.add_cell_value_to_row("prbacc", prbacc_flag)
         output_record.add_cell_value_to_row("Probe", probe_file_name)
 
-    # DurationError: difference between the expected duration and actual duration
+    # DurationError: "difference between the expected duration and actual duration"
     #    output_record.add_cell_value_to_row("Probe.DurationError", )
 
-    # OnsetDelay: difference between the target onset time and the actual onset time
+    # OnsetDelay: "difference between the target onset time and the actual onset time"
     #    output_record.add_cell_value_to_row("Probe.OnsetDelay", )
 
-    # OnsetTime: timestamp of stimulus onset (ms)
+    # OnsetTime: "timestamp of stimulus onset (ms)"
     #    output_record.add_cell_value_to_row("Probe.OnsetTime", )
 
-    # OnsetToOnsetTime: difference between the next and this onset time
+    # OnsetToOnsetTime: "difference between the next and this onset time"
+    # Typical values for this are 433 wich is the sum of column Probe.OnsetDelay value, 83, and ProbeDuration[Session],
+    # 350.
+    #
     #    output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", )
 
 
@@ -361,9 +377,11 @@ for procedure_index in range(0, timing_block_table.num_rows):
         output_record.add_cell_value_to_row("prbacc", prbacc_flag)
         output_record.add_cell_value_to_row("Probe", probe_file_name)
         #    output_record.add_cell_value_to_row("Probe.ACC", )
-        #    output_record.add_cell_value_to_row("Probe.DurationError", )
-        #    output_record.add_cell_value_to_row("Probe.OnsetDelay", )
-        #    output_record.add_cell_value_to_row("Probe.OnsetTime", )
+
+        output_record.add_cell_value_to_row("Probe.OnsetDelay", stim_record_probe.onset_delay_msecs(stim_record_anticipation))
+        output_record.add_cell_value_to_row("Probe.OnsetTime", stim_record_probe.onset_time_msecs)
+        output_record.add_cell_value_to_row("Probe.OnsetToOnsetTime", stim_record_probe.onset_to_onset_time_msecs)
+
         output_record.add_cell_value_to_row("Probe.RESP", probe_resp_value(prbacc_flag))
         output_record.add_cell_value_to_row("Procedure[SubTrial]", "RewardProcTiming")
         output_record.add_cell_value_to_row("ResponseCheck", response_text)

@@ -72,6 +72,7 @@ class Stimulus:
             self.text_block.draw()
         self.window.flip()
 
+
     def clear_flip(self):
         # Clear the window and flip
         self.window.clearBuffer()

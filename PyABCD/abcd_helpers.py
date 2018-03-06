@@ -81,9 +81,15 @@ def probe_resp_value(prbacc_flag):
 def counter_to_block_title(counter):
     return "PracRun_" + str(counter)
 
+# generates the list of differences of successive elements in a list
+def succ_diff(num_list):
+    return [t - s for s, t in zip(num_list, num_list[1:])]
 
-
-
+def paste_int_column():
+    column_str = raw_input("Paste a spreadsheet column:")
+    column_str_lst = column_str.split()
+    column_vals = [int(item) for item in column_str_lst]
+    return column_vals
 
 
 
