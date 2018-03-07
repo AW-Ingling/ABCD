@@ -415,9 +415,6 @@ try:
 except UserExitRequest:
     shower.show_text("Exit command detected.  Press space bar to exit", None, "SPACE_KEY")
 
-    # save incomplete data.  The "NewRT" and "IntNewRT" columns will not be present.
-    output_record.save()
-
 else:
     # E-Prime name Goodbye
     shower.show("Goodbye", None, "SPACE_KEY")
@@ -434,27 +431,13 @@ else:
     output_record.fill_column_data("NewRT", new_rt)
     output_record.fill_column_data("IntNewRT", int_new_rt)
 
-    # store the data table
+
+finally:
+
+    # Store the output spreadsheet
+    # If the data is incomplete because we exited early then the "NewRT" and "IntNewRT" columns will not be present.
     output_record.save()
 
     # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
     shower.shutdown()
-
-    # Print the raw fields from the records
-    #shower.print_records()
-
-    # Open the window for the stimuli
-    #w = open_stimulus_window()
-
-    # TODO: Put that all in one line by wrapping Presenter in a closure which includes the bundle and also implementing a
-    # TODO: ...class method on Presenter which creates and instance and runs show
-    # TODO: ...also call setup
-
-    # 1. Present the title page, wait for space bar
-    #p = Show(w, stim_bundle, "MID_Practice_TitlePage", None, SPACE_KEY)
-    #record = p.show()
-    #stim_records.append(record)
-
-    # Close the window
-    #w = close_stimulus_window()
 
