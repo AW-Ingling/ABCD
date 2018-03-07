@@ -413,7 +413,7 @@ try:
             block_counter += 1
 
 except UserExitRequest:
-    pass
+    shower.show_text("Exit command detected.  Press space bar to exit", None, "SPACE_KEY")
 
 
 else:

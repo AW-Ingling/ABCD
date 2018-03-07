@@ -281,7 +281,7 @@ class Show:
     def make_string_show(cls, window, message, font_name, point_size, timeout_secs, filter_in_key_names,
                          exit_on_key=True, exit_detector = None):
 
-        show = Show.make_show_common(cls, window, timeout_secs, filter_in_key_names, exit_on_key, exit_detector)
+        show = Show.make_show_common(window, timeout_secs, filter_in_key_names, exit_on_key, exit_detector)
         show.message = message
         show.font_name = font_name
         show.point_size = point_size
@@ -372,8 +372,8 @@ class ShowMaker:
         result_record = self.show(stimulus_name, timeout_secs, filter_in_key_names, text_subs, exit_on_key)
         return result_record
 
-    def show_text(self, message, timeout_secs, filter_in_key_names=[], font_name="verdana", point_size=18,
-                  exit_on_key=True):
+    def show_text(self, message, timeout_secs, filter_in_key_names=[], exit_on_key=True, font_name="verdana",
+                  point_size=18):
         shower = Show.make_string_show(self.window, message, font_name, point_size, timeout_secs, filter_in_key_names,
                                        exit_on_key, self.exit_detector)
         result_record = shower.show()

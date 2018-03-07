@@ -97,7 +97,7 @@ class Stimulus:
             sys.exit()
 
     def setup_string_stimulus(self):
-        font_size_pixels = points_to_pixels(self.point_size_pixels)
+        font_size_pixels = points_to_pixels(self.point_size)
         self.text_block = TextBlock(self.window, self.message, self.font_name, font_size_pixels)
         self.text_block.format()
 
