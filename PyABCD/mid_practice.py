@@ -415,6 +415,8 @@ try:
 except UserExitRequest:
     shower.show_text("Exit command detected.  Press space bar to exit", None, "SPACE_KEY")
 
+    # save incomplete data.  The "NewRT" and "IntNewRT" columns will not be present.
+    output_record.save()
 
 else:
     # E-Prime name Goodbye
