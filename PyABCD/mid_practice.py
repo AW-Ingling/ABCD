@@ -84,6 +84,9 @@ output_record.add_constant_column("RandomSeed", rand_gen.seed)
 # TODO: Figure out where this should really go.
 mark_start_time()
 
+# hide the mouse cursor
+shower.hide_cursor()
+
 try:
 
     # E-Prime name: TitlePage
@@ -433,6 +436,9 @@ else:
 
 
 finally:
+
+    # Show the mouse cursor
+    shower.show_cursor()
 
     # Store the output spreadsheet
     # If the data is incomplete because we exited early then the "NewRT" and "IntNewRT" columns will not be present.

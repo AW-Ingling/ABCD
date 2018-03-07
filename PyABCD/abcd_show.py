@@ -402,7 +402,16 @@ class ShowMaker:
             sys.exit()
         else:
             close_stimulus_window()
+            self.window = None
             Show.shutdown()
+
+    def hide_cursor(self):
+        if self.window:
+            self.window.mouseVisible = False
+
+    def show_cursor(self):
+        if self.window:
+            self.window.mouseVisible = True
 
     def print_records(self):
         for record in self.stim_records:

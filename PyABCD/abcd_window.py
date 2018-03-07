@@ -1,4 +1,4 @@
-# test_vis.py
+# abcd_window.py
 #
 # Tries out Python 2.7 with Psychopy on Windows 10
 
@@ -127,16 +127,25 @@ print("Selected: %s." % target_screen.get_mode())
 
 #TODO Refactor all of this into a class
 
+
 def get_target_screen_index():
     return target_screen_index
+
 
 def open_stimulus_window():
     global stimulus_window
     stimulus_window = visual.Window(screen=target_screen_index, fullscr=True, units='pix')
     return stimulus_window
 
+
 def close_stimulus_window():
+    global stimulus_window
     stimulus_window.close()
+    stimulus_window = None
+
+
+
+
 
 
 
