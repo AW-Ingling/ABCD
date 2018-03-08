@@ -19,7 +19,7 @@
 # - Bound the mouse onto the other screen
 # - Use another API (Pyglet)
 
-from psychopy import visual, core, event
+from psychopy import visual, core, event, iohub
 import pyglet
 
 # works until the operator clicks outside of the fullscreen window
@@ -60,5 +60,27 @@ def t4():
         core.wait(0.010)
     m.setExclusive(False)
     w.close()
+
+
+def t5():
+    # Open the window and hide the cursor
+    w = visual.Window(screen=1, fullscr=True, units='pix')
+    m = event.Mouse(visible=False, win=w)
+    m.setExclusive(True)
+
+    # Turn on IOHub
+    io = iohub.launchHubServer()
+    kb = io.devices.keyboard
+
+    # Delay a while
+    t_end = core.getTime() + 10
+    while core.getTime() < t_end:
+        core.wait(0.010)
+
+    # Turn off iohub, release the cursor and close the window
+    io.quit()
+    m.setExclusive(False)
+    w.close()
+
 
 

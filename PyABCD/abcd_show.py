@@ -382,8 +382,9 @@ class ShowMaker:
 
     def setup(self):
         if self.window is None:
-            self.window = open_stimulus_window()
             Show.setup()
+            self.window = open_stimulus_window()
+            self.hide_cursor()
             self.stim_records = []
             return self.window.screen
         else:
@@ -401,23 +402,21 @@ class ShowMaker:
             print("Error: Attempt to shutdown the ShowMaker when it is not setup.")
             sys.exit()
         else:
+            show_cursor()
             close_stimulus_window()
             self.window = None
             Show.shutdown()
-
-    def hide_cursor(self):
-        if self.window:
-            self.window.mouseVisible = False
-
-    def show_cursor(self):
-        if self.window:
-            self.window.mouseVisible = True
 
     def print_records(self):
         for record in self.stim_records:
             print("")
             print(record)
 
+    def hide_cursor(self):
+        hide_cursor()
+
+    def show_cursor(self):
+        show_cursor()
 
 
 

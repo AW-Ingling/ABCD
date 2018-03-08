@@ -52,6 +52,7 @@ exit_detector = ExitDetector("q", ["lctrl", "rctrl"])
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
 shower = ShowMaker(stim_bundle, exit_detector)
 
+
 # Get the operator input
 screen_index = get_target_screen_index()
 operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name)[1], screen_index)
@@ -72,6 +73,7 @@ output_record.add_constant_column("SessionTime", session_time)
 # Open the stimulus window, fire up the IOHub engine to read key presses
 screen_num = shower.setup()
 
+
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
@@ -83,9 +85,6 @@ output_record.add_constant_column("RandomSeed", rand_gen.seed)
 #  - Probe.OnsetToOnsetTime
 # TODO: Figure out where this should really go.
 mark_start_time()
-
-# hide the mouse cursor
-shower.hide_cursor()
 
 try:
 
@@ -437,8 +436,6 @@ else:
 
 finally:
 
-    # Show the mouse cursor
-    shower.show_cursor()
 
     # Store the output spreadsheet
     # If the data is incomplete because we exited early then the "NewRT" and "IntNewRT" columns will not be present.

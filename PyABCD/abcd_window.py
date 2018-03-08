@@ -15,7 +15,7 @@
 # Imports
 import sys
 import enum
-from psychopy import visual, core, monitors
+from psychopy import visual, core, monitors, event
 import pyglet
 import platform
 
@@ -46,6 +46,7 @@ if platform.system() == "Darwin":
 
 # Default Stimulus Window
 stimulus_window = None
+event_mouse = None
 
 # Get the list of all screens from Pyglet
 print("Getting list of all screens...")
@@ -143,8 +144,18 @@ def close_stimulus_window():
     stimulus_window.close()
     stimulus_window = None
 
+def hide_cursor():
+    global event_mouse
+    if stimulus_window:
+        event_mouse = event.Mouse(visible=False, win=stimulus_window)
+        event_mouse.setExclusive(True)
 
-
+def show_cursor():
+    global event_mouse
+    if stimulus_window and event_mouse:
+        event_mouse.setVisible(True)
+        event_mouse.setExclusive(False)
+        event_mouse = None
 
 
 
