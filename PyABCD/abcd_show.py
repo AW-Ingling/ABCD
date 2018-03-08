@@ -116,12 +116,18 @@ class UserExitRequest(Exception):
 class ExitDetector:
 
     def __init__(self, key_char, modifiers):
-        self.key_chars = [key_char]
+        self.key_char = key_char
         self.modifiers = set(modifiers)
+        self.was_raised = False
 
     def raise_if_exit_event(self, io_hub_key_event):
-        if io_hub_key_event.key in self.key_chars and set(io_hub_key_event.modifiers).issubset(self.modifiers):
-            raise UserExitRequest()
+        if not self.was_raised:
+            read_modifiers = set(io_hub_key_event.modifiers)
+            modifiers_intersection = read_modifiers.intersection(self.modifiers)
+            modifiers_match = modifiers_intersection == read_modifiers and modifiers_intersection
+            if io_hub_key_event.key == self.key_char and modifiers_match:
+                self.was_raised = True
+                raise UserExitRequest()
 
 
 def get_keydown(keyboard, filter_in_keys, exit_detector):
