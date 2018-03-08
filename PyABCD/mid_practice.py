@@ -1,5 +1,6 @@
 
 from mid_dialogs import *  # for some unknown reason this must be imported first or the dialogs are not seen.
+from abcd_versions import *
 from abcd_show import *
 from abcd_table import *
 from mid_practice_helpers import *
@@ -7,7 +8,10 @@ import mid_practice_record
 import abcd_random
 
 
+
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
+
+version_keeper.assign_experiment_types(ExperimentType.mid_practice, ScannerType.practice)
 
 # init our random number generator so so that we can get the seed for the table
 rand_gen = abcd_random.ABCDRandom()

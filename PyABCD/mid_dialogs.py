@@ -6,6 +6,8 @@
 #
 
 from psychopy import gui
+from abcd_versions import *
+from abcd_recnames import *
 
 dialogs_screen_num = 0
 
@@ -148,18 +150,6 @@ class CancelOrContinue:
         return self.dlg.OK
 
 
-def make_output_filename_wo_extension(subject_id, session_number):
-
-    file_name = "ABCD_MID_Practice_20161209_" + subject_id + "-" + str(session_number)
-    return file_name
-
-
-def make_output_filename_w_extension(subject_id, session_number):
-
-    file_name = make_output_filename_wo_extension(subject_id, session_number) + ".xls"
-    return file_name
-
-
 
 
 # returns a dictionary with the following key-value pairs:
@@ -204,7 +194,7 @@ def get_inputs(file_exists_checker, screen_number):
             break
     # check if the file already exists and warn accordingly
     file_name_wo_extension = make_output_filename_wo_extension(table['subject_id'], table['session_number'])
-    file_name_w_extension =  make_output_filename_w_extension(table['subject_id'], table['session_number'])
+    file_name_w_extension = make_output_filename_w_extension(table['subject_id'], table['session_number'])
     exists = file_exists_checker(file_name_w_extension)
     table.update({'file_name' : file_name_w_extension})
     table.update({'file_name_without_extension': file_name_wo_extension})

@@ -37,6 +37,7 @@ from psychopy import visual, core, monitors, iohub
 from abcd_window import *
 from stim_bundle import *
 from abcd_stimulus import *
+from abcd_exceptions import *
 
 
 
@@ -44,7 +45,7 @@ from abcd_stimulus import *
 #TODO: Document that modifier keys are ignored
 #TODO: Instrument timing loop to find out what is taking time there
 #TODO: Look for timing loop misses
-#TODO: Raise priorit
+#TODO: Raise priority
 #TODO: Check for other applications running and shut them down
 #TODO: Make sure synchronized flips are turned on
 #TODO: Write a test suite to accompany ABCD
@@ -107,10 +108,6 @@ def key_char_for_name(name):
 
 
 add_key_name("SPACE_KEY", " ")
-
-
-class UserExitRequest(Exception):
-    pass
 
 
 class ExitDetector:
