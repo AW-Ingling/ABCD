@@ -112,16 +112,16 @@ class AskHandedness:
             return None
 
 
-class WarnExistingFile:
-
-    def __init__(self, file_name):
-        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
-        self.dlg.addText("The data file and/or recovery file already exists: %s" % file_name)
-        self.dlg.addText("Do you want to overwrite?")
-
-    def run(self):
-        self.dlg.show()
-        return self.dlg.OK
+# class WarnExistingFile:
+#
+#     def __init__(self, file_name):
+#         self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
+#         self.dlg.addText("The data file and/or recovery file already exists: %s" % file_name)
+#         self.dlg.addText("Do you want to overwrite?")
+#
+#     def run(self):
+#         self.dlg.show()
+#         return self.dlg.OK
 
 
 class SummaryStartup:
@@ -163,7 +163,7 @@ class CancelOrContinue:
 # file_name_without_extension string  full file name without extension   "ABCD_MID_Practice_20161209-AANNNAAA-1"
 #
 #
-def get_inputs(file_exists_checker, screen_number):
+def get_inputs(record_filename_maker, screen_number):
     global dialogs_screen_num
     dialogs_screen_num = screen_number
     while True:
@@ -192,28 +192,33 @@ def get_inputs(file_exists_checker, screen_number):
                 return None
         else:
             break
-    # check if the file already exists and warn accordingly
-    file_name_wo_extension = make_output_filename_wo_extension(table['subject_id'], table['session_number'])
-    file_name_w_extension = make_output_filename_w_extension(table['subject_id'], table['session_number'])
-    exists = file_exists_checker(file_name_w_extension)
-    table.update({'file_name' : file_name_w_extension})
-    table.update({'file_name_without_extension': file_name_wo_extension})
-    if exists:
-        do_overwrite = WarnExistingFile(file_name_wo_extension).run()
-        if do_overwrite:
-            return table
-        else:
-            return None
+    # # check if the file already exists and warn accordingly
+    # file_name_wo_extension = make_output_filename_wo_extension(table['subject_id'], table['session_number'])
+    # file_name_w_extension = make_output_filename_w_extension(table['subject_id'], table['session_number'])
+    # exists = file_exists_checker(file_name_w_extension)
+    # table.update({'file_name' : file_name_w_extension})
+    # table.update({'file_name_without_extension': file_name_wo_extension})
+    # if exists:
+    #     do_overwrite = WarnExistingFile(file_name_wo_extension).run()
+    #     if do_overwrite:
+    #         return table
+    #     else:
+    #         return None
+    # return table
+
+    # make a new filename
+    file_name, file_name_without_extension = record_filename_maker(table['subject_id'], table['session_number'])
+    table.update({'file_name' : file_name})
+    table.update({'file_name_without_extension': file_name_without_extension})
     return table
 
 
-
-def yes_file_exists_dummy(file_name):
-    return True
-
-
-def no_file_exists_dummy(file_name):
-    return False
+# def yes_file_exists_dummy(file_name):
+#     return True
+#
+#
+# def no_file_exists_dummy(file_name):
+#     return False
 
 
 

@@ -10,6 +10,8 @@ import abcd_random
 
 
 # TODO: Replace sys.exit() with assertions so that we still have state in the console; throw exceptions.
+# TODO: Replace remaining sys.exit() with core.quit(). See:
+# TODO: ... https://discourse.psychopy.org/t/exiting-with-core-quit-or-sys-exit/4059/2
 
 version_keeper.assign_experiment_types(ExperimentType.mid_practice, ScannerType.practice)
 
@@ -56,10 +58,12 @@ exit_detector = ExitDetector("q", ["lctrl", "rctrl"])
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
 shower = ShowMaker(stim_bundle, exit_detector)
 
-
 # Get the operator input
 screen_index = get_target_screen_index()
-operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name)[1], screen_index)
+record_filename_maker = make_record_file_name_maker(stim_bundle)
+operator_table = get_inputs(record_filename_maker, screen_index)
+
+# operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name)[1], screen_index)
 if operator_table is None:
     sys.exit()
 
