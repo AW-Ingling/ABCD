@@ -216,6 +216,7 @@ try:
             output_record.add_cell_value_to_row("Neutral", condition_column_value("Neutral", task, subtrial_index))
             output_record.add_cell_value_to_row("prbacc", prbacc_flag)
             output_record.add_cell_value_to_row("Probe", probe_file_name)
+            output_record.add_cell_value_to_row("Probe.ACC", invert_digit_bool(prbacc_flag))
 
             # DurationError: "difference between the expected duration and actual duration"
             #    output_record.add_cell_value_to_row("Probe.DurationError", )
@@ -392,7 +393,7 @@ try:
             output_record.add_cell_value_to_row("Neutral", "NULL")
             output_record.add_cell_value_to_row("prbacc", prbacc_flag)
             output_record.add_cell_value_to_row("Probe", probe_file_name)
-            #    output_record.add_cell_value_to_row("Probe.ACC", )
+            output_record.add_cell_value_to_row("Probe.ACC", invert_digit_bool(prbacc_flag))
 
             output_record.add_cell_value_to_row("Probe.OnsetDelay", stim_record_probe.onset_delay_msecs(stim_record_anticipation))
             output_record.add_cell_value_to_row("Probe.OnsetTime", stim_record_probe.onset_time_msecs)
