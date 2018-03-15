@@ -385,8 +385,18 @@ class ShowMaker:
 
     def setup(self):
         if self.window is None:
-            Show.setup()
-            self.window = open_stimulus_window()
+            if platform.system() == "Darwin":
+                # Open the window before starting IOHub to work around a bug in PsychoPy
+                self.window = open_stimulus_window()
+                Show.setup()
+            elif platform.system() == "Windows":
+                # Startup IOHub before opening a window to work around the hiding cursor bug in PsychoPy.
+                Show.setup()
+                self.window = open_stimulus_window()
+            elif platform.system() == "Linux":
+                print("Guessing at init order, window first then iohub")
+                self.window = open_stimulus_window()
+                Show.setup()
             self.hide_cursor()
             self.stim_records = []
             return self.window.screen
