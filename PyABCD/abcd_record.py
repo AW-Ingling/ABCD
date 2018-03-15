@@ -78,6 +78,9 @@ class AbcdRecord(object):
         self.full_file_name = file_name
         self.full_path = os.path.join(output_dir_path, self.full_file_name)
         print("path to file: %s" % self.full_path)
+        # we never over-write existing files, so make sure that it does not exit.
+        if os.path.isfile(self.full_path):
+            raise Exception("Output record file already exists")
         # init state/retain ags
         self.columns_labels_text = column_labels_text
         self.constant_columns = []
