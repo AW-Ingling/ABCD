@@ -73,8 +73,9 @@ output_record.add_constant_column("DataFile.Basename", operator_table['file_name
 output_record.add_constant_column("Group", operator_table['session_number'])
 output_record.add_constant_column("Handedness", operator_table['handedness'])
 output_record.add_constant_column("NARGUID", operator_table['subject_id'])
-seesion_date, session_time = formatted_date_time()
-output_record.add_constant_column("SessionDate", seesion_date)
+session_date, utc_date_time, session_time = formatted_date_time()
+output_record.add_constant_column("SessionDate", session_date)
+output_record.add_constant_column("SessionStartDateTimeUtc", utc_date_time)
 output_record.add_constant_column("SessionTime", session_time)
 
 

@@ -6,9 +6,22 @@
 #
 # find_duplicates() is borrowed and renamed from the JohnLaRooy() function posted on StackOverflow here:
 # https://stackoverflow.com/questions/9835762/find-and-list-duplicates-in-a-list/31439372#31439372
+#
+# how to exclude leading zeros on date formatters:
+# https://stackoverflow.com/questions/904928/python-strftime-date-without-leading-0
+#
+# date formatter keys:
+# https://docs.python.org/2/library/time.html#time.strftime
+#
+# how to convert a time between time zones:
+# https://stackoverflow.com/questions/4770297/convert-utc-datetime-string-to-local-datetime-with-python
+#
 
 import os
+import platform
 import datetime
+from dateutil import tz
+
 
 image_file_extensions = {u'.jpg', u'.png', u'.tiff', u'.tif', u'.gif', u'.bmp'}
 
@@ -55,12 +68,31 @@ def secs_to_msecs(time_secs):
         return int(round(time_secs * 1000))
 
 
-# example return values: "01-22-2018", "07:25:50 PM"
+# # example return values: "01-22-2018", "07:25:50 PM"
+# def formatted_date_time():
+#     now_date_time = datetime.datetime.now()
+#     now_date_text= now_date_time.strftime("%m-%d-%Y")
+#     now_time_text= now_date_time.strftime("%I:%M:%S %p")
+#
+#     return now_date_text, now_time_text
+
+# example return values: "01-22-2018",  "2/21/2018 8:03:40 PM"   "07:25:50 PM",  <-- we probably need to fix this
+#   more example values: "02-21-2018"	"2/21/2018 8:03:40 PM"	 "15:03:40"      <-- from export, not spreadsheet
 def formatted_date_time():
-    now_date_time = datetime.datetime.now()
-    now_date_text= now_date_time.strftime("%m-%d-%Y")
-    now_time_text= now_date_time.strftime("%I:%M:%S %p")
-    return now_date_text, now_time_text
+
+    utc_zone = tz.tzutc()
+    local_zone = tz.tzlocal()
+    utc_date_time = datetime.datetime.utcnow()
+    utc_date_time = utc_date_time.replace(tzinfo=utc_zone)
+    local_date_time = utc_date_time.astimezone(local_zone)
+    local_date_text= local_date_time.strftime("%m-%d-%Y")
+    local_time_text= local_date_time.strftime("%H:%M:%S")
+    if platform.system() == "Windows":  # - uses a "#" to exclude leading zero on field
+        datetime_formatter = "%#m/%#d/%Y %#I:%M:%S %p"
+    else: # "Linux", "Darwin" - uses a "-" to exclude leading zero on field
+        datetime_formatter = "%-m/%-d/%Y %-I:%M:%S %p"
+    date_time_utc_text = utc_date_time.strftime(datetime_formatter)
+    return local_date_text, date_time_utc_text, local_time_text
 
 
 # generates contents of columns "LoseBig", "LoseSmall", "Neutral"
