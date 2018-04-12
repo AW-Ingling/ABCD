@@ -13,7 +13,7 @@ import abcd_random
 # TODO: Replace remaining sys.exit() with core.quit(). See:
 # TODO: ... https://discourse.psychopy.org/t/exiting-with-core-quit-or-sys-exit/4059/2
 
-version_keeper.assign_experiment_types(ExperimentType.mid_practice, ScannerType.practice)
+version_keeper.assign_experiment_types(ExperimentType.mid, ScannerType.practice)
 
 # init our random number generator so so that we can get the seed for the table
 rand_gen = abcd_random.ABCDRandom()
@@ -30,7 +30,6 @@ probe_duration_secs = INITIAL_PROBE_DURATION_SECS
 stim_bundle = StimBundle("mid_practice")
 
 # Load tables for the training loops
-# TODO: Just load these int a dictionary at once
 ifis_block_table = AbcdTable(stim_bundle, "IFISBlockList")
 lose_big_table = AbcdTable(stim_bundle, "LoseBig")
 lose_small_table = AbcdTable(stim_bundle, "LoseSmall")
