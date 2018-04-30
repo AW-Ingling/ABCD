@@ -95,6 +95,100 @@ class AskSessionNumber:
             return None
 
 
+class AskTrialOrderVersion:
+
+    def __init__(self):
+        pass
+
+    def show_input_dialog(self):
+        input_dlg = gui.Dlg(title=u'E-Run',
+                            labelButtonOK=u' OK ',
+                            labelButtonCancel=u' Cancel ',
+                            screen=dialogs_screen_num)
+        input_dlg.addField("Please enter trial order version (1-12)", 1)
+        raw_input_data = input_dlg.show()
+        if input_dlg.OK:
+            return raw_input_data[0]
+        else:
+            return None
+
+    def check_input(self, input_value):
+        be_dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', screen=dialogs_screen_num)
+        is_error = False
+        if type(input_value) is not int and type(input_value) is not long:
+            be_dlg.addText("Please enter an integer value")
+            is_error = True
+        elif input_value < 1:
+            be_dlg.addText("The value for Session must not be less than than 1")
+            is_error = True
+        elif input_value > 12:
+            be_dlg.addText("The session value must not be greater than 12")
+            is_error = True
+        if is_error:
+            be_dlg.show()
+        return is_error
+
+    def run(self):
+        no_input = True
+        while no_input:
+            input_data = self.show_input_dialog()
+            if input_data is not None:
+                no_input = self.check_input(input_data)
+            else:
+                no_input = False
+        if input_data:
+            return {"trial_order_version": input_data}
+        else:
+            return None
+
+
+class AskAverageRT:
+
+    def __init__(self):
+        pass
+
+    def show_input_dialog(self):
+        input_dlg = gui.Dlg(title=u'E-Run',
+                            labelButtonOK=u' OK ',
+                            labelButtonCancel=u' Cancel ',
+                            screen=dialogs_screen_num)
+        input_dlg.addField("Please enter the Subject's average RT from the practice run:", 205)
+        raw_input_data = input_dlg.show()
+        if input_dlg.OK:
+            return raw_input_data[0]
+        else:
+            return None
+
+    def check_input(self, input_value):
+        be_dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' OK ', screen=dialogs_screen_num)
+        is_error = False
+        if type(input_value) is not int and type(input_value) is not long:
+            be_dlg.addText("Please enter an integer value")
+            is_error = True
+        elif input_value < 0:
+            be_dlg.addText("The value for Session must not be less than than 0")
+            is_error = True
+        elif input_value > 700:
+            be_dlg.addText("The session value must not be greater than 700")
+            is_error = True
+        if is_error:
+            be_dlg.show()
+        return is_error
+
+    def run(self):
+        no_input = True
+        while no_input:
+            input_data = self.show_input_dialog()
+            if input_data is not None:
+                no_input = self.check_input(input_data)
+            else:
+                no_input = False
+        if input_data:
+            return {"average_rt": input_data}
+        else:
+            return None
+
+
 class AskHandedness:
 
     def __init__(self):
@@ -124,7 +218,7 @@ class AskHandedness:
 #         return self.dlg.OK
 
 
-class SummaryStartup:
+class SummaryPracticeStartup:
 
     def __init__(self, inputs_table):
         self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
@@ -150,11 +244,27 @@ class CancelOrContinue:
         return self.dlg.OK
 
 
+class SummaryScannerStartup:
+
+    def __init__(self, inputs_table):
+        self.dlg = gui.Dlg(title=u'E-Run', labelButtonOK=u' Yes ', labelButtonCancel=u' No ', screen=dialogs_screen_num)
+        self.dlg.addText("NARGUID: %s" % inputs_table['subject_id'])
+        self.dlg.addText("Session: %s" % inputs_table['session_number'])
+        self.dlg.addText("Handedness: %s" % inputs_table['handedness'])
+        self.dlg.addText("Trial Order: %s" % inputs_table['trial_order_version'])
+        self.dlg.addText("PracticeRT: %s" % inputs_table['average_rt'])
+        self.dlg.addText("Continue with above setup info?")
+
+    def run(self):
+        self.dlg.show()
+        return self.dlg.OK
+
+
 
 
 # returns a dictionary with the following key-value pairs:
 #
-# FIELD                       TYPE    DESCRIPTION                        EXAMPLES
+# Key String                  TYPE    DESCRIPTION                        EXAMPLES
 #
 # subject_id                  string  identifies the subject             "AANNNAAA"
 # session_number              integer identifies the group number?       1
@@ -162,8 +272,7 @@ class CancelOrContinue:
 # file_name                   string  full file name including extension "ABCD_MID_Practice_20161209-AANNNAAA-1.xls"
 # file_name_without_extension string  full file name without extension   "ABCD_MID_Practice_20161209-AANNNAAA-1"
 #
-#
-def get_inputs(record_filename_maker, screen_number):
+def get_mid_practice_inputs(record_filename_maker, screen_number):
     global dialogs_screen_num
     dialogs_screen_num = screen_number
     while True:
@@ -184,7 +293,7 @@ def get_inputs(record_filename_maker, screen_number):
             return None
         table.update(handedness)
         # show the summary and query to accept it
-        accept = SummaryStartup(table).run()
+        accept = SummaryPracticeStartup(table).run()
         # ask to quit if not accepted
         if not accept:
             do_continue = CancelOrContinue().run()
@@ -192,19 +301,6 @@ def get_inputs(record_filename_maker, screen_number):
                 return None
         else:
             break
-    # # check if the file already exists and warn accordingly
-    # file_name_wo_extension = make_output_filename_wo_extension(table['subject_id'], table['session_number'])
-    # file_name_w_extension = make_output_filename_w_extension(table['subject_id'], table['session_number'])
-    # exists = file_exists_checker(file_name_w_extension)
-    # table.update({'file_name' : file_name_w_extension})
-    # table.update({'file_name_without_extension': file_name_wo_extension})
-    # if exists:
-    #     do_overwrite = WarnExistingFile(file_name_wo_extension).run()
-    #     if do_overwrite:
-    #         return table
-    #     else:
-    #         return None
-    # return table
 
     # make a new filename
     file_name, file_name_without_extension = record_filename_maker(table['subject_id'], table['session_number'])
@@ -213,12 +309,63 @@ def get_inputs(record_filename_maker, screen_number):
     return table
 
 
-# def yes_file_exists_dummy(file_name):
-#     return True
+# returns a dictionary with the following key-value pairs:
 #
+# Key String                  TYPE    DESCRIPTION                        EXAMPLES
 #
-# def no_file_exists_dummy(file_name):
-#     return False
+# subject_id                  string  identifies the subject             "AANNNAAA"
+# session_number              integer identifies the group number?       1
+# handedness                  string  handedness of the subject          "left", "right"
+# file_name                   string  full file name including extension "ABCD_MID_Practice_20161209-AANNNAAA-1.xls"
+# file_name_without_extension string  full file name without extension   "ABCD_MID_Practice_20161209-AANNNAAA-1"
+# trial_order_version         integer index of stimulus tables           1
+# average_rt                  integer average reaction time of practice  350
+def get_mid_scanner_inputs(record_filename_maker, screen_number):
+    global dialogs_screen_num
+    dialogs_screen_num = screen_number
+    while True:
+        table = {}
+        # get the subject ID #1
+        subject_id = AskSubjectID().run()
+        if subject_id is None:
+            return None
+        table.update(subject_id)
+        # get the session number #2
+        session_number = AskSessionNumber().run()
+        if session_number is None:
+            return None
+        table.update(session_number)
+        # get the handedness #3
+        handedness = AskHandedness().run()
+        if handedness is None:
+            return None
+        table.update(handedness)
+        # get the trial order version #4
+        trial_order_version = AskTrialOrderVersion().run()
+        if trial_order_version is None:
+            return
+        table.update(trial_order_version)
+        # get the subject's average reaction time from the practice run
+        average_rt = AskAverageRT().run()
+        if average_rt is None:
+            return
+        table.update(average_rt)
+        # show the summary and query to accept it
+        accept = SummaryScannerStartup(table).run()
+        # ask to quit if not accepted
+        if not accept:
+            do_continue = CancelOrContinue().run()
+            if not do_continue:
+                return None
+        else:
+            break
+
+    # make a new filename
+    file_name, file_name_without_extension = record_filename_maker(table['subject_id'], table['session_number'])
+    table.update({'file_name' : file_name})
+    table.update({'file_name_without_extension': file_name_without_extension})
+    return table
+
 
 
 

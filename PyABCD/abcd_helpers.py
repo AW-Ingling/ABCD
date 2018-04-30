@@ -67,6 +67,9 @@ def secs_to_msecs(time_secs):
     else:
         return int(round(time_secs * 1000))
 
+def msecs_to_secs(time_msecs):
+    return  time_msecs / 1000.0
+
 
 # # example return values: "01-22-2018", "07:25:50 PM"
 # def formatted_date_time():

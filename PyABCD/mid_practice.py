@@ -60,9 +60,7 @@ shower = ShowMaker(stim_bundle, exit_detector)
 # Get the operator input
 screen_index = get_target_screen_index()
 record_filename_maker = make_record_file_name_maker(stim_bundle)
-operator_table = get_inputs(record_filename_maker, screen_index)
-
-# operator_table = get_inputs(lambda f_name: stim_bundle.data_file_for_name(f_name)[1], screen_index)
+operator_table = get_mid_practice_inputs(record_filename_maker, screen_index)
 if operator_table is None:
     sys.exit()
 
@@ -91,7 +89,7 @@ output_record.add_constant_column("RandomSeed", rand_gen.seed)
 #  - Probe.OnsetDelay
 #  - Probe.OnsetTime
 #  - Probe.OnsetToOnsetTime
-# TODO: Figure out where this should really go.
+# TODO: Confirm that this should really go here.
 mark_start_time()
 
 try:
@@ -349,7 +347,6 @@ try:
 
             # E-Prime name: Result
             # Lookup the "Condition" key value then use that value to get the result text
-            #tbl_condition = run_list_table.cell_value("Condition", trial_index + 1)
             tbl_condition = run_list_table.cell_value("Condition", run_list_index + 1)
             result_text = result_inline(tbl_condition, prbacc_flag)
 

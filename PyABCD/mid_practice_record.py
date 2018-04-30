@@ -151,13 +151,13 @@ class MidPracticeRecord(AbcdRecord):
         self.add_batch_constant_columns(dummy_constant_columns)
 
 
-def test_practice_record():
-    record = MidPracticeRecord("C:\Users\Allen W. Ingling\Desktop", "test_mid_output")
-    record.add_new_row()
-    record.add_cell_value_to_row("DataFile.Basename", "Foo")
-    record.add_new_row()
-    record.add_cell_value_to_row("DataFile.Basename", "Bar")
-    record.save()
+# def test_practice_record():
+#     record = MidPracticeRecord("C:\Users\Allen W. Ingling\Desktop", "test_mid_output")
+#     record.add_new_row()
+#     record.add_cell_value_to_row("DataFile.Basename", "Foo")
+#     record.add_new_row()
+#     record.add_cell_value_to_row("DataFile.Basename", "Bar")
+#     record.save()
 
 
 

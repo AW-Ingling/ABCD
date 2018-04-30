@@ -11,13 +11,23 @@ class ScannerType(Enum):
     practice = 1
     ge = 2
     siemens = 3
+    debug = 4
 
 
 RECORD_FILE_PREFIX_TABLE = {ExperimentType.mid: {ScannerType.practice: "ABCD_MID_Practice_20161209_",
                                                  ScannerType.ge: "PUT_REAL_MID_PREFIX_HERE_",
                                                  ScannerType.siemens: "PUT_REAL_MID_PREFIX_HERE_"}}
 
+WAITING_TABLE_FILE_NAME_TABLE = {ExperimentType.mid: {ScannerType.practice: None,
+                                                      ScannerType.ge: "Waiting4ScannerGE",
+                                                      ScannerType.siemens: None}}
 
+SCANNER_TRIGGER_CODE_TABLE = {ScannerType.practice: None,
+                              ScannerType.ge: "^57=",
+                              ScannerType.siemens: None}
+
+
+#TODO: This should be made a singleton class
 class VersionKeeper():
 
     def __init__(self):
@@ -31,7 +41,10 @@ class VersionKeeper():
         self.scanner_type = scanner_type
 
     def record_prefix(self):
-        return RECORD_FILE_PREFIX_TABLE[self.experiment_type, self.scanner_type]
+        return RECORD_FILE_PREFIX_TABLE[self.experiment_type][self.scanner_type]
+
+    def waiting_table_file_name(self):
+        return WAITING_TABLE_FILE_NAME_TABLE[self.experiment_type][self.scanner_type]
 
 
 version_keeper = VersionKeeper()

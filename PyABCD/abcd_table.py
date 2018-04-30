@@ -96,6 +96,7 @@ class AbcdTable:
                 txt += "\t%s\n" % value
         return txt
 
+    # TODO: change this to 0-index from 1-index.
     def cell_value(self, column_name, row_id):
         # Find the row index of the specified row_id in the table's "ID" column
         indices_of_id = [index for index, value in enumerate(self.table["ID"]) if value == row_id]

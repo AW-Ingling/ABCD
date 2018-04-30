@@ -297,6 +297,25 @@ class StimBundle:
             sys.exit()
         return self.text_display_name_to_json_file_path_table[text_display_name]
 
+    # Used by the scanner version of MID to keep track of the "rt" parameter between major loop passes
+    def rt_file_path(self, narguid, run_num):
+        # derive the file name
+        file_name = narguid + "_" + str(run_num) + "_RT.txt"
+        file_path = os.path.join(self.data_dir_path, file_name)
+        return file_path
+
+    # Used by the scanner version of MID to keep track of the "earnings" parameter between major loop passes.
+    def earnings_file_name(self, narguid, run_num):
+        # derive the file name
+        file_name = narguid + "_" + str(run_num) + "_Earnings.txt"
+        file_path = os.path.join(self.data_dir_path, file_name)
+        return file_path
+
+
+
+
+
+
 
 
 
