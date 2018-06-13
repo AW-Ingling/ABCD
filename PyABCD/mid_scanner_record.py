@@ -138,10 +138,10 @@ second_trails_nulls = []
 inter_test_loop_nulls = []
 
 
-class MidPracticeRecord(AbcdRecord):
+class MidScannerRecord(AbcdRecord):
 
     def __init__(self, output_dir_path, file_name):
-        super(MidPracticeRecord, self).__init__(output_dir_path, file_name, column_labels_text)
+        super(MidScannerRecord, self).__init__(output_dir_path, file_name, column_labels_text)
         self.add_batch_constant_columns(dummy_constant_columns)
 
 

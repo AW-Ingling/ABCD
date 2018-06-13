@@ -156,7 +156,7 @@ class StimRecord:
     """
 
     def __init__(self, stim_index, stimulus_name, timeout_secs, filter_in_keys, stim_afterflip_secs,
-                 clear_afterflip_secs, did_timeout, key_downs):
+                 clear_afterflip_secs, did_timeout, key_downs, key_down_exit_secs):
         """Init an instance of StimRecord with arguments for all properties except those derived by accessors.
 
         Args:
@@ -178,6 +178,7 @@ class StimRecord:
         self.clear_afterflip_secs = clear_afterflip_secs
         self.did_timeout = did_timeout
         self.key_downs = key_downs
+        self.key_down_exit_secs = key_down_exit_secs
         self.blank_rgb = [127, 127, 127]
 
     @property
@@ -331,6 +332,7 @@ class Show:
 
     def show(self):
         key_down_exit = False
+        key_down_exit_secs = None
         timeout_flag = False
         self.io.clearEvents()
         self.stimulus.draw_flip()
@@ -349,8 +351,9 @@ class Show:
         self.stimulus.clear_flip()
         clear_afterflip_secs = core.getTime()
         stim_index = self.__class__.new_stimulus_index()
+        key_down_exit_secs = key_down[1] - stim_afterflip_secs if key_down_exit else None
         stim_record = StimRecord(stim_index, self.stimulus_name, self.timeout_secs, self.filter_in_keys,
-                                 stim_afterflip_secs, clear_afterflip_secs, timeout_flag, key_downs)
+                                 stim_afterflip_secs, clear_afterflip_secs, timeout_flag, key_downs, key_down_exit_secs)
         return stim_record
 
 

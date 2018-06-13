@@ -93,8 +93,8 @@ class Stimulus:
             self.text_block.format()
             #TODO: Detect and warn if not all variables are used in either the text file or dictionary
         else:
-            print("ERROR: %s is an unrecognized stimulus type, neither image nor text." % self.name)
-            sys.exit()
+            error_message = "ERROR: %s is an unrecognized stimulus type, neither image nor text." % self.name
+            raise Exception(error_message)
 
     def setup_string_stimulus(self):
         font_size_pixels = points_to_pixels(self.point_size)

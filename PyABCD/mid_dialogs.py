@@ -266,7 +266,7 @@ class SummaryScannerStartup:
 #
 # Key String                  TYPE    DESCRIPTION                        EXAMPLES
 #
-# subject_id                  string  identifies the subject             "AANNNAAA"
+#                    string  identifies the subject             "AANNNAAA"
 # session_number              integer identifies the group number?       1
 # handedness                  string  handedness of the subject          "left", "right"
 # file_name                   string  full file name including extension "ABCD_MID_Practice_20161209-AANNNAAA-1.xls"

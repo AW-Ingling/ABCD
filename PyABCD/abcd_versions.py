@@ -15,7 +15,7 @@ class ScannerType(Enum):
 
 
 RECORD_FILE_PREFIX_TABLE = {ExperimentType.mid: {ScannerType.practice: "ABCD_MID_Practice_20161209_",
-                                                 ScannerType.ge: "PUT_REAL_MID_PREFIX_HERE_",
+                                                 ScannerType.ge: "ABCD_MID_GE_20161218_",
                                                  ScannerType.siemens: "PUT_REAL_MID_PREFIX_HERE_"}}
 
 WAITING_TABLE_FILE_NAME_TABLE = {ExperimentType.mid: {ScannerType.practice: None,

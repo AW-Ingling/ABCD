@@ -59,7 +59,7 @@ exit_detector = ExitDetector("q", ["lctrl", "rctrl"])
 shower = ShowMaker(stim_bundle, exit_detector)
 
 # Create the data output spreadsheet and set some fields
-output_record = mid_scanner_record.MidPracticeRecord(stim_bundle.data_dir_path, operator_table['file_name'])
+output_record = mid_scanner_record.MidScannerRecord(stim_bundle.data_dir_path, operator_table['file_name'])
 output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
 output_record.add_constant_column("Group", operator_table['session_number'])
 output_record.add_constant_column("Handedness", operator_table['handedness'])
@@ -81,7 +81,7 @@ output_record.add_constant_column("RandomSeed", rand_gen.seed)
 rt, earnings_dollars, run_num_start = find_rt_earnings_run_num(operator_table, stim_bundle)
 
 # init probe_duration variable from rt value either loaded from cache file or input from operator.
-probe_duration = rt
+probe_duration_secs = msecs_to_secs(rt)
 
 # mark start time for timers which generates values for output columns:
 #  - Probe.OnsetDelay
@@ -100,16 +100,19 @@ try:
         block_table = block_tables[run_num_index]
 
         # E-Prime name: TitlePage
-        shower.show("BlockInstructions", None, "SPACE_KEY")
+        shower.show("MID_Instructions", None, "SPACE_KEY")
 
         # Wait for the scanner.  We use the space bar as a proxy for the scanner start sequence.
-        num_start_sequences = scanner_waiting_table.cell_value("Weight", 0)
+        num_start_sequences = scanner_waiting_table.cell_value("Weight", 1)
         # E-Prime name GetReady
         # TODO: Use the actual scanner start sequence here
         shower.show("GetReady", None, "SPACE_KEY")
 
         # E-Prime name PrepTime
         shower.show("PrepTime", 2.0)
+
+        # E-Prime name: CalculateProbeDuration
+        probe_calculator = ProbeCalculator(probe_duration_secs)
 
         # E-Prime name: RunProc
         for run_index in range(0, block_table.num_rows):
@@ -120,31 +123,46 @@ try:
 
             # E-Prime name: Anticipation
             anticipation_duration_secs = msecs_to_secs(block_table.cell_value("AnticipationDuration", run_index + 1))
-            shower.show("Anticipation", anticipation_duration_secs)
+            stim_record_anticipation = shower.show("Anticipation", anticipation_duration_secs)
 
             # E-Prime name: Probe
             probe_file_name = block_table.cell_value("Probe", run_index + 1)
-            stim_record_probe = shower.show_file(probe_file_name, probe_duration, "SPACE_KEY")
+            probe_duration_secs = probe_calculator.probe_duration_secs
+            feedback_duration_secs = probe_calculator.feedback_duration_secs
+            stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
 
             # E-Prime name: TextDisplay1 (just an empty screen)
             shower.show("TextDisplay1", 0.050)
 
-            #
+            # E-Prime name: CalculateProbeDuration
+            condition_name = block_table.cell_value("Condition", run_index + 1)
+            response_ok = stim_record_probe.was_key_pressed
+            reaction_time_secs = stim_record_probe.key_down_exit_secs
+            probe_duration_secs.add_probe(condition_name, response_ok, reaction_time_secs, money)
 
+            # E-Prime name: OutcomeFileNames
+            probe_pressed = stim_record_probe.was_key_pressed
+            anticipation_pressed =  stim_record_anticipation.was_key_pressed
+            condition_name = block_table.cell_value("Condition", run_index + 1)
+            response_ok, message_check, message, money = find_outcomes(anticipation_pressed, probe_pressed, condition_name)
 
+            # E-Prime name: Feedback
+            text_subs_feedback = {"ResponseCheck" : message_check, "Result": message}
+            shower.show("Feedback", feedback_duration_secs, [], text_subs_feedback)
 
+        # E-Prime name: EndFix
+        shower.show("EndFix", 5.0)
 
+        # E-Prime name: outputVars
+        rt_msecs = secs_to_msecs(probe_duration_secs)
+        money_total = probe_calculator.money_total
+        should_quit = write_rt_earnings(operator_table, stim_bundle, run_num, rt_msecs, money_total)
 
+        # TODO: conditionally break the loop on should_quit?
 
-
-
-
-
-
-
-
-
-
+    # E-Prime name: DisplayMoney, Goodbye
+    money_text_table = display_money_table(money_total)
+    shower.show("DisplayMoney", None, "SPACE_KEY", text_subs_feedback)
 
 except UserExitRequest:
     shower.show_text("Exit command detected.  Press space bar to exit", None, "SPACE_KEY")

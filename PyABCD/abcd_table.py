@@ -101,13 +101,13 @@ class AbcdTable:
         # Find the row index of the specified row_id in the table's "ID" column
         indices_of_id = [index for index, value in enumerate(self.table["ID"]) if value == row_id]
         if len(indices_of_id) < 1:
-            print("Error: Unrecognized table cell row id for table: %s, column: %s, row id: %s\n") % \
+            msg = "Error: Unrecognized table cell row id for table: %s, column: %s, row id: %s\n" % \
                  (self.table_name, column_name, str(row_id))
-            sys.exit()
+            raise Exception(msg)
         if len(indices_of_id) < 1:
-            print("Error: Multiple table cell row ids for table: %s, column: %s, row id: %s\n") % \
+            msg = "Error: Multiple table cell row ids for table: %s, column: %s, row id: %s\n" % \
                  (self.table_name, column_name, str(row_id))
-            sys.exit()
+            raise Exception(msg)
         # Return the item at the specified row_id's row index and in the specified column
         return self.table[column_name][indices_of_id[0]]
 
