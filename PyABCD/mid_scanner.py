@@ -139,7 +139,7 @@ try:
             probe_pressed = stim_record_probe.was_key_pressed
             anticipation_pressed = stim_record_anticipation.was_key_pressed
 
-            print("anticipation_pressed: " + str(anticipation_pressed))
+            # print("anticipation_pressed: " + str(anticipation_pressed))
 
             condition_name = block_table.cell_value("Condition", run_index + 1)
             response_ok, message_check, message, money = find_outcomes(anticipation_pressed, probe_pressed,
@@ -148,8 +148,8 @@ try:
             condition_name = block_table.cell_value("Condition", run_index + 1)
             response_ok = stim_record_probe.was_key_pressed
 
-            print("probe_pressed: " + str(response_ok))
-            print("")
+            # print("probe_pressed: " + str(response_ok))
+            # print("")
 
             reaction_time_secs = stim_record_probe.key_down_exit_secs
             probe_calculator.add_probe(condition_name, response_ok, reaction_time_secs, money)
@@ -157,6 +157,13 @@ try:
             # E-Prime name: Feedback
             text_subs_feedback = {"ResponseCheck" : message_check, "Result": message}
             shower.show("Feedback", feedback_duration_secs, [], text_subs_feedback)
+
+            # Write rows for this trial
+            output_record.add_new_row()
+            block_title = block_list_table.cell_value("BlockTitle", run_num)
+            output_record.add_cell_value_to_row("BlockTitle", block_title)
+
+
 
         # E-Prime name: EndFix
         shower.show("EndFix", 5.0)
@@ -186,6 +193,7 @@ finally:
     # Store the output spreadsheet
     # If the data is incomplete because we exited early then the "NewRT" and "IntNewRT" columns will not be present.
     output_record.save()
+    print("output record saved.")
 
     # Close the stimulus window, shutdown the IOHUb engine used to read key presses.
     shower.shutdown()
