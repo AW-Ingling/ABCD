@@ -122,14 +122,15 @@ try:
             stim_record_probe = shower.show_file(cue_file_name, 2.0)
 
             # E-Prime name: Anticipation
+            # TODO: Make sure that we do not need to check for bogus keydowns here also.
             anticipation_duration_secs = msecs_to_secs(block_table.cell_value("AnticipationDuration", run_index + 1))
-            stim_record_anticipation = shower.show("Anticipation", anticipation_duration_secs)
+            stim_record_anticipation = shower.show("Anticipation", anticipation_duration_secs, "SPACE_KEY", None, False)
 
             # E-Prime name: Probe
             probe_file_name = block_table.cell_value("Probe", run_index + 1)
             probe_duration_secs = probe_calculator.probe_duration_secs
             feedback_duration_secs = probe_calculator.feedback_duration_secs
-            stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY")
+            stim_record_probe = shower.show_file(probe_file_name, probe_duration_secs, "SPACE_KEY", None, False)
 
             # E-Prime name: TextDisplay1 (just an empty screen)
             shower.show("TextDisplay1", 0.050)
@@ -137,12 +138,19 @@ try:
             # E-Prime name: OutcomeFileNames
             probe_pressed = stim_record_probe.was_key_pressed
             anticipation_pressed = stim_record_anticipation.was_key_pressed
+
+            print("anticipation_pressed: " + str(anticipation_pressed))
+
             condition_name = block_table.cell_value("Condition", run_index + 1)
             response_ok, message_check, message, money = find_outcomes(anticipation_pressed, probe_pressed,
                                                                        condition_name)
             # E-Prime name: CalculateProbeDuration
             condition_name = block_table.cell_value("Condition", run_index + 1)
             response_ok = stim_record_probe.was_key_pressed
+
+            print("probe_pressed: " + str(response_ok))
+            print("")
+
             reaction_time_secs = stim_record_probe.key_down_exit_secs
             probe_calculator.add_probe(condition_name, response_ok, reaction_time_secs, money)
 
