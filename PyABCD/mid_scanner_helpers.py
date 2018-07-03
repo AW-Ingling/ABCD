@@ -225,7 +225,7 @@ def find_outcomes(anticipation_pressed, probe_pressed, condition):
           money = 0.00
   elif condition == "LgReward":
       if response_ok:
-          message = "Result", "You earn $5!"
+          message = "You earn $5!"
           money = 5.00
       else:
           message = "You did not earn $5!"
@@ -478,7 +478,7 @@ class ProbeCalculator:
 
     @property
     def feedback_duration_secs(self):
-        return 1950 - self.probe_duration_secs
+        return 1.950 - self.probe_duration_secs
 
 
 def display_money_table(total_dollars):

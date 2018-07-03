@@ -134,17 +134,17 @@ try:
             # E-Prime name: TextDisplay1 (just an empty screen)
             shower.show("TextDisplay1", 0.050)
 
+            # E-Prime name: OutcomeFileNames
+            probe_pressed = stim_record_probe.was_key_pressed
+            anticipation_pressed = stim_record_anticipation.was_key_pressed
+            condition_name = block_table.cell_value("Condition", run_index + 1)
+            response_ok, message_check, message, money = find_outcomes(anticipation_pressed, probe_pressed,
+                                                                       condition_name)
             # E-Prime name: CalculateProbeDuration
             condition_name = block_table.cell_value("Condition", run_index + 1)
             response_ok = stim_record_probe.was_key_pressed
             reaction_time_secs = stim_record_probe.key_down_exit_secs
-            probe_duration_secs.add_probe(condition_name, response_ok, reaction_time_secs, money)
-
-            # E-Prime name: OutcomeFileNames
-            probe_pressed = stim_record_probe.was_key_pressed
-            anticipation_pressed =  stim_record_anticipation.was_key_pressed
-            condition_name = block_table.cell_value("Condition", run_index + 1)
-            response_ok, message_check, message, money = find_outcomes(anticipation_pressed, probe_pressed, condition_name)
+            probe_calculator.add_probe(condition_name, response_ok, reaction_time_secs, money)
 
             # E-Prime name: Feedback
             text_subs_feedback = {"ResponseCheck" : message_check, "Result": message}
@@ -162,7 +162,7 @@ try:
 
     # E-Prime name: DisplayMoney, Goodbye
     money_text_table = display_money_table(money_total)
-    shower.show("DisplayMoney", None, "SPACE_KEY", text_subs_feedback)
+    shower.show("DisplayMoney", None, "SPACE_KEY", money_text_table)
 
 except UserExitRequest:
     shower.show_text("Exit command detected.  Press space bar to exit", None, "SPACE_KEY")

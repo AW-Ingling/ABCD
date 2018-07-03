@@ -311,6 +311,15 @@ class StimBundle:
         file_path = os.path.join(self.data_dir_path, file_name)
         return file_path
 
+    def earnings_file_path(self, narguid, run_num):
+        file_name = self.earnings_file_name(narguid, run_num)
+        file_path = os.path.join(self.data_dir_path, file_name)
+        return file_path
+
+
+
+
+
 
 
 
