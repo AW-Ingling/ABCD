@@ -3,7 +3,66 @@
 # Displays dialogs for operator at beginning and end of the MID experiments
 #
 #
+# TODO: Implement disabled options with defaults and switches
 #
+# There seem to be two bool flags associated with each query.  This is a guess about what they do:
+#
+# "Enable this startup info parameter" (checkbox) :
+#       If true, the output table column for Log Name seems to be generated.
+
+# "Prompt the user for this startup info parameter (? icon)
+#       If true, the query is presented.  If false and parameter is enabled, use default.
+#
+# NOTE: Attempting to disable the "Subject" startup parameter in the GE script displays a message
+#       "This item does not permit this action".  No idea why.  Maybe E-Prime detects a dependency.
+#
+# NOTE: The "Group" variable appears in an output column though its box is not checked, so maybe it is created
+#        elsewhere? Or is that theory about what those checkboxes do wrong?
+#
+# NOTE: The E-Prime scripts have enabled and disabled queries for the following operator data as followed:
+# column keys:
+#   "E" : Enable this startup info parameter (and log to file)
+#   "P" : Prompt the user for this startup info parameter
+#
+# Script: MID_GE_20161218
+#
+# E  P  Log Name     Query Message                           Choices                Min  Max        Default  Type
+#
+# *     Subject      Please enter Subject Number (0=No Data Logging)                0    2147483647 1        Numeric
+# *  *  NARGUID      Please enter the Subject ID:                                   N/A  len=8      AANNNAAA String
+# *  *  Session      Please enter the Session Number (1-32767)                      1    32767      1        Numeric
+#       Group        Please enter Subject's Group (0-32768):                        0    32767      1        Numeric
+#       Name         Please enter the Subject's Name:                               N/A  N/A        ""       String
+#       Age          Please enter Subject's Age (0-150):                            0    150        0        Numeric
+#       Sex          Please enter Subject's Sex:             male/female            N/A  N/A        male     Choice
+# *  *  Handedness   Enter Subject's Handedness:             Right/Left             N/A  N/A        Right    Choice
+#       ResearcherID Please enter Researcher's ID:                                  0    32767      1        Numeric
+# *  *  TrialOrder   Please enter trial order version:                              1    12         1        Numeric
+# *  *  PracticeRT   Please enter the subject's average RT from the practice run:   0    700        205      Numeric
+#
+#
+# Script: ABCD_MID_Practice_20161209
+#
+# E  P  Log Name     Query Message                           Choices                Min  Max        Default  Type
+#
+# *     Subject      Please enter Subject Number (0=No Data Logging)                0    2147483647 1        Numeric
+# *  *  NARGUID      Please enter the Subject ID:                                   N/A  len=8      AANNNAAA String
+# *  *  Session      Please enter the Session Number (1-32767)                      1    32767      1        Numeric
+#       Group        Please enter Subject's Group (0-32768):                        0    32767      1        Numeric
+#       Name         Please enter the Subject's Name:                               N/A  N/A        ""       String
+#       Age          Please enter Subject's Age (0-150):                            0    150        0        Numeric
+#       Sex          Please enter Subject's Sex:             male/female            N/A  N/A        male     Choice
+# *  *  Handedness   Enter Subject's Handedness:             Right/Left             N/A  N/A        Right    Choice
+#       ResearcherID Please enter Researcher's ID:                                  0    32767      1        Numeric
+
+
+
+#
+# TODO: Subject ID=0 is supposed to disable data logging, so implement that.
+# TODO: Add and remove columns from output file accordingly
+
+
+
 
 from psychopy import gui
 from abcd_versions import *

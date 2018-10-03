@@ -22,12 +22,20 @@ WAITING_TABLE_FILE_NAME_TABLE = {ExperimentType.mid: {ScannerType.practice: None
                                                       ScannerType.ge: "Waiting4ScannerGE",
                                                       ScannerType.siemens: None}}
 
+
 SCANNER_TRIGGER_CODE_TABLE = {ScannerType.practice: None,
                               ScannerType.ge: "^57=",
                               ScannerType.siemens: None}
 
 
-#TODO: This should be made a singleton class
+EXPERIMENT_NAME_TABLE = {ExperimentType.mid: {ScannerType.practice: None,
+                                                 ScannerType.ge: "MID_GE_20161218",
+                                                 ScannerType.siemens: None}}
+
+
+
+
+#TODO: Make this a singleton class
 class VersionKeeper():
 
     def __init__(self):
@@ -45,6 +53,12 @@ class VersionKeeper():
 
     def waiting_table_file_name(self):
         return WAITING_TABLE_FILE_NAME_TABLE[self.experiment_type][self.scanner_type]
+
+    def trigger_code(self):
+        return SCANNER_TRIGGER_CODE_TABLE[self.scanner_type]
+
+    def experiment_name(self):
+        return EXPERIMENT_NAME_TABLE[self.experiment_type][self.scanner_type]
 
 
 version_keeper = VersionKeeper()

@@ -123,6 +123,7 @@ class AbcdRecord(object):
         for label in labels:
             self.add_cell_value_to_row(label, value)
 
+    #TODO: Document the difference between this and add_constant_column and get rid of one if we dont' need it.
     def fill_column_data(self, label, value):
         column_index = self.column_index_for_label(label)
         for row in self.rows:
