@@ -58,24 +58,50 @@ exit_detector = ExitDetector("q", ["lctrl", "rctrl"])
 # Instantiate the shower class which presents specified stimuli from the bundle and records results
 shower = ShowMaker(stim_bundle, exit_detector)
 
-# Create the data output spreadsheet and set some fields
-output_record = mid_scanner_record.MidScannerRecord(stim_bundle.data_dir_path, operator_table['file_name'])
-output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
-output_record.add_constant_column("Group", operator_table['session_number'])
-output_record.add_constant_column("Handedness", operator_table['handedness'])
-output_record.add_constant_column("NARGUID", operator_table['subject_id'])
-session_date, utc_date_time, session_time = formatted_date_time()
-output_record.add_constant_column("SessionDate", session_date)
-output_record.add_constant_column("SessionStartDateTimeUtc", utc_date_time)
-output_record.add_constant_column("SessionTime", session_time)
 
-# Open the stimulus window, fire up the IOHub engine to read key presses
-screen_num = shower.setup()
+
+# "Clock.Information"       : dummy constant column
+output_record = mid_scanner_record.MidScannerRecord(stim_bundle.data_dir_path, operator_table['file_name'])
+
+# Create the data output spreadsheet and set some fields
+# "ExperimentName"          : dummy constant column
+# TODO: Figure out where the number in the "Subject" output table comes from and fix this output line.
+#output_record.add_constant_column("Subject", )
+output_record.add_constant_column("Session", operator_table["session_number"])
+
+# TODO: figure out what "Allowed" is and fill it in here.
+#output_record.add_constant_column("Allowed", )
+
+output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
 
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
+
+# "ExperimentVersion"       : dummy constant but dependent on scanner type setting
+experiment_name = version_keeper.experiment_name();
+output_record.add_constant_column("ExperimentName", experiment_name )
+
+output_record.add_constant_column("Group", operator_table['session_number'])
+output_record.add_constant_column("Handedness", operator_table['handedness'])
+output_record.add_constant_column("NARGUID", operator_table['subject_id'])
+# TODO: Verify that this shoudl be the PracticeRT loaded from the dialog.
+output_record.add_constant_column("PracticeRT", operator_table['average_rt'])
 output_record.add_constant_column("RandomSeed", rand_gen.seed)
+# "RuntimeCapabilities" is a dummy constant column
+# "RuntimeVersion"          : dummy constant column
+# "RuntimeVersionExpected"  : dummy constant column
+session_date, utc_date_time, session_time = formatted_date_time()
+output_record.add_constant_column("SessionDate", session_date)
+output_record.add_constant_column("SessionStartDateTimeUtc", utc_date_time)
+output_record.add_constant_column("SessionTime", session_time)
+# "StudioVersion"           : dummy constant column
+output_record.add_constant_column("TrialOrder", operator_table['trial_order_version'])
+output_record.add_constant_column("triggercode", version_keeper.trigger_code())
+
+
+# Open the stimulus window, fire up the IOHub engine to read key presses
+screen_num = shower.setup()
 
 # Find rt, earnings and run_num parameters from operater inputs and cache files
 rt, earnings_dollars, run_num_start = find_rt_earnings_run_num(operator_table, stim_bundle)
@@ -86,27 +112,97 @@ probe_duration_secs = msecs_to_secs(rt)
 # mark start time for timers which generates values for output columns:
 #  - Probe.OnsetDelay
 #  - Probe.OnsetTime
-#  - Probe.OnsetToOnsetTime
 mark_start_time()
+#  - Probe.OnsetToOnsetTime
 
 try:
 
-    for run_num_index in range(run_num_start - 1, 2):
+    for block_index in range(run_num_start - 1, 2):
 
         # Match eponymous E-Prime variable state value
-        run_num = run_num_index + 1
+        block_num = block_index + 1
 
         # Fetch the current block table.  If this is #2 numbered session then we start with the second block table
-        block_table = block_tables[run_num_index]
+        block_table = block_tables[block_index]
 
         # E-Prime name: TitlePage
         shower.show("MID_Instructions", None, "SPACE_KEY")
+
+        # Add the first of two header rows between 50-trial blocks
+        output_record.add_new_row()
+        output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_nulls, "NULL")
+        output_record.add_cell_value_to_row("Subject", )
+        output_record.add_cell_value_to_row("Session", )
+        output_record.add_cell_value_to_row("Allowed", )
+        output_record.add_cell_value_to_row("Clock.Information", )
+        output_record.add_cell_value_to_row("DataFile.Basename", )
+        output_record.add_cell_value_to_row("Display.RefreshRate", )
+        output_record.add_cell_value_to_row("ExperimentVersion", )
+        output_record.add_cell_value_to_row("Group", )
+        output_record.add_cell_value_to_row("Handedness", )
+        output_record.add_cell_value_to_row("NARGUID", )
+        output_record.add_cell_value_to_row("PracticeRT", )
+        output_record.add_cell_value_to_row("RandomSeed", )
+        output_record.add_cell_value_to_row("RuntimeCapabilities", )
+        output_record.add_cell_value_to_row("RuntimeVersion", )
+        output_record.add_cell_value_to_row("RuntimeVersionExpected", )
+        output_record.add_cell_value_to_row("SessionDate", )
+        output_record.add_cell_value_to_row("SessionStartDateTimeUtc", )
+        output_record.add_cell_value_to_row("SessionTime", )
+        output_record.add_cell_value_to_row("StudioVersion", )
+        output_record.add_cell_value_to_row("TrialOrder", )
+        output_record.add_cell_value_to_row("StudioVersion", )
+        output_record.add_cell_value_to_row("TrialOrder", )
+        output_record.add_cell_value_to_row("triggercode", )
+        output_record.add_cell_value_to_row("Block", )
+        output_record.add_cell_value_to_row("BlockList", )
+        output_record.add_cell_value_to_row("BlockList.Cycle", )
+        output_record.add_cell_value_to_row("BlockList.Sample", )
+        output_record.add_cell_value_to_row("BlockTitle", )
+        output_record.add_cell_value_to_row("EndFix.Duration", )
+        output_record.add_cell_value_to_row("EndFix.DurationError", )
+        output_record.add_cell_value_to_row("EndFix.FinishTime", )
+        output_record.add_cell_value_to_row("EndFix.OffsetDelay", )
+        output_record.add_cell_value_to_row("EndFix.OffsetTime", )
+        output_record.add_cell_value_to_row("EndFix.OnsetDelay", )
+        output_record.add_cell_value_to_row("EndFix.OnsetTime", )
+        output_record.add_cell_value_to_row("EndFix.OnsetToOnsetTime", )
+        output_record.add_cell_value_to_row("EndFix.StartTime", )
+        output_record.add_cell_value_to_row("Procedure[Block]", )
+        output_record.add_cell_value_to_row("Running[Block]", )
+        output_record.add_cell_value_to_row("Trial", )
+        output_record.add_cell_value_to_row("GetReady.RTTime", )
+
+        output_record.add_cell_value_to_row("PeriodList", "NULL")
+        output_record.add_cell_value_to_row("PeriodList.Cycle", "NULL")
+        output_record.add_cell_value_to_row("PeriodList.Sample", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.Duration", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.DurationError", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.FinishTime", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.OffsetDelay", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.OffsetTime", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.OnsetDelay", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.OnsetTime", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.OnsetToOnsetTime", "NULL")
+        output_record.add_cell_value_to_row("PrepTime.StartTime", "NULL")
+
+        output_record.add_cell_value_to_row("Procedure[Trial]", )
+        output_record.add_cell_value_to_row("Waiting4ScannerGE", )
+        output_record.add_cell_value_to_row("Waiting4ScannerGE", )
+        output_record.add_cell_value_to_row("Waiting4ScannerGE.Cycle", )
+        output_record.add_cell_value_to_row("Waiting4ScannerGE.Sample", )
+
 
         # Wait for the scanner.  We use the space bar as a proxy for the scanner start sequence.
         num_start_sequences = scanner_waiting_table.cell_value("Weight", 1)
         # E-Prime name GetReady
         # TODO: Use the actual scanner start sequence here
         shower.show("GetReady", None, "SPACE_KEY")
+
+
+        # Add the second of two header rows between 50-trial blocks
+        output_record.add_new_row()
+        output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_nulls, "NULL")
 
         # E-Prime name PrepTime
         shower.show("PrepTime", 2.0)
@@ -160,10 +256,13 @@ try:
 
             # Write rows for this trial
             output_record.add_new_row()
-            block_title = block_list_table.cell_value("BlockTitle", run_num)
+            output_record.add_cell_value_to_row("Block", block_num)
+            output_record.add_cell_value_to_row("BlockList", block_num)
+            output_record.add_cell_value_to_row("BlockList.Cycle", 1)
+            output_record.add_cell_value_to_row("BlockList.Sample", block_num)
+            block_title = block_list_table.cell_value("BlockTitle", block_num)
             output_record.add_cell_value_to_row("BlockTitle", block_title)
-
-
+            
 
         # E-Prime name: EndFix
         shower.show("EndFix", 5.0)
@@ -171,7 +270,7 @@ try:
         # E-Prime name: outputVars
         rt_msecs = secs_to_msecs(probe_duration_secs)
         money_total = probe_calculator.money_total
-        should_quit = write_rt_earnings(operator_table, stim_bundle, run_num, rt_msecs, money_total)
+        should_quit = write_rt_earnings(operator_table, stim_bundle, block_num, rt_msecs, money_total)
 
         # TODO: conditionally break the loop on should_quit?
 
