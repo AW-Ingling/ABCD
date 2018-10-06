@@ -63,24 +63,24 @@ shower = ShowMaker(stim_bundle, exit_detector)
 # "Clock.Information"       : dummy constant column
 output_record = mid_scanner_record.MidScannerRecord(stim_bundle.data_dir_path, operator_table['file_name'])
 
-# Create the data output spreadsheet and set some fields
-# "ExperimentName"          : dummy constant column
-# TODO: Figure out where the number in the "Subject" output table comes from and fix this output line.
-#output_record.add_constant_column("Subject", )
+# Create the data output spreadsheet and set some column values
+
+# "ExperimentName"       : dummy constant but dependent on scanner type setting
+experiment_name = version_keeper.experiment_name();
+output_record.add_constant_column("ExperimentName", experiment_name )
+
+# TODO: TODO: revise this to use operator inputs instead.  See comments with operator input methods.
+output_record.add_constant_column("Subject", 1)
 output_record.add_constant_column("Session", operator_table["session_number"])
 
-# TODO: figure out what "Allowed" is and fill it in here.
-#output_record.add_constant_column("Allowed", )
+# TODO: Unify this with the specification for allowed input keys for the probe. And figure out what 12 is (ascii?).
+output_record.add_constant_column("Allowed", 12)
 
 output_record.add_constant_column("DataFile.Basename", operator_table['file_name_without_extension'])
 
 # Get the display frame rate and put it in the output table
 framerate_hz = shower.get_framerate_hz()
 output_record.add_constant_column("Display.RefreshRate", round(framerate_hz, 3))
-
-# "ExperimentVersion"       : dummy constant but dependent on scanner type setting
-experiment_name = version_keeper.experiment_name();
-output_record.add_constant_column("ExperimentName", experiment_name )
 
 output_record.add_constant_column("Group", operator_table['session_number'])
 output_record.add_constant_column("Handedness", operator_table['handedness'])
@@ -115,12 +115,24 @@ probe_duration_secs = msecs_to_secs(rt)
 mark_start_time()
 #  - Probe.OnsetToOnsetTime
 
+# track of the real count of the current block.
+real_block_identifier = 0;
+
+# column had
+period_list_sample_column = 0;
+
 try:
 
-    for block_index in range(run_num_start - 1, 2):
+    for block_index in range(run_num_start - 1, 2):     # This seems opaque and overcomplicated, check or rethink it.
+
+        #TODO: Verify table column header values are correct for E-Prime output table which starts at run_num_start = 2
+        # The current values were inferred from a table which started at 1.
 
         # Match eponymous E-Prime variable state value
         block_num = block_index + 1
+
+        # Increment our general-purpose block identifier (without funky e-prime numbering policy).
+        real_block_identifier += 1
 
         # Fetch the current block table.  If this is #2 numbered session then we start with the second block table
         block_table = block_tables[block_index]
@@ -128,87 +140,79 @@ try:
         # E-Prime name: TitlePage
         shower.show("MID_Instructions", None, "SPACE_KEY")
 
+        # This value fills in the "trial" column and is otherwise useless.
+        trial_column = 1
+
         # Add the first of two header rows between 50-trial blocks
         output_record.add_new_row()
+        # Write cells which are always NULL for both of a paired block header rows
         output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_nulls, "NULL")
-        output_record.add_cell_value_to_row("Subject", )
-        output_record.add_cell_value_to_row("Session", )
-        output_record.add_cell_value_to_row("Allowed", )
-        output_record.add_cell_value_to_row("Clock.Information", )
-        output_record.add_cell_value_to_row("DataFile.Basename", )
-        output_record.add_cell_value_to_row("Display.RefreshRate", )
-        output_record.add_cell_value_to_row("ExperimentVersion", )
-        output_record.add_cell_value_to_row("Group", )
-        output_record.add_cell_value_to_row("Handedness", )
-        output_record.add_cell_value_to_row("NARGUID", )
-        output_record.add_cell_value_to_row("PracticeRT", )
-        output_record.add_cell_value_to_row("RandomSeed", )
-        output_record.add_cell_value_to_row("RuntimeCapabilities", )
-        output_record.add_cell_value_to_row("RuntimeVersion", )
-        output_record.add_cell_value_to_row("RuntimeVersionExpected", )
-        output_record.add_cell_value_to_row("SessionDate", )
-        output_record.add_cell_value_to_row("SessionStartDateTimeUtc", )
-        output_record.add_cell_value_to_row("SessionTime", )
-        output_record.add_cell_value_to_row("StudioVersion", )
-        output_record.add_cell_value_to_row("TrialOrder", )
-        output_record.add_cell_value_to_row("StudioVersion", )
-        output_record.add_cell_value_to_row("TrialOrder", )
-        output_record.add_cell_value_to_row("triggercode", )
-        output_record.add_cell_value_to_row("Block", )
-        output_record.add_cell_value_to_row("BlockList", )
-        output_record.add_cell_value_to_row("BlockList.Cycle", )
-        output_record.add_cell_value_to_row("BlockList.Sample", )
-        output_record.add_cell_value_to_row("BlockTitle", )
-        output_record.add_cell_value_to_row("EndFix.Duration", )
-        output_record.add_cell_value_to_row("EndFix.DurationError", )
-        output_record.add_cell_value_to_row("EndFix.FinishTime", )
-        output_record.add_cell_value_to_row("EndFix.OffsetDelay", )
-        output_record.add_cell_value_to_row("EndFix.OffsetTime", )
-        output_record.add_cell_value_to_row("EndFix.OnsetDelay", )
-        output_record.add_cell_value_to_row("EndFix.OnsetTime", )
-        output_record.add_cell_value_to_row("EndFix.OnsetToOnsetTime", )
-        output_record.add_cell_value_to_row("EndFix.StartTime", )
-        output_record.add_cell_value_to_row("Procedure[Block]", )
-        output_record.add_cell_value_to_row("Running[Block]", )
-        output_record.add_cell_value_to_row("Trial", )
-        output_record.add_cell_value_to_row("GetReady.RTTime", )
-
-        output_record.add_cell_value_to_row("PeriodList", "NULL")
-        output_record.add_cell_value_to_row("PeriodList.Cycle", "NULL")
-        output_record.add_cell_value_to_row("PeriodList.Sample", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.Duration", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.DurationError", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.FinishTime", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.OffsetDelay", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.OffsetTime", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.OnsetDelay", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.OnsetTime", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.OnsetToOnsetTime", "NULL")
-        output_record.add_cell_value_to_row("PrepTime.StartTime", "NULL")
-
-        output_record.add_cell_value_to_row("Procedure[Trial]", )
-        output_record.add_cell_value_to_row("Waiting4ScannerGE", )
-        output_record.add_cell_value_to_row("Waiting4ScannerGE", )
-        output_record.add_cell_value_to_row("Waiting4ScannerGE.Cycle", )
-        output_record.add_cell_value_to_row("Waiting4ScannerGE.Sample", )
+        # Write cells which are always NULL for only the first block header rows
+        output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_first_nulls, "NULL")
+        # Write cell values which are non-null for the first block header row.
+        output_record.add_cell_value_to_row("Trial", trial_column);
+        #TODO: Figure out what this is and fill it in.
+        #output_record.add_cell_value_to_row("GetReady.RTTime", );          # What is this?
+        output_record.add_cell_value_to_row("Procedure[Trial]", "WaitScreen");
+        output_record.add_cell_value_to_row("Running[Trial]", version_keeper.running_trial_header_cell_value());
+        #TODO: Fetch column names contaning "GE" from our abcd_versions module to generalize on scanners.
+        output_record.add_cell_value_to_row("Waiting4ScannerGE", 1);
+        output_record.add_cell_value_to_row("Waiting4ScannerGE.Cycle", real_block_identifier);
+        output_record.add_cell_value_to_row("Waiting4ScannerGE.Sample", real_block_identifier);
+        # Note: At this point of execution the remaining unfilled block header cells for the first of paired block
+        # header rows are constant column cells, either dummy or derived constants.
 
 
         # Wait for the scanner.  We use the space bar as a proxy for the scanner start sequence.
         num_start_sequences = scanner_waiting_table.cell_value("Weight", 1)
         # E-Prime name GetReady
-        # TODO: Use the actual scanner start sequence here
+        # TODO: Conditionally use the actual scanner start sequence here and add a degugging switch somewhere
         shower.show("GetReady", None, "SPACE_KEY")
 
+        # increment trial column value (to two) for second line(of two) of block header
+        trial_column += 1
+
+        # This value fills in the "PeriodList.Sample" column and is otherwise useless
+        period_list_sample_column += 1;
 
         # Add the second of two header rows between 50-trial blocks
         output_record.add_new_row()
+        # Write cells which are always NULL for both of a paired block header rows
         output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_nulls, "NULL")
+        # Write cells which are always NULL for only the second paired block header row
+        output_record.add_cell_value_to_columns(mid_scanner_record.inter_test_loop_second_nulls, "NULL")
+        # Write cell values which are non-null for the first block header row.
+        #TODO: fill in values for all of these
+        output_record.add_cell_value_to_row("Trial", trial_column)
+        output_record.add_cell_value_to_row("PeriodList", 1)
+        output_record.add_cell_value_to_row("PeriodList.Cycle", real_block_identifier)
+        output_record.add_cell_value_to_row("PeriodList.Sample", period_list_sample_column)
+        # output_record.add_cell_value_to_row("PrepTime.Duration", )            # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.DurationError", )       # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.FinishTime", )          # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.OffsetDelay", )         # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.OffsetTime", )          # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.OnsetDelay", )          # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.OnsetToOnsetTime", )    # ?? Look at E-Prime source ??
+        # output_record.add_cell_value_to_row("PrepTime.StartTime", )           # ?? Look at E-Prime source ??
+        output_record.add_cell_value_to_row("Procedure[Trial]", "PrepProc")
+        output_record.add_cell_value_to_row("Running[Trial]", "PeriodList")
+
+
+        # Note: At this point of execution the remaining unfilled block header cells for the second of paired block
+        # header rows are constant column cells, either dummy or derived constants.
 
         # E-Prime name PrepTime
         shower.show("PrepTime", 2.0)
 
         # E-Prime name: CalculateProbeDuration
         probe_calculator = ProbeCalculator(probe_duration_secs)
+
+        # Increment trial column value, which remains constant at 3 for both blocks
+        trial_column += 1
+
+        # Increment the "PeriodList.Sample" again. It stepped up at entry into block headers and entry into data here.
+        period_list_sample_column += 1;
 
         # E-Prime name: RunProc
         for run_index in range(0, block_table.num_rows):

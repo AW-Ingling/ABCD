@@ -131,7 +131,7 @@ column_labels_text = ["ExperimentName",
 
 dummy_constant_columns = [ ("Clock.Information", "NULL"),
                            ("RuntimeCapabilities", "Professional"),
-                           ("ExperimentVersion", "1.0.0.300"),
+                           ("ExperimentVersion", "1.0.0.387"),
                            ("RuntimeCapabilities", "Professional"),
                            ("RuntimeVersion", "2.0.10.356"),
                            ("RuntimeVersionExpected", "2.0.10.356"),
@@ -139,9 +139,28 @@ dummy_constant_columns = [ ("Clock.Information", "NULL"),
                            ]
 
 
-first_trails_nulls = []
+#first_trails_nulls = []
 
-second_trails_nulls = []
+#second_trails_nulls = []
+
+inter_test_loop_first_nulls = ["PeriodList",
+                               "PeriodList.Cycle",
+                               "PeriodList.Sample",
+                               "PrepTime.Duration",
+                               "PrepTime.DurationError",
+                               "PrepTime.FinishTime",
+                               "PrepTime.OffsetDelay",
+                               "PrepTime.OffsetTime",
+                               "PrepTime.OnsetDelay",
+                               "PrepTime.OnsetTime",
+                               "PrepTime.OnsetToOnsetTime",
+                               "PrepTime.StartTime"
+                                ]
+
+inter_test_loop_second_nulls = ["GetReady.RTTime",
+                                "Waiting4ScannerGE",
+                                "Waiting4ScannerGE.Cycle",
+                                "Waiting4ScannerGE.Sample"]
 
 inter_test_loop_nulls = ["SubTrial",
                          "Anticipation.Duration",
